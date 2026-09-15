@@ -1,65 +1,78 @@
-# FNOL Triage
+# Triage de mensajes — seguros
 
-Demo autosuficiente (HTML + JavaScript, sin backend) del triaje automático de **primeros avisos de siniestro (FNOL)** en una aseguradora.
+Demo autosuficiente (HTML + JavaScript, sin backend, sin build) del **triaje de mensajes de clientes** en una aseguradora: clasificación por ramo, extracción de datos y aplicación de reglas de negocio con IA, con registro de cada decisión.
 
 **Demo en vivo:** https://nachoenjuto.github.io/fnol-triage/
 
 ## Caso de uso
 
-Llegan 40 avisos de siniestro. El sistema:
+Llega un paquete de mensajes de clientes (emails, formularios web, chats, transcripciones telefónicas). Para cada mensaje el sistema:
 
-1. **Despeja automáticamente** la mayoría legítima.
-2. **Enruta un 5-10 % a revisión humana**, explicando el motivo.
-3. **Deja registro de cada decisión** (exportable a JSON/CSV).
+1. **Clasifica el ramo** (Auto, Hogar, Salud).
+2. **Extrae los datos** del texto libre (póliza, fecha del hecho, importe, terceros, lesionados, documentación…).
+3. **Aplica el bloque de reglas** del ramo y decide: **DESPEJADO** (se tramita automáticamente) o **REVISIÓN** humana, con el motivo y cada criterio evaluado.
+4. **Registra la decisión.**
 
-La pantalla no es un expediente: son tres contadores — **despejados**, **en revisión** y **tiempo medio de ciclo** — más el registro de auditoría.
+La pantalla son tres contadores — **despejados**, **en revisión**, **tiempo medio de ciclo** — más el registro. Al hacer clic en un mensaje se abre su ficha: texto original, datos extraídos y, a la derecha, los criterios que ha aplicado el modelo.
 
-## Cómo funciona
+## Paquetes de mensajes
 
-| Capa | Descripción |
-|---|---|
-| Generador | Crea 40 avisos sintéticos (auto, hogar, salud, comercio). Entre 2 y 4 llevan una anomalía inyectada: póliza no vigente, aviso tardío, importe anómalo, alta siniestralidad, póliza recién contratada o descripción incoherente. |
-| Motor de reglas | Reglas deterministas que siempre se ejecutan. Sirven de fallback y de "red de seguridad": si una regla dura salta, el aviso va a revisión aunque la IA lo despeje. |
-| IA (opcional) | Llamada directa desde el navegador a **Azure AI Foundry / Azure OpenAI** (`chat/completions`, cabecera `api-key`). El modelo devuelve `{decision, motivo, confianza}` en JSON; la respuesta se valida y, si es inválida o hay error transitorio, se usa el motor de reglas. |
-| Registro | Cada decisión se guarda en `localStorage` con aviso, decisión, motivo, origen (reglas / IA), confianza y duración. |
+Tres paquetes fijos y mixtos en [`data/mensajes.js`](data/mensajes.js). Cada mensaje lleva un `esperado` (ramo y si debería ir a revisión) que **no se envía a la IA**; solo sirve para contrastar en la ficha y en la columna Ramo (✔/✖).
 
-Compatibilidad de modelos: para modelos de razonamiento (`gpt-5*`, `o1`/`o3`/`o4`) no se envían `temperature` ni `max_tokens` (se usa `max_completion_tokens` y `reasoning_effort: low`). Si el modelo rechaza algún parámetro con un 400 «Unsupported parameter», el cliente lo retira y reintenta, recordando el ajuste para el resto del lote.
+| Paquete | Mensajes | Auto / Hogar / Salud | Revisión esperada |
+|---|---|---|---|
+| A | 10 | 4 / 3 / 3 | 2 |
+| B | 20 | 7 / 7 / 6 | 3 |
+| C | 12 | 4 / 4 / 4 | 2 |
 
-Reintentos con backoff exponencial (base 2 s, tope 32 s, máx. 5) para 429/5xx; los errores permanentes (400/401/403) abortan el lote.
+## Prompts y reglas
+
+En [`prompts.js`](prompts.js): un **prompt base** (tarea, extracción, formato JSON) y **tres bloques de reglas** de negocio de seguros (Auto, Hogar, Salud: vigencia, plazo de comunicación del art. 16 LCS, conductor declarado, alcohol, lesionados, daños por agua súbitos vs. filtraciones, robo con fuerza y límites de joyas, carencias, preexistencias, autorización previa, cuadro médico, mutua laboral…). Los cuatro textos se editan en la barra lateral y la llamada a la API usa siempre el texto vigente.
+
+El modelo devuelve:
+
+```json
+{ "ramo": "…", "datos_extraidos": { … }, "criterios": [ { "regla": "A5", "descripcion": "…", "resultado": "cumple|incumple|no_aplica", "evidencia": "…" } ], "decision": "DESPEJADO|REVISION", "motivo": "…", "confianza": 0.9 }
+```
+
+## Motor local (sin IA)
+
+Sin clave, la demo funciona en modo degradado: ramo por palabras clave, extracción por expresiones regulares y reglas heurísticas. Sirve para ver el flujo; la demo brilla con IA. Si una llamada a la IA falla por un error transitorio o una respuesta no válida, ese mensaje cae al motor local y se marca en el registro.
 
 ## Uso
 
-1. Abre la demo (o `index.html` en local).
-2. Opcional: pulsa **⚙ Configurar IA** e introduce endpoint, deployment y API key de Azure AI Foundry. La clave se guarda solo en `sessionStorage` y se envía únicamente a tu endpoint de Azure.
-3. Pulsa **Procesar 40 avisos**.
-
-Sin clave, la demo funciona igualmente con el motor de reglas (con latencia simulada de 60-220 ms por aviso).
+1. Abre la demo.
+2. Opcional: ⚙ **Configurar IA** con endpoint, deployment y clave de Azure AI Foundry. Todo se guarda solo en `sessionStorage` (se borra al cerrar la pestaña).
+3. Elige un paquete en la barra lateral y, si quieres, edita los prompts.
+4. **Procesar paquete**. Puedes **pausar / continuar**; **Reiniciar lote** cancela y vacía el registro.
+5. Filtra por ramo o solo revisión, ordena por columnas, abre la ficha de cualquier fila, exporta a JSON/CSV.
 
 ### Endpoint y ruta de API
 
-En **Endpoint** puedes pegar la URL base del recurso o la URL completa que muestra el portal de Foundry (p. ej. `https://<recurso>.services.ai.azure.com/openai/v1/responses`); la app extrae el origen del recurso y selecciona la ruta automáticamente. En **Deployment** va el nombre del despliegue.
+Pega la URL base del recurso o la URL completa del portal de Foundry (p. ej. `https://<recurso>.services.ai.azure.com/openai/v1/responses`); se extrae el origen y se selecciona la ruta automáticamente.
 
 | Ruta | URL que se construye | api-version |
 |---|---|---|
-| **v1** (por defecto) | `{origen}/openai/v1/chat/completions` | no necesita |
+| v1 | `{origen}/openai/v1/chat/completions` | no necesita |
 | Responses API | `{origen}/openai/v1/responses` | no necesita |
-| Clásica | `{origen}/openai/deployments/{deployment}/chat/completions` | `2024-10-21` por defecto |
-| Foundry Models | `{origen}/models/chat/completions` | `2024-05-01-preview` por defecto |
+| Clásica | `{origen}/openai/deployments/{deployment}/chat/completions` | `2024-10-21` |
+| Foundry Models | `{origen}/models/chat/completions` | `2024-05-01-preview` |
 
-Si Azure responde «API version not supported», cambia de ruta. Un «Failed to fetch» suele ser una URL inexistente (sin cabeceras CORS) o un endpoint mal escrito.
+Compatibilidad: para modelos de razonamiento (`gpt-5*`, `o*`) no se envían `temperature` ni `max_tokens`; cualquier parámetro que el modelo rechace con 400 se retira y se reintenta. Reintentos con backoff exponencial (base 2 s, tope 32 s, máx. 5) para 429/5xx; errores permanentes (400/401/403) abortan el lote.
 
 ## Estructura
 
 ```
-index.html   UI (config, contadores, registro)
-app.js       generador, motor de reglas, cliente Azure, registro y render
-prompts.js   prompt del sistema para el triaje
-styles.css   estilos (claro/oscuro)
+index.html        UI: conexión IA, barra lateral, contadores, registro, ficha modal
+app.js            motor local, cliente Azure, procesamiento con pausa, registro, render
+prompts.js        prompt base + bloques de reglas Auto / Hogar / Salud
+data/mensajes.js  tres paquetes de mensajes
+styles.css        estilos (claro/oscuro, responsive)
 ```
 
 ## Despliegue
 
-GitHub Pages sirve la rama `main` desde la raíz. No hay build.
+GitHub Pages sirve la rama `main` desde la raíz.
 
 ## Licencia
 

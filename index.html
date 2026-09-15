@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FNOL Triage — Primer aviso de siniestro</title>
-  <meta name="description" content="Demo de triaje automático de avisos de siniestro (FNOL) con reglas y Azure AI Foundry.">
+  <title>Triage de mensajes — seguros</title>
+  <meta name="description" content="Demo de triaje de mensajes de clientes de una aseguradora: clasificación por ramo, extracción de datos y aplicación de reglas con Azure AI Foundry.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,128 +12,182 @@
     <div class="brand">
       <span class="brand-mark" aria-hidden="true">◆</span>
       <div>
-        <h1>FNOL Triage</h1>
-        <p class="subtitle">Primer aviso de siniestro · despeje automático con registro de decisiones</p>
+        <h1>Triage de mensajes</h1>
+        <p class="subtitle">Clasificación por ramo · extracción de datos · reglas de negocio · registro de decisiones</p>
       </div>
     </div>
-    <button id="btn-toggle-config" class="btn btn-ghost" type="button" aria-expanded="false" aria-controls="config-panel">
-      ⚙ Configurar IA
-    </button>
+    <div class="row">
+      <span id="mode-badge" class="badge">Motor: reglas</span>
+      <button id="btn-toggle-config" class="btn btn-ghost" type="button" aria-expanded="false" aria-controls="config-panel">⚙ Configurar IA</button>
+    </div>
   </header>
 
-  <main class="container">
+  <!-- Conexión Azure AI Foundry (arriba, plegable) -->
+  <section id="config-panel" class="card config" hidden>
+    <h2>Azure AI Foundry</h2>
+    <p class="hint">
+      La configuración se guarda solo en <code>sessionStorage</code> (se borra al cerrar la pestaña) y la clave se envía
+      directamente a tu endpoint de Azure. Sin clave, el triaje usa un motor local de reglas por palabras clave (modo degradado).
+    </p>
+    <div class="grid-2">
+      <label>
+        <span>Endpoint</span>
+        <input id="cfg-endpoint" type="url" placeholder="https://mi-recurso.services.ai.azure.com/openai/v1/responses" autocomplete="off" spellcheck="false">
+        <small>URL del recurso. Si pegas la URL completa del portal (<code>…/openai/v1/responses</code> o <code>…/chat/completions</code>) la ruta se selecciona sola.</small>
+      </label>
+      <label>
+        <span>Deployment / modelo</span>
+        <input id="cfg-deployment" type="text" placeholder="gpt-5-nano" autocomplete="off" spellcheck="false">
+      </label>
+      <label>
+        <span>Ruta de API</span>
+        <select id="cfg-route">
+          <option value="v1">v1 — /openai/v1/chat/completions (sin api-version)</option>
+          <option value="responses">Responses API — /openai/v1/responses (sin api-version)</option>
+          <option value="deployments">Clásica — /openai/deployments/{deployment}/chat/completions</option>
+          <option value="models">Foundry Models — /models/chat/completions</option>
+        </select>
+      </label>
+      <label>
+        <span>API version <small>(solo rutas clásica y Foundry Models)</small></span>
+        <input id="cfg-api-version" type="text" placeholder="2024-10-21 · 2024-05-01-preview" autocomplete="off" spellcheck="false">
+      </label>
+      <label>
+        <span>API key</span>
+        <input id="cfg-api-key" type="password" placeholder="••••••••••••••••" autocomplete="off" spellcheck="false">
+      </label>
+    </div>
+    <div class="row">
+      <button id="btn-test-ai" class="btn" type="button">Probar conexión</button>
+      <button id="btn-clear-ai" class="btn btn-ghost" type="button">Borrar clave</button>
+      <span id="ai-status" class="status" role="status" aria-live="polite"></span>
+    </div>
+  </section>
 
-    <!-- Panel de configuración de Azure AI Foundry -->
-    <section id="config-panel" class="card config" hidden>
-      <h2>Azure AI Foundry</h2>
-      <p class="hint">
-        La clave se guarda solo en <code>sessionStorage</code> del navegador (se borra al cerrar la pestaña) y se envía
-        directamente al endpoint de Azure. Si se deja vacía, el triaje usa únicamente el motor de reglas local.
-      </p>
-      <div class="grid-2">
-        <label>
-          <span>Endpoint</span>
-          <input id="cfg-endpoint" type="url" placeholder="https://mi-recurso.openai.azure.com" autocomplete="off" spellcheck="false">
-          <small>URL del recurso. Si pegas la URL completa del portal (<code>…/openai/v1/responses</code> o <code>…/chat/completions</code>) la ruta se selecciona sola.</small>
-        </label>
-        <label>
-          <span>Deployment / modelo</span>
-          <input id="cfg-deployment" type="text" placeholder="gpt-4o-mini" autocomplete="off" spellcheck="false">
-        </label>
-        <label>
-          <span>Ruta de API</span>
-          <select id="cfg-route">
-            <option value="v1">v1 — /openai/v1/chat/completions (recomendada, sin api-version)</option>
-            <option value="responses">Responses API — /openai/v1/responses (sin api-version)</option>
-            <option value="deployments">Clásica — /openai/deployments/{deployment}/chat/completions</option>
-            <option value="models">Foundry Models — /models/chat/completions</option>
-          </select>
-          <small>Si obtienes «API version not supported», cambia de ruta.</small>
-        </label>
-        <label>
-          <span>API version <small>(solo rutas clásica y Foundry Models)</small></span>
-          <input id="cfg-api-version" type="text" placeholder="2024-10-21 · 2024-05-01-preview" autocomplete="off" spellcheck="false">
-        </label>
-        <label>
-          <span>API key</span>
-          <input id="cfg-api-key" type="password" placeholder="••••••••••••••••" autocomplete="off" spellcheck="false">
-        </label>
-      </div>
-      <div class="row">
-        <button id="btn-test-ai" class="btn" type="button">Probar conexión</button>
-        <button id="btn-clear-ai" class="btn btn-ghost" type="button">Borrar clave</button>
-        <span id="ai-status" class="status" role="status" aria-live="polite"></span>
-      </div>
-    </section>
-
-    <!-- Contadores -->
-    <section class="counters" aria-label="Indicadores">
-      <article class="card counter counter-ok">
-        <span class="counter-label">Despejados</span>
-        <span id="cnt-cleared" class="counter-value">0</span>
-        <span id="pct-cleared" class="counter-sub">—</span>
-      </article>
-      <article class="card counter counter-review">
-        <span class="counter-label">En revisión</span>
-        <span id="cnt-review" class="counter-value">0</span>
-        <span id="pct-review" class="counter-sub">—</span>
-      </article>
-      <article class="card counter counter-time">
-        <span class="counter-label">Tiempo medio de ciclo</span>
-        <span id="cnt-cycle" class="counter-value">—</span>
-        <span id="cycle-sub" class="counter-sub">por aviso</span>
-      </article>
-    </section>
-
-    <!-- Acciones -->
-    <section class="card actions">
-      <div class="row wrap">
-        <button id="btn-run" class="btn btn-primary" type="button">▶ Procesar 40 avisos</button>
-        <button id="btn-reset" class="btn btn-ghost" type="button">Reiniciar lote</button>
-        <span id="mode-badge" class="badge">Motor: reglas</span>
-        <span id="run-status" class="status" role="status" aria-live="polite"></span>
-      </div>
-      <div class="progress" aria-hidden="true"><div id="progress-bar" class="progress-bar"></div></div>
-    </section>
-
-    <!-- Registro de decisiones -->
-    <section class="card log">
-      <div class="row wrap between">
-        <h2>Registro de decisiones <span id="log-count" class="muted"></span></h2>
-        <div class="row">
-          <label class="inline"><input id="filter-review" type="checkbox"> Solo en revisión</label>
-          <button id="btn-export-json" class="btn btn-ghost btn-sm" type="button">Exportar JSON</button>
-          <button id="btn-export-csv" class="btn btn-ghost btn-sm" type="button">Exportar CSV</button>
-          <button id="btn-clear-log" class="btn btn-ghost btn-sm" type="button">Limpiar registro</button>
+  <div class="layout">
+    <!-- Barra lateral de ajustes -->
+    <aside class="sidebar" aria-label="Ajustes">
+      <details class="card section" open>
+        <summary>Paquete de mensajes</summary>
+        <div class="section-body">
+          <select id="sel-paquete" aria-label="Paquete de mensajes"></select>
+          <p id="paquete-desc" class="hint"></p>
+          <ol id="paquete-lista" class="msg-list"></ol>
         </div>
+      </details>
+      <div id="prompt-sections"></div>
+    </aside>
+
+    <!-- Panel principal -->
+    <main class="content">
+      <section class="counters" aria-label="Indicadores">
+        <article class="card counter counter-ok">
+          <span class="counter-label">Despejados</span>
+          <span id="cnt-cleared" class="counter-value">0</span>
+          <span id="pct-cleared" class="counter-sub">—</span>
+        </article>
+        <article class="card counter counter-review">
+          <span class="counter-label">En revisión</span>
+          <span id="cnt-review" class="counter-value">0</span>
+          <span id="pct-review" class="counter-sub">—</span>
+        </article>
+        <article class="card counter counter-time">
+          <span class="counter-label">Tiempo medio de ciclo</span>
+          <span id="cnt-cycle" class="counter-value">—</span>
+          <span id="cycle-sub" class="counter-sub">por mensaje</span>
+        </article>
+      </section>
+      <div id="ramo-chips" class="chips" aria-label="Desglose por ramo"></div>
+
+      <section class="card actions">
+        <div class="row wrap">
+          <button id="btn-run" class="btn btn-primary" type="button">▶ Procesar paquete</button>
+          <button id="btn-pause" class="btn" type="button" disabled>⏸ Pausar</button>
+          <button id="btn-reset" class="btn btn-ghost" type="button">Reiniciar lote</button>
+          <span id="run-status" class="status" role="status" aria-live="polite"></span>
+        </div>
+        <div class="progress" aria-hidden="true"><div id="progress-bar" class="progress-bar"></div></div>
+      </section>
+
+      <section class="card log">
+        <div class="row wrap between">
+          <h2>Registro de decisiones <span id="log-count" class="muted"></span></h2>
+          <div class="row wrap">
+            <label class="inline">Ramo
+              <select id="filter-ramo">
+                <option value="">Todos</option>
+                <option>Auto</option>
+                <option>Hogar</option>
+                <option>Salud</option>
+                <option>Indeterminado</option>
+              </select>
+            </label>
+            <label class="inline"><input id="filter-review" type="checkbox"> Solo en revisión</label>
+            <button id="btn-export-json" class="btn btn-ghost btn-sm" type="button">Exportar JSON</button>
+            <button id="btn-export-csv" class="btn btn-ghost btn-sm" type="button">Exportar CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="log-table">
+            <thead>
+              <tr>
+                <th data-sort="id">Mensaje</th>
+                <th data-sort="ramo">Ramo</th>
+                <th data-sort="importe">Importe</th>
+                <th data-sort="decision">Decisión</th>
+                <th>Motivo</th>
+                <th data-sort="origen">Origen</th>
+                <th data-sort="confianza">Conf.</th>
+                <th data-sort="duracion_ms">Ciclo</th>
+                <th data-sort="timestamp">Hora</th>
+              </tr>
+            </thead>
+            <tbody id="log-body"></tbody>
+          </table>
+          <p id="log-empty" class="muted center">Todavía no hay decisiones. Elige un paquete y pulsa «Procesar paquete». Haz clic en una fila para ver la ficha.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Ficha de un mensaje -->
+  <dialog id="modal" class="modal" aria-labelledby="modal-title">
+    <div class="modal-head">
+      <div>
+        <h2 id="modal-title"></h2>
+        <p id="modal-subtitle" class="muted"></p>
       </div>
-      <div class="table-wrap">
-        <table id="log-table">
-          <thead>
-            <tr>
-              <th>Aviso</th>
-              <th>Ramo</th>
-              <th>Importe</th>
-              <th>Decisión</th>
-              <th>Motivo</th>
-              <th>Origen</th>
-              <th>Conf.</th>
-              <th>Ciclo</th>
-              <th>Fecha</th>
-            </tr>
-          </thead>
-          <tbody id="log-body"></tbody>
-        </table>
-        <p id="log-empty" class="muted center">Todavía no hay decisiones registradas. Pulsa «Procesar 40 avisos».</p>
+      <button id="modal-close" class="btn btn-ghost" type="button" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-col">
+        <h3>Mensaje</h3>
+        <dl id="modal-mensaje" class="kv"></dl>
+        <pre id="modal-texto" class="msg-text"></pre>
+        <h3>Datos extraídos</h3>
+        <dl id="modal-datos" class="kv"></dl>
       </div>
-    </section>
-  </main>
+      <div class="modal-col modal-decision">
+        <h3>Ramo</h3>
+        <p id="modal-ramo"></p>
+        <h3>Criterios de decisión</h3>
+        <ul id="modal-criterios" class="criterios"></ul>
+        <h3>Decisión</h3>
+        <dl id="modal-resultado" class="kv"></dl>
+        <details>
+          <summary>Respuesta cruda del modelo</summary>
+          <pre id="modal-raw" class="raw"></pre>
+        </details>
+      </div>
+    </div>
+  </dialog>
 
   <footer class="footer">
-    <span>Demo estática · HTML + JavaScript · sin backend</span>
-    <a id="repo-link" href="https://github.com/nachoenjuto/fnol-triage" target="_blank" rel="noopener">Código en GitHub</a>
+    <span>Demo estática · HTML + JavaScript · sin backend · datos solo en esta sesión</span>
+    <a href="https://github.com/nachoenjuto/fnol-triage" target="_blank" rel="noopener">Código en GitHub</a>
   </footer>
 
+  <script src="data/mensajes.js"></script>
   <script src="prompts.js"></script>
   <script src="app.js"></script>
 </body>
