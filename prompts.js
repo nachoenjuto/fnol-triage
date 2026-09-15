@@ -22,5 +22,5 @@ Responde EXCLUSIVAMENTE con un objeto JSON válido con esta forma exacta:
 No añadas texto fuera del JSON.`;
 
 function buildFnolUserPrompt(claim) {
-  return `Aviso de siniestro a evaluar:\n${JSON.stringify(claim, null, 2)}`;
+  return `Aviso de siniestro a evaluar. Responde solo con el objeto JSON indicado.\n${JSON.stringify(claim, null, 2)}`;
 }

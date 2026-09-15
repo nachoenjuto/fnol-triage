@@ -192,6 +192,12 @@
 
   function buildBody(cfg, messages, { jsonMode, maxTokens }) {
     const reasoning = isReasoningModel(cfg.deployment);
+    // json_object exige que algún mensaje de usuario mencione "json"; garantizarlo
+    if (jsonMode && !messages.some((m) => m.role === 'user' && /json/i.test(m.content))) {
+      messages = messages.map((m, i, arr) => (i === arr.length - 1 && m.role === 'user'
+        ? { ...m, content: `${m.content}\n\nResponde únicamente con un objeto JSON.` }
+        : m));
+    }
     let body;
     if (cfg.route === 'responses') {
       // Responses API: el mensaje de sistema va en `instructions`
