@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FNOL Triage — Primer aviso de siniestro</title>
+  <meta name="description" content="Demo de triaje automático de avisos de siniestro (FNOL) con reglas y Azure AI Foundry.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">◆</span>
+      <div>
+        <h1>FNOL Triage</h1>
+        <p class="subtitle">Primer aviso de siniestro · despeje automático con registro de decisiones</p>
+      </div>
+    </div>
+    <button id="btn-toggle-config" class="btn btn-ghost" type="button" aria-expanded="false" aria-controls="config-panel">
+      ⚙ Configurar IA
+    </button>
+  </header>
+
+  <main class="container">
+
+    <!-- Panel de configuración de Azure AI Foundry -->
+    <section id="config-panel" class="card config" hidden>
+      <h2>Azure AI Foundry</h2>
+      <p class="hint">
+        La clave se guarda solo en <code>sessionStorage</code> del navegador (se borra al cerrar la pestaña) y se envía
+        directamente al endpoint de Azure. Si se deja vacía, el triaje usa únicamente el motor de reglas local.
+      </p>
+      <div class="grid-2">
+        <label>
+          <span>Endpoint</span>
+          <input id="cfg-endpoint" type="url" placeholder="https://mi-recurso.openai.azure.com" autocomplete="off" spellcheck="false">
+          <small>Recurso Azure OpenAI / Foundry, o URL completa de <code>chat/completions</code>.</small>
+        </label>
+        <label>
+          <span>Deployment / modelo</span>
+          <input id="cfg-deployment" type="text" placeholder="gpt-4o-mini" autocomplete="off" spellcheck="false">
+        </label>
+        <label>
+          <span>API version</span>
+          <input id="cfg-api-version" type="text" value="2024-10-21" autocomplete="off" spellcheck="false">
+        </label>
+        <label>
+          <span>API key</span>
+          <input id="cfg-api-key" type="password" placeholder="••••••••••••••••" autocomplete="off" spellcheck="false">
+        </label>
+      </div>
+      <div class="row">
+        <button id="btn-test-ai" class="btn" type="button">Probar conexión</button>
+        <button id="btn-clear-ai" class="btn btn-ghost" type="button">Borrar clave</button>
+        <span id="ai-status" class="status" role="status" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <!-- Contadores -->
+    <section class="counters" aria-label="Indicadores">
+      <article class="card counter counter-ok">
+        <span class="counter-label">Despejados</span>
+        <span id="cnt-cleared" class="counter-value">0</span>
+        <span id="pct-cleared" class="counter-sub">—</span>
+      </article>
+      <article class="card counter counter-review">
+        <span class="counter-label">En revisión</span>
+        <span id="cnt-review" class="counter-value">0</span>
+        <span id="pct-review" class="counter-sub">—</span>
+      </article>
+      <article class="card counter counter-time">
+        <span class="counter-label">Tiempo medio de ciclo</span>
+        <span id="cnt-cycle" class="counter-value">—</span>
+        <span id="cycle-sub" class="counter-sub">por aviso</span>
+      </article>
+    </section>
+
+    <!-- Acciones -->
+    <section class="card actions">
+      <div class="row wrap">
+        <button id="btn-run" class="btn btn-primary" type="button">▶ Procesar 40 avisos</button>
+        <button id="btn-reset" class="btn btn-ghost" type="button">Reiniciar lote</button>
+        <span id="mode-badge" class="badge">Motor: reglas</span>
+        <span id="run-status" class="status" role="status" aria-live="polite"></span>
+      </div>
+      <div class="progress" aria-hidden="true"><div id="progress-bar" class="progress-bar"></div></div>
+    </section>
+
+    <!-- Registro de decisiones -->
+    <section class="card log">
+      <div class="row wrap between">
+        <h2>Registro de decisiones <span id="log-count" class="muted"></span></h2>
+        <div class="row">
+          <label class="inline"><input id="filter-review" type="checkbox"> Solo en revisión</label>
+          <button id="btn-export-json" class="btn btn-ghost btn-sm" type="button">Exportar JSON</button>
+          <button id="btn-export-csv" class="btn btn-ghost btn-sm" type="button">Exportar CSV</button>
+          <button id="btn-clear-log" class="btn btn-ghost btn-sm" type="button">Limpiar registro</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="log-table">
+          <thead>
+            <tr>
+              <th>Aviso</th>
+              <th>Ramo</th>
+              <th>Importe</th>
+              <th>Decisión</th>
+              <th>Motivo</th>
+              <th>Origen</th>
+              <th>Conf.</th>
+              <th>Ciclo</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody id="log-body"></tbody>
+        </table>
+        <p id="log-empty" class="muted center">Todavía no hay decisiones registradas. Pulsa «Procesar 40 avisos».</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Demo estática · HTML + JavaScript · sin backend</span>
+    <a id="repo-link" href="https://github.com/nachoenjuto/fnol-triage" target="_blank" rel="noopener">Código en GitHub</a>
+  </footer>
+
+  <script src="prompts.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
