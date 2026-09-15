@@ -44,6 +44,14 @@ Seleccionable en la barra lateral:
 
 La ficha de cada mensaje muestra los tokens de entrada, salida y razonamiento por paso para comparar.
 
+## Reproducción sin llamar al modelo
+
+En la barra lateral, **Motor de triaje** permite elegir:
+
+- **Automático**: IA si hay clave; si no, motor local.
+- **Resultados guardados**: reproduce las fichas de [`data/resultados.js`](data/resultados.js), generadas con IA para los 42 mensajes con el mismo esquema que devuelve el modelo (ramo, indicios, datos extraídos, criterios con evidencia, decisión, motivo, confianza y tokens). Cada mensaje tarda entre 5 y 7 s, con el mismo estado en vivo, pausa y reinicio.
+- **Archivo cargado**: con **Reproducir desde archivo** puedes cargar un JSON generado con «Exportar JSON» de un lote real y repetirlo con la misma cadencia.
+
 ## Motor local (sin IA)
 
 Sin clave, la demo funciona en modo degradado: ramo por palabras clave, extracción por expresiones regulares y reglas heurísticas. Sirve para ver el flujo; la demo brilla con IA. Si una llamada a la IA falla por un error transitorio o una respuesta no válida, ese mensaje cae al motor local y se marca en el registro.
@@ -76,6 +84,7 @@ index.html        UI: conexión IA, barra lateral, contadores, registro, ficha m
 app.js            motor local, cliente Azure, procesamiento con pausa, registro, render
 prompts.js        prompt base + bloques de reglas Auto / Hogar / Salud
 data/mensajes.js  tres paquetes de mensajes
+data/resultados.js fichas de triaje guardadas para reproducción
 styles.css        estilos (claro/oscuro, responsive)
 ```
 

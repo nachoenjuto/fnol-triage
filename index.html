@@ -92,6 +92,20 @@
           <p id="paquete-desc" class="hint"></p>
           <ol id="paquete-lista" class="msg-list"></ol>
           <label>
+            <span>Motor de triaje</span>
+            <select id="sel-motor">
+              <option value="auto">Automático — IA si está configurada, si no reglas locales</option>
+              <option value="guardado">Resultados guardados — reproducción (5–7 s por mensaje)</option>
+              <option value="archivo" disabled>Archivo cargado — reproducción (5–7 s por mensaje)</option>
+            </select>
+            <small id="motor-hint"></small>
+          </label>
+          <label>
+            <span>Reproducir desde archivo</span>
+            <input id="file-replay" type="file" accept="application/json,.json">
+            <small>Carga un JSON exportado con «Exportar JSON» para repetir un lote real sin llamar al modelo.</small>
+          </label>
+          <label>
             <span>Llamadas a la IA por mensaje</span>
             <select id="sel-estrategia">
               <option value="1paso">1 paso — clasificar y aplicar con los tres bloques de reglas</option>
@@ -191,7 +205,7 @@
         <dl id="modal-mensaje" class="kv"></dl>
         <pre id="modal-texto" class="msg-text"></pre>
         <h3>Datos extraídos</h3>
-        <dl id="modal-datos" class="kv"></dl>
+        <div class="box"><dl id="modal-datos" class="kv"></dl></div>
       </div>
       <div class="modal-col modal-decision">
         <h3>Ramo</h3>
@@ -215,6 +229,7 @@
   </footer>
 
   <script src="data/mensajes.js"></script>
+  <script src="data/resultados.js"></script>
   <script src="prompts.js"></script>
   <script src="app.js"></script>
 </body>

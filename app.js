@@ -13,6 +13,7 @@
     prompts: 'triage.prompts',
     paquete: 'triage.paquete',
     estrategia: 'triage.estrategia',
+    motor: 'triage.motor',
     log: 'triage.log',
   };
   const DECISION = { CLEARED: 'DESPEJADO', REVIEW: 'REVISION' };
@@ -26,6 +27,8 @@
 
   // Latencia simulada del motor local (consulta de póliza / integración)
   const LOCAL_LATENCY_MS = [80, 250];
+  // Cadencia de la reproducción de resultados guardados o de archivo
+  const REPLAY_LATENCY_MS = [5000, 7000];
 
   // ---------------------------------------------------------------------------
   // Utilidades
@@ -47,6 +50,8 @@
   const state = {
     paqueteId: ssGet(SS.paquete, PAQUETES[0].id),
     estrategia: ssGet(SS.estrategia, '1paso'), // '1paso' (todas las reglas, por defecto) | '2pasos' (ramo → reglas del ramo)
+    motor: ssGet(SS.motor, 'auto'), // 'auto' | 'guardado' | 'archivo'
+    archivo: null, // { nombre, entradas: [...] } cargado con «Reproducir desde archivo» (solo memoria)
     prompts: Object.fromEntries(Object.entries(PROMPT_BLOQUES).map(([k, v]) => [k, v.texto])),
     log: ssGet(SS.log, []),
     running: false,
@@ -409,7 +414,9 @@
   function updateModeBadge() {
     const cfg = readConfigFromForm();
     const on = aiEnabled(cfg);
-    $('mode-badge').textContent = on ? `Motor: IA (${cfg.deployment || 'endpoint'})` : 'Motor: reglas locales (sin IA)';
+    if (state.motor === 'guardado') $('mode-badge').textContent = 'Motor: resultados guardados';
+    else if (state.motor === 'archivo') $('mode-badge').textContent = `Motor: archivo (${state.archivo?.nombre || '—'})`;
+    else $('mode-badge').textContent = on ? `Motor: IA (${cfg.deployment || 'endpoint'})` : 'Motor: reglas locales (sin IA)';
     $('ai-dot').className = `dot ${on ? 'dot-on' : 'dot-off'}`;
     $('ai-dot').title = on ? 'IA configurada' : 'IA sin configurar';
   }
@@ -429,9 +436,31 @@
       li.title = m.texto;
       return li;
     }));
-    $('btn-run').textContent = `▶ Procesar ${p.nombre} (${p.mensajes.length})`;
+    $('btn-run').textContent = state.motor === 'archivo' && state.archivo
+      ? `▶ Reproducir archivo (${state.archivo.entradas.length})`
+      : `▶ Procesar ${p.nombre} (${p.mensajes.length})`;
     $('sel-estrategia').value = state.estrategia;
     syncEstrategiaUI();
+    syncMotorUI();
+  }
+
+  function syncMotorUI() {
+    const p = paqueteActual();
+    const guardados = p.mensajes.filter((m) => RESULTADOS_GUARDADOS[m.id]).length;
+    const sel = $('sel-motor');
+    sel.querySelector('[value="guardado"]').disabled = guardados === 0;
+    sel.querySelector('[value="guardado"]').textContent = `Resultados guardados — reproducción (${guardados}/${p.mensajes.length} fichas, 5–7 s por mensaje)`;
+    const opArchivo = sel.querySelector('[value="archivo"]');
+    opArchivo.disabled = !state.archivo;
+    opArchivo.textContent = state.archivo ? `Archivo cargado — ${state.archivo.nombre} (${state.archivo.entradas.length} fichas, 5–7 s por mensaje)` : 'Archivo cargado — reproducción (carga un JSON abajo)';
+    if ((state.motor === 'guardado' && guardados === 0) || (state.motor === 'archivo' && !state.archivo)) state.motor = 'auto';
+    sel.value = state.motor;
+    $('motor-hint').textContent = {
+      auto: 'Llama a Azure AI Foundry si hay clave; si no, usa el motor local de reglas.',
+      guardado: 'Reproduce fichas generadas con IA y guardadas en data/resultados.js, sin llamar al modelo.',
+      archivo: 'Reproduce las fichas del JSON cargado en el orden en que se procesaron.',
+    }[state.motor];
+    updateModeBadge();
   }
 
   // La sección del prompt de clasificación (paso 1) solo aplica en modo 2 pasos
@@ -615,7 +644,35 @@
     while (state.paused && !state.cancelled) await sleep(150);
   }
 
+  // Simula la espera del modelo con el mismo estado en vivo, respetando pausa y cancelación
+  async function simulateModelWait(onProgress) {
+    const total = rnd(REPLAY_LATENCY_MS[0], REPLAY_LATENCY_MS[1]);
+    const t0 = performance.now();
+    while (performance.now() - t0 < total) {
+      if (state.cancelled) return;
+      onProgress && onProgress(`Esperando respuesta del modelo · ${((performance.now() - t0) / 1000).toFixed(0)} s`);
+      await sleep(250);
+    }
+  }
+
   async function triageOne(msg, cfg, onProgress) {
+    if (state.motor === 'guardado') {
+      const guardado = RESULTADOS_GUARDADOS[msg.id];
+      await simulateModelWait(onProgress);
+      if (!guardado) return { ...localTriage(msg), origen: 'reglas locales (sin ficha guardada)' };
+      const r = expandirResultadoGuardado(guardado);
+      const { usage, ...json } = r;
+      return { ...r, raw: JSON.stringify(json, null, 2), origen: 'IA (guardado)' };
+    }
+    if (state.motor === 'archivo') {
+      const e = msg.__entrada; // entrada del archivo asociada a este mensaje
+      await simulateModelWait(onProgress);
+      return {
+        ramo: e.ramo, criterios_ramo: e.criterios_ramo || [], datos_extraidos: e.datos_extraidos || {}, criterios: e.criterios || [],
+        decision: e.decision, motivo: e.motivo, confianza: e.confianza ?? 0.5, raw: e.raw || null, usage: e.usage || null, pasos: e.pasos || null,
+        origen: `${e.origen || 'IA'} (archivo)`,
+      };
+    }
     if (!aiEnabled(cfg)) {
       await sleep(rnd(LOCAL_LATENCY_MS[0], LOCAL_LATENCY_MS[1]));
       return { ...localTriage(msg), origen: 'reglas locales' };
@@ -642,7 +699,16 @@
     saveConfig(cfg);
     updateModeBadge();
     const paquete = paqueteActual();
-    const mensajes = paquete.mensajes;
+    let mensajes = paquete.mensajes;
+    if (state.motor === 'archivo') {
+      if (!state.archivo) { setStatus('run-status', 'Carga primero un archivo JSON.', 'error'); return; }
+      const todos = PAQUETES.flatMap((p) => p.mensajes);
+      mensajes = state.archivo.entradas.map((e) => {
+        const original = todos.find((m) => m.id === e.id);
+        const base = original || { id: e.id, canal: e.mensaje.canal || '—', fecha_recepcion: e.timestamp, remitente: { nombre: '—', contacto: '—' }, asunto: e.mensaje.asunto || e.asunto, texto: e.mensaje.texto || '', esperado: e.esperado };
+        return { ...base, __entrada: e };
+      });
+    }
 
     state.running = true; state.paused = false; state.cancelled = false;
     setRunButtons();
@@ -656,11 +722,12 @@
         const msg = mensajes[i];
         const t0 = performance.now();
         const result = await triageOne(msg, cfg, (p) => setStatus('run-status', `${msg.id} (${i + 1}/${mensajes.length}): ${p}…`));
-        if (state.cancelled) break;
+        if (state.cancelled || !result) break;
+        const { __entrada, ...mensajeLimpio } = msg;
         state.log.unshift({
           id: msg.id,
           asunto: msg.asunto,
-          paquete: paquete.id,
+          paquete: state.motor === 'archivo' ? 'archivo' : paquete.id,
           ramo: result.ramo,
           importe: result.datos_extraidos?.importe_estimado_eur ?? null,
           decision: result.decision,
@@ -676,7 +743,7 @@
           duracion_ms: Math.round(performance.now() - t0),
           timestamp: new Date().toISOString(),
           esperado: msg.esperado,
-          mensaje: msg,
+          mensaje: mensajeLimpio,
         });
         persistLog();
         setProgress(i + 1, mensajes.length);
@@ -685,8 +752,10 @@
         renderLog();
       }
       if (!state.cancelled) {
-        const review = state.log.filter((e) => e.paquete === paquete.id && e.decision === DECISION.REVIEW).length;
-        setStatus('run-status', `${paquete.nombre} completado: ${mensajes.length - review} despejados, ${review} a revisión humana.`, 'ok');
+        const lote = state.motor === 'archivo' ? 'archivo' : paquete.id;
+        const nombre = state.motor === 'archivo' ? `Archivo ${state.archivo.nombre}` : paquete.nombre;
+        const review = state.log.filter((e) => e.paquete === lote && e.decision === DECISION.REVIEW).length;
+        setStatus('run-status', `${nombre} completado: ${mensajes.length - review} despejados, ${review} a revisión humana.`, 'ok');
       }
     } catch (err) {
       setStatus('run-status', `Lote interrumpido: ${err.message}`, 'error');
@@ -766,6 +835,24 @@
     });
     $('btn-clear-ai').addEventListener('click', () => { $('cfg-api-key').value = ''; saveConfig(readConfigFromForm()); updateModeBadge(); setStatus('ai-status', 'Clave eliminada de la sesión.'); });
 
+    $('sel-motor').addEventListener('change', () => { state.motor = $('sel-motor').value; ssSet(SS.motor, state.motor); renderPaquete(); });
+    $('file-replay').addEventListener('change', async () => {
+      const file = $('file-replay').files[0];
+      if (!file) return;
+      try {
+        const data = JSON.parse(await file.text());
+        if (!Array.isArray(data) || !data.length || !data.every((e) => e && e.id && e.decision && e.mensaje)) throw new Error('El archivo no tiene el formato de «Exportar JSON»');
+        // El export va de más reciente a más antiguo: reproducir en el orden original
+        state.archivo = { nombre: file.name, entradas: [...data].reverse() };
+        state.motor = 'archivo';
+        ssSet(SS.motor, state.motor);
+        setStatus('run-status', `Archivo ${file.name} cargado: ${data.length} fichas listas para reproducir.`, 'ok');
+      } catch (err) {
+        state.archivo = null;
+        setStatus('run-status', `No se pudo cargar el archivo: ${err.message}`, 'error');
+      }
+      renderPaquete();
+    });
     $('sel-estrategia').addEventListener('change', () => { state.estrategia = $('sel-estrategia').value; ssSet(SS.estrategia, state.estrategia); syncEstrategiaUI(); });
     $('sel-paquete').addEventListener('change', () => { state.paqueteId = $('sel-paquete').value; ssSet(SS.paquete, state.paqueteId); renderPaquete(); });
 
