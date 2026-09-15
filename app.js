@@ -437,7 +437,7 @@
     const wrap = $('prompt-sections');
     wrap.replaceChildren(...Object.entries(PROMPT_BLOQUES).map(([key, def]) => {
       const details = document.createElement('details');
-      details.className = 'card section terminal';
+      details.className = 'card section';
       const edited = state.prompts[key] !== def.texto;
       details.innerHTML = `
         <summary>${escapeHtml(def.titulo)} <span class="edited-flag" ${edited ? '' : 'hidden'}>editado</span></summary>

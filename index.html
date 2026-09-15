@@ -10,10 +10,27 @@
 <body>
   <header class="topbar">
     <div class="brand">
-      <span class="brand-mark" aria-hidden="true">◆</span>
+      <svg class="brand-icon" viewBox="0 0 48 48" width="44" height="44" aria-hidden="true" focusable="false">
+        <!-- documento con líneas de texto -->
+        <rect x="6" y="5" width="24" height="32" rx="3" fill="rgba(255,255,255,.16)" stroke="#fff" stroke-width="2"/>
+        <line x1="11" y1="13" x2="25" y2="13" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <line x1="11" y1="19" x2="25" y2="19" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <line x1="11" y1="25" x2="20" y2="25" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <!-- ramificación de clasificación -->
+        <path d="M30 21 H35 M35 21 V13 H41 M35 21 V29 H41" fill="none" stroke="#9fb6ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="42" cy="13" r="2.5" fill="#9fb6ff"/>
+        <circle cx="42" cy="29" r="2.5" fill="#9fb6ff"/>
+        <!-- destello de IA -->
+        <path d="M36 34 l1.6 3.4 3.4 1.6 -3.4 1.6 -1.6 3.4 -1.6 -3.4 -3.4 -1.6 3.4 -1.6 z" fill="#ffd166"/>
+      </svg>
       <div>
         <h1>Triage de mensajes</h1>
-        <p class="subtitle">Clasificación por ramo · extracción de datos · reglas de negocio · registro de decisiones</p>
+        <p class="subtitle">
+          <span>Clasificación por ramo</span><span class="arrow" aria-hidden="true">→</span>
+          <span>Extracción de datos</span><span class="arrow" aria-hidden="true">→</span>
+          <span>Reglas de negocio</span><span class="arrow" aria-hidden="true">→</span>
+          <span>Registro de decisiones</span>
+        </p>
       </div>
     </div>
     <div class="row">
@@ -23,7 +40,7 @@
   </header>
 
   <!-- Conexión Azure AI Foundry (arriba, plegable) -->
-  <section id="config-panel" class="card config terminal" hidden>
+  <section id="config-panel" class="card config" hidden>
     <h2>Azure AI Foundry</h2>
     <p class="hint">
       La configuración se guarda solo en <code>sessionStorage</code> (se borra al cerrar la pestaña) y la clave se envía
