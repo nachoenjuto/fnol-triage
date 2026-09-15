@@ -10,7 +10,7 @@
 <body>
   <header class="topbar">
     <div class="brand">
-      <svg class="brand-icon" viewBox="0 0 48 48" width="44" height="44" aria-hidden="true" focusable="false">
+      <svg class="brand-icon" viewBox="0 0 48 48" width="60" height="60" aria-hidden="true" focusable="false">
         <!-- documento con líneas de texto -->
         <rect x="6" y="5" width="24" height="32" rx="3" fill="rgba(255,255,255,.16)" stroke="#fff" stroke-width="2"/>
         <line x1="11" y1="13" x2="25" y2="13" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
@@ -93,10 +93,10 @@
           <label>
             <span>Llamadas a la IA por mensaje</span>
             <select id="sel-estrategia">
-              <option value="2pasos">2 pasos — clasificar ramo, luego reglas solo de ese ramo</option>
               <option value="1paso">1 paso — clasificar y aplicar con los tres bloques de reglas</option>
+              <option value="2pasos">2 pasos — clasificar ramo, luego reglas solo de ese ramo</option>
             </select>
-            <small>2 pasos envía menos tokens de entrada pero hace dos llamadas (y dos razonamientos). La ficha muestra los tokens de cada paso.</small>
+            <small>1 paso: una llamada por mensaje. 2 pasos: menos tokens de entrada pero dos llamadas y dos razonamientos; la ficha muestra los tokens de cada paso.</small>
           </label>
         </div>
       </details>

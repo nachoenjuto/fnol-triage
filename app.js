@@ -46,7 +46,7 @@
   // ---------------------------------------------------------------------------
   const state = {
     paqueteId: ssGet(SS.paquete, PAQUETES[0].id),
-    estrategia: ssGet(SS.estrategia, '2pasos'), // '2pasos' (ramo → reglas del ramo) | '1paso' (todas las reglas)
+    estrategia: ssGet(SS.estrategia, '1paso'), // '1paso' (todas las reglas, por defecto) | '2pasos' (ramo → reglas del ramo)
     prompts: Object.fromEntries(Object.entries(PROMPT_BLOQUES).map(([k, v]) => [k, v.texto])),
     log: ssGet(SS.log, []),
     running: false,
@@ -431,6 +431,13 @@
     }));
     $('btn-run').textContent = `▶ Procesar ${p.nombre} (${p.mensajes.length})`;
     $('sel-estrategia').value = state.estrategia;
+    syncEstrategiaUI();
+  }
+
+  // La sección del prompt de clasificación (paso 1) solo aplica en modo 2 pasos
+  function syncEstrategiaUI() {
+    const sec = document.querySelector('#prompt-sections details[data-bloque="ramo"]');
+    if (sec) sec.hidden = state.estrategia !== '2pasos';
   }
 
   function renderPromptSections() {
@@ -438,6 +445,7 @@
     wrap.replaceChildren(...Object.entries(PROMPT_BLOQUES).map(([key, def]) => {
       const details = document.createElement('details');
       details.className = 'card section';
+      details.dataset.bloque = key;
       const edited = state.prompts[key] !== def.texto;
       details.innerHTML = `
         <summary>${escapeHtml(def.titulo)} <span class="edited-flag" ${edited ? '' : 'hidden'}>editado</span></summary>
@@ -454,7 +462,13 @@
       const flag = details.querySelector('.edited-flag');
       const sync = () => { count.textContent = ta.value.length; flag.hidden = ta.value === def.texto; };
       sync();
-      ta.addEventListener('input', () => { state.prompts[key] = ta.value; ssSet(SS.prompts, state.prompts); sync(); });
+      ta.addEventListener('input', () => {
+        state.prompts[key] = ta.value;
+        // Persistir solo los bloques que difieren del original
+        const edited = Object.fromEntries(Object.entries(state.prompts).filter(([k, v]) => v !== PROMPT_BLOQUES[k].texto));
+        ssSet(SS.prompts, edited);
+        sync();
+      });
       details.querySelector(`[data-restore="${key}"]`).addEventListener('click', () => { ta.value = def.texto; ta.dispatchEvent(new Event('input')); });
       return details;
     }));
@@ -752,7 +766,7 @@
     });
     $('btn-clear-ai').addEventListener('click', () => { $('cfg-api-key').value = ''; saveConfig(readConfigFromForm()); updateModeBadge(); setStatus('ai-status', 'Clave eliminada de la sesión.'); });
 
-    $('sel-estrategia').addEventListener('change', () => { state.estrategia = $('sel-estrategia').value; ssSet(SS.estrategia, state.estrategia); });
+    $('sel-estrategia').addEventListener('change', () => { state.estrategia = $('sel-estrategia').value; ssSet(SS.estrategia, state.estrategia); syncEstrategiaUI(); });
     $('sel-paquete').addEventListener('change', () => { state.paqueteId = $('sel-paquete').value; ssSet(SS.paquete, state.paqueteId); renderPaquete(); });
 
     $('btn-run').addEventListener('click', runBatch);
@@ -790,8 +804,8 @@
   // Init
   // ---------------------------------------------------------------------------
   loadConfig();
-  renderPaquete();
   renderPromptSections();
+  renderPaquete();
   bind();
   updateModeBadge();
   setRunButtons();

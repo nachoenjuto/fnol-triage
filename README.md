@@ -39,8 +39,8 @@ El modelo devuelve:
 
 Seleccionable en la barra lateral:
 
-- **2 pasos** (por defecto): una llamada corta clasifica el ramo y devuelve sus indicios; la segunda extrae datos y aplica **solo el bloque de reglas de ese ramo**. Menos tokens de entrada, pero dos llamadas y dos razonamientos por mensaje. Si el paso 2 discrepa del ramo del paso 1, el mensaje va a revisión.
-- **1 paso**: una única llamada con el prompt base y los tres bloques de reglas.
+- **1 paso** (por defecto): una única llamada con el prompt base y los tres bloques de reglas.
+- **2 pasos**: una llamada corta clasifica el ramo y devuelve sus indicios; la segunda extrae datos y aplica **solo el bloque de reglas de ese ramo**. Menos tokens de entrada, pero dos llamadas y dos razonamientos por mensaje. Si el paso 2 discrepa del ramo del paso 1, el mensaje va a revisión.
 
 La ficha de cada mensaje muestra los tokens de entrada, salida y razonamiento por paso para comparar.
 
