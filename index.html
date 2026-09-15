@@ -18,12 +18,12 @@
     </div>
     <div class="row">
       <span id="mode-badge" class="badge">Motor: reglas</span>
-      <button id="btn-toggle-config" class="btn btn-ghost" type="button" aria-expanded="false" aria-controls="config-panel">⚙ Configurar IA</button>
+      <button id="btn-toggle-config" class="btn btn-ghost btn-topbar" type="button" aria-expanded="false" aria-controls="config-panel"><span id="ai-dot" class="dot dot-off" aria-hidden="true"></span> ⚙ Configurar IA</button>
     </div>
   </header>
 
   <!-- Conexión Azure AI Foundry (arriba, plegable) -->
-  <section id="config-panel" class="card config" hidden>
+  <section id="config-panel" class="card config terminal" hidden>
     <h2>Azure AI Foundry</h2>
     <p class="hint">
       La configuración se guarda solo en <code>sessionStorage</code> (se borra al cerrar la pestaña) y la clave se envía
@@ -73,6 +73,14 @@
           <select id="sel-paquete" aria-label="Paquete de mensajes"></select>
           <p id="paquete-desc" class="hint"></p>
           <ol id="paquete-lista" class="msg-list"></ol>
+          <label>
+            <span>Llamadas a la IA por mensaje</span>
+            <select id="sel-estrategia">
+              <option value="2pasos">2 pasos — clasificar ramo, luego reglas solo de ese ramo</option>
+              <option value="1paso">1 paso — clasificar y aplicar con los tres bloques de reglas</option>
+            </select>
+            <small>2 pasos envía menos tokens de entrada pero hace dos llamadas (y dos razonamientos). La ficha muestra los tokens de cada paso.</small>
+          </label>
         </div>
       </details>
       <div id="prompt-sections"></div>
@@ -170,6 +178,7 @@
       <div class="modal-col modal-decision">
         <h3>Ramo</h3>
         <p id="modal-ramo"></p>
+        <ul id="modal-ramo-criterios" class="ramo-criterios"></ul>
         <h3>Criterios de decisión</h3>
         <ul id="modal-criterios" class="criterios"></ul>
         <h3>Decisión</h3>

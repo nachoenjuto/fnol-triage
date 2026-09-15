@@ -12,6 +12,7 @@
     cfg: 'triage.cfg',
     prompts: 'triage.prompts',
     paquete: 'triage.paquete',
+    estrategia: 'triage.estrategia',
     log: 'triage.log',
   };
   const DECISION = { CLEARED: 'DESPEJADO', REVIEW: 'REVISION' };
@@ -45,6 +46,7 @@
   // ---------------------------------------------------------------------------
   const state = {
     paqueteId: ssGet(SS.paquete, PAQUETES[0].id),
+    estrategia: ssGet(SS.estrategia, '2pasos'), // '2pasos' (ramo → reglas del ramo) | '1paso' (todas las reglas)
     prompts: Object.fromEntries(Object.entries(PROMPT_BLOQUES).map(([k, v]) => [k, v.texto])),
     log: ssGet(SS.log, []),
     running: false,
@@ -67,11 +69,12 @@
   };
 
   function classifyRamoLocal(text) {
-    const scores = RAMOS.map((r) => [r, (text.match(RAMO_KEYWORDS[r]) || []).length]);
-    scores.sort((a, b) => b[1] - a[1]);
+    const hits = RAMOS.map((r) => [r, [...new Set((text.match(RAMO_KEYWORDS[r]) || []).map((w) => w.toLowerCase()))]]);
+    const scores = hits.map(([r, words]) => [r, words.length]).sort((a, b) => b[1] - a[1]);
     const [best, second] = scores;
-    if (best[1] === 0 || best[1] === second[1]) return 'Indeterminado';
-    return best[0];
+    const ramo = best[1] === 0 || best[1] === second[1] ? 'Indeterminado' : best[0];
+    const criterios = hits.map(([r, words]) => `${r}: ${words.length ? words.join(', ') : 'sin indicios'} (${words.length})`);
+    return { ramo, criterios };
   }
 
   const MESES = { enero: 1, febrero: 2, marzo: 3, abril: 4, mayo: 5, junio: 6, julio: 7, agosto: 8, septiembre: 9, octubre: 10, noviembre: 11, diciembre: 12 };
@@ -147,7 +150,7 @@
 
   function localTriage(msg) {
     const text = `${msg.asunto}. ${msg.texto}`;
-    const ramo = classifyRamoLocal(text);
+    const { ramo, criterios: criterios_ramo } = classifyRamoLocal(text);
     const datos = extractLocal(msg);
     const criterios = (LOCAL_RULES[ramo] || []).map(([regla, descripcion, evaluar, evidencia]) => ({ regla, descripcion, resultado: evaluar(text, datos, msg), evidencia }));
     const incumplidas = criterios.filter((c) => c.resultado === 'incumple');
@@ -159,7 +162,7 @@
     } else {
       decision = DECISION.CLEARED; motivo = `Ramo ${ramo}: sin incumplimientos en las reglas locales; importe ${fmtEur(datos.importe_estimado_eur)}`;
     }
-    return { ramo, datos_extraidos: datos, criterios, decision, motivo, confianza: ramo === 'Indeterminado' ? 0.3 : 0.6 + Math.min(0.25, criterios.length * 0.04) };
+    return { ramo, criterios_ramo, datos_extraidos: datos, criterios, decision, motivo, confianza: ramo === 'Indeterminado' ? 0.3 : 0.6 + Math.min(0.25, criterios.length * 0.04) };
   }
 
   // ---------------------------------------------------------------------------
@@ -310,6 +313,7 @@
       })) : [];
     return {
       ramo,
+      criterios_ramo: Array.isArray(obj.criterios_ramo) ? obj.criterios_ramo.map((c) => String(c)).filter(Boolean) : [],
       datos_extraidos: datos,
       criterios,
       decision,
@@ -318,14 +322,65 @@
     };
   }
 
+  function parseRamo(raw) {
+    const match = String(raw).match(/\{[\s\S]*\}/);
+    if (!match) return null;
+    let obj;
+    try { obj = JSON.parse(match[0]); } catch { return null; }
+    const ramoRaw = String(obj.ramo || '').trim();
+    const ramo = RAMOS.find((r) => r.toLowerCase() === ramoRaw.toLowerCase()) || 'Indeterminado';
+    return {
+      ramo,
+      criterios_ramo: Array.isArray(obj.criterios_ramo) ? obj.criterios_ramo.map((c) => String(c)).filter(Boolean) : [],
+      confianza: Number.isFinite(Number(obj.confianza)) ? Number(obj.confianza) : null,
+    };
+  }
+
+  const sumUsage = (a, b) => ({
+    input: (a?.input || 0) + (b?.input || 0),
+    output: (a?.output || 0) + (b?.output || 0),
+    reasoning: (a?.reasoning || 0) + (b?.reasoning || 0),
+  });
+
   async function aiTriage(msg, cfg, onProgress) {
-    const { text, usage } = await callChat(cfg, [
-      { role: 'system', content: buildSystemPrompt(state.prompts) },
+    if (state.estrategia === '1paso') {
+      const { text, usage } = await callChat(cfg, [
+        { role: 'system', content: buildSystemPrompt(state.prompts) },
+        { role: 'user', content: buildUserPrompt(msg) },
+      ], { onProgress });
+      const parsed = parseTriage(text);
+      if (!parsed) throw new Error('Respuesta del modelo no válida');
+      return { ...parsed, raw: text, usage, pasos: [{ nombre: 'Triaje (todas las reglas)', usage }] };
+    }
+
+    // Paso 1: clasificar el ramo con un prompt corto
+    const p1 = await callChat(cfg, [
+      { role: 'system', content: state.prompts.ramo },
       { role: 'user', content: buildUserPrompt(msg) },
-    ], { onProgress });
-    const parsed = parseTriage(text);
+    ], { maxTokens: 800, onProgress: (p) => onProgress && onProgress(`paso 1/2 ramo · ${p}`) });
+    const ramoInfo = parseRamo(p1.text);
+    if (!ramoInfo) throw new Error('Respuesta de clasificación de ramo no válida');
+
+    // Paso 2: extracción + reglas solo del ramo clasificado (todas si es Indeterminado)
+    const ramoPrevio = ramoInfo.ramo === 'Indeterminado' ? null : ramoInfo.ramo;
+    const p2 = await callChat(cfg, [
+      { role: 'system', content: buildSystemPrompt(state.prompts, ramoPrevio) },
+      { role: 'user', content: buildUserPrompt(msg, ramoPrevio) },
+    ], { onProgress: (p) => onProgress && onProgress(`paso 2/2 reglas ${ramoInfo.ramo} · ${p}`) });
+    const parsed = parseTriage(p2.text);
     if (!parsed) throw new Error('Respuesta del modelo no válida');
-    return { ...parsed, raw: text, usage };
+
+    const discrepancia = parsed.ramo !== ramoInfo.ramo ? `Paso 2 propone ${parsed.ramo} frente a ${ramoInfo.ramo} del paso 1` : null;
+    return {
+      ...parsed,
+      ramo: ramoInfo.ramo,
+      criterios_ramo: [...ramoInfo.criterios_ramo, ...(discrepancia ? [`⚠ ${discrepancia}`] : []), ...parsed.criterios_ramo.filter((c) => !ramoInfo.criterios_ramo.includes(c))],
+      decision: discrepancia ? DECISION.REVIEW : parsed.decision,
+      motivo: discrepancia ? `${discrepancia}. ${parsed.motivo}` : parsed.motivo,
+      raw: `// Paso 1 — clasificación de ramo\n${p1.text}\n\n// Paso 2 — extracción y reglas\n${p2.text}`,
+      usage: sumUsage(p1.usage, p2.usage),
+      pasos: [{ nombre: 'Paso 1 · ramo', usage: p1.usage }, { nombre: 'Paso 2 · reglas', usage: p2.usage }],
+    };
   }
 
   // ---------------------------------------------------------------------------
@@ -353,7 +408,10 @@
 
   function updateModeBadge() {
     const cfg = readConfigFromForm();
-    $('mode-badge').textContent = aiEnabled(cfg) ? `Motor: IA (${cfg.deployment || 'endpoint'})` : 'Motor: reglas locales (sin IA)';
+    const on = aiEnabled(cfg);
+    $('mode-badge').textContent = on ? `Motor: IA (${cfg.deployment || 'endpoint'})` : 'Motor: reglas locales (sin IA)';
+    $('ai-dot').className = `dot ${on ? 'dot-on' : 'dot-off'}`;
+    $('ai-dot').title = on ? 'IA configurada' : 'IA sin configurar';
   }
 
   // ---------------------------------------------------------------------------
@@ -372,13 +430,14 @@
       return li;
     }));
     $('btn-run').textContent = `▶ Procesar ${p.nombre} (${p.mensajes.length})`;
+    $('sel-estrategia').value = state.estrategia;
   }
 
   function renderPromptSections() {
     const wrap = $('prompt-sections');
     wrap.replaceChildren(...Object.entries(PROMPT_BLOQUES).map(([key, def]) => {
       const details = document.createElement('details');
-      details.className = 'card section';
+      details.className = 'card section terminal';
       const edited = state.prompts[key] !== def.texto;
       details.innerHTML = `
         <summary>${escapeHtml(def.titulo)} <span class="edited-flag" ${edited ? '' : 'hidden'}>editado</span></summary>
@@ -510,6 +569,8 @@
     const esperado = entry.esperado || {};
     const ramoOk = esperado.ramo ? (esperado.ramo === entry.ramo ? '<span class="mark ok">✔ coincide</span>' : `<span class="mark ko">✖ esperado ${escapeHtml(esperado.ramo)}</span>`) : '';
     $('modal-ramo').innerHTML = `Asignado por el ${entry.origen.startsWith('IA') ? 'modelo' : 'motor local'}: <strong>${escapeHtml(entry.ramo)}</strong> ${ramoOk}`;
+    $('modal-ramo-criterios').replaceChildren(...(entry.criterios_ramo || []).map((c) => Object.assign(document.createElement('li'), { textContent: c })));
+    if (!(entry.criterios_ramo || []).length) $('modal-ramo-criterios').innerHTML = '<li class="muted">Sin criterios de clasificación en el resultado.</li>';
 
     $('modal-criterios').replaceChildren(...(entry.criterios || []).map((c) => {
       const li = document.createElement('li');
@@ -526,6 +587,7 @@
       ['Origen', escapeHtml(entry.origen)],
       ['Ciclo', fmtMs(entry.duracion_ms)],
       ['Tokens', entry.usage ? `${entry.usage.input ?? '?'} entrada · ${entry.usage.output ?? '?'} salida${entry.usage.reasoning != null ? ` (${entry.usage.reasoning} razonamiento)` : ''}` : undefined],
+      ...(entry.pasos && entry.pasos.length > 1 ? entry.pasos.map((p) => [`↳ ${p.nombre}`, `${p.usage?.input ?? '?'} entrada · ${p.usage?.output ?? '?'} salida${p.usage?.reasoning != null ? ` (${p.usage.reasoning} razonamiento)` : ''}`]) : []),
       ['Referencia demo', esperado.ramo ? `${esperado.revision ? 'Revisión esperada' : 'Despeje esperado'}${esperado.nota ? ` — ${escapeHtml(esperado.nota)}` : ''}` : undefined],
     ]);
     $('modal-raw').textContent = entry.raw || '(sin respuesta cruda: decisión del motor local)';
@@ -592,6 +654,8 @@
           confianza: result.confianza,
           origen: result.origen,
           criterios: result.criterios,
+          criterios_ramo: result.criterios_ramo || [],
+          pasos: result.pasos || null,
           datos_extraidos: result.datos_extraidos,
           raw: result.raw || null,
           usage: result.usage || null,
@@ -688,6 +752,7 @@
     });
     $('btn-clear-ai').addEventListener('click', () => { $('cfg-api-key').value = ''; saveConfig(readConfigFromForm()); updateModeBadge(); setStatus('ai-status', 'Clave eliminada de la sesión.'); });
 
+    $('sel-estrategia').addEventListener('change', () => { state.estrategia = $('sel-estrategia').value; ssSet(SS.estrategia, state.estrategia); });
     $('sel-paquete').addEventListener('change', () => { state.paqueteId = $('sel-paquete').value; ssSet(SS.paquete, state.paqueteId); renderPaquete(); });
 
     $('btn-run').addEventListener('click', runBatch);

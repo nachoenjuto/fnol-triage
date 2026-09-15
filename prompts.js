@@ -2,17 +2,32 @@
 // negocio (app.js). La GUI permite editar cada bloque; la llamada a la API
 // usa siempre el texto vigente en la barra lateral.
 
+const PROMPT_RAMO = `Eres un tramitador senior del departamento de siniestros de una aseguradora española.
+Recibes un mensaje de un cliente y debes CLASIFICAR SU RAMO: "Auto", "Hogar" o "Salud".
+
+Criterios de clasificación:
+- Auto: el bien afectado es un vehículo (coche, moto, furgoneta): colisiones, lunas, granizo sobre el vehículo, robo o vandalismo en el vehículo, accidentes de circulación.
+- Hogar: el bien afectado es la vivienda o su contenido: daños por agua, cristales, robo en la vivienda, daños eléctricos, incendio, fenómenos atmosféricos sobre la vivienda.
+- Salud: se solicita o comunica una prestación sanitaria: urgencias, consultas, pruebas, cirugías, rehabilitación, reembolsos médicos.
+- Si el mensaje afecta a varios ramos, elige el ramo principal según el bien dañado o la prestación solicitada. Si no puede determinarse, usa "Indeterminado".
+
+Responde EXCLUSIVAMENTE con un objeto JSON válido:
+{"ramo": "Auto" | "Hogar" | "Salud" | "Indeterminado", "criterios_ramo": ["<indicio 1 citado del texto>", "<indicio 2>", "..."], "confianza": <número entre 0 y 1>}
+
+En "criterios_ramo" enumera los indicios concretos del mensaje (palabras, referencias a pólizas, tipo de daño o prestación) en los que basas la clasificación, incluidos los que apuntaban a otro ramo si los hay. No añadas texto fuera del JSON.`;
+
 const PROMPT_BASE = `Eres un tramitador senior del departamento de siniestros de una aseguradora española.
 Recibes un mensaje de un cliente (email, formulario web, chat o transcripción telefónica) y debes hacer el triaje:
 
 1. CLASIFICAR EL RAMO del mensaje: "Auto", "Hogar" o "Salud". Si el mensaje afecta a varios ramos, elige el ramo principal según el bien dañado o la prestación solicitada y explícalo en el motivo. Si no puede determinarse, usa "Indeterminado" y envía a revisión.
 2. EXTRAER LOS DATOS del texto. Usa null cuando el dato no aparezca; no inventes nada.
-3. APLICAR EL BLOQUE DE REGLAS del ramo clasificado (solo ese bloque). Evalúa cada regla del bloque y cita la evidencia textual del mensaje en la que te basas.
+3. APLICAR EL BLOQUE DE REGLAS del ramo clasificado (solo ese bloque). Evalúa cada regla del bloque y cita la evidencia textual del mensaje en la que te basas. Si el ramo ya viene clasificado en el mensaje y solo se adjunta su bloque de reglas, aplícalo; si estás seguro de que la clasificación es errónea, indícalo en el motivo y envía a REVISION.
 4. DECIDIR: "DESPEJADO" si no incumple ninguna regla y hay información suficiente para tramitar; "REVISION" si incumple alguna regla, falta información esencial, hay contradicciones, indicios de fraude o el ramo es ambiguo.
 
 Responde EXCLUSIVAMENTE con un objeto JSON válido con esta forma exacta:
 {
   "ramo": "Auto" | "Hogar" | "Salud" | "Indeterminado",
+  "criterios_ramo": ["<indicio del texto que justifica el ramo>", "..."],
   "datos_extraidos": {
     "nombre_cliente": string | null,
     "numero_poliza": string | null,
@@ -68,19 +83,26 @@ S8. Otros responsables: lesiones derivadas de accidente de tráfico o accidente 
 
 // Textos por defecto de cada bloque editable (clave → { titulo, texto })
 const PROMPT_BLOQUES = {
+  ramo: { titulo: 'Prompt de clasificación de ramo (paso 1)', texto: PROMPT_RAMO },
   base: { titulo: 'Prompt base (tarea, extracción y formato)', texto: PROMPT_BASE },
   auto: { titulo: 'Reglas · Auto', texto: REGLAS_AUTO },
   hogar: { titulo: 'Reglas · Hogar', texto: REGLAS_HOGAR },
   salud: { titulo: 'Reglas · Salud', texto: REGLAS_SALUD },
 };
 
-// Compone el prompt de sistema a partir de los bloques vigentes (editados o no)
-function buildSystemPrompt(bloques) {
-  return [bloques.base, bloques.auto, bloques.hogar, bloques.salud].join('\n\n');
+const BLOQUE_POR_RAMO = { Auto: 'auto', Hogar: 'hogar', Salud: 'salud' };
+
+// Compone el prompt de sistema con los bloques vigentes. Si se indica un ramo
+// conocido, solo se adjunta su bloque de reglas (modo 2 pasos); si no, los tres.
+function buildSystemPrompt(bloques, ramo = null) {
+  const clave = BLOQUE_POR_RAMO[ramo];
+  const reglas = clave ? [bloques[clave]] : [bloques.auto, bloques.hogar, bloques.salud];
+  return [bloques.base, ...reglas].join('\n\n');
 }
 
-function buildUserPrompt(mensaje) {
+function buildUserPrompt(mensaje, ramoPrevio = null) {
   const cabecera = [
+    ...(ramoPrevio ? [`Ramo ya clasificado en el paso anterior: ${ramoPrevio}`] : []),
     `Canal: ${mensaje.canal}`,
     `Fecha de recepción: ${mensaje.fecha_recepcion.replace('T', ' ')}`,
     `Remitente: ${mensaje.remitente.nombre} (${mensaje.remitente.contacto})`,

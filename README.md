@@ -35,6 +35,15 @@ El modelo devuelve:
 { "ramo": "…", "datos_extraidos": { … }, "criterios": [ { "regla": "A5", "descripcion": "…", "resultado": "cumple|incumple|no_aplica", "evidencia": "…" } ], "decision": "DESPEJADO|REVISION", "motivo": "…", "confianza": 0.9 }
 ```
 
+### Estrategia de llamadas
+
+Seleccionable en la barra lateral:
+
+- **2 pasos** (por defecto): una llamada corta clasifica el ramo y devuelve sus indicios; la segunda extrae datos y aplica **solo el bloque de reglas de ese ramo**. Menos tokens de entrada, pero dos llamadas y dos razonamientos por mensaje. Si el paso 2 discrepa del ramo del paso 1, el mensaje va a revisión.
+- **1 paso**: una única llamada con el prompt base y los tres bloques de reglas.
+
+La ficha de cada mensaje muestra los tokens de entrada, salida y razonamiento por paso para comparar.
+
 ## Motor local (sin IA)
 
 Sin clave, la demo funciona en modo degradado: ramo por palabras clave, extracción por expresiones regulares y reglas heurísticas. Sirve para ver el flujo; la demo brilla con IA. Si una llamada a la IA falla por un error transitorio o una respuesta no válida, ese mensaje cae al motor local y se marca en el registro.
