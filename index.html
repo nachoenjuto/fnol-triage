@@ -41,8 +41,17 @@
           <input id="cfg-deployment" type="text" placeholder="gpt-4o-mini" autocomplete="off" spellcheck="false">
         </label>
         <label>
-          <span>API version</span>
-          <input id="cfg-api-version" type="text" value="2024-10-21" autocomplete="off" spellcheck="false">
+          <span>Ruta de API</span>
+          <select id="cfg-route">
+            <option value="v1">v1 — /openai/v1/chat/completions (recomendada, sin api-version)</option>
+            <option value="deployments">Clásica — /openai/deployments/{deployment}/chat/completions</option>
+            <option value="models">Foundry Models — /models/chat/completions</option>
+          </select>
+          <small>Si obtienes «API version not supported», cambia de ruta.</small>
+        </label>
+        <label>
+          <span>API version <small>(solo rutas clásica y Foundry Models)</small></span>
+          <input id="cfg-api-version" type="text" placeholder="2024-10-21 · 2024-05-01-preview" autocomplete="off" spellcheck="false">
         </label>
         <label>
           <span>API key</span>

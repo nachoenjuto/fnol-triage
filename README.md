@@ -33,11 +33,17 @@ Reintentos con backoff exponencial (base 2 s, tope 32 s, máx. 5) para 429/5xx; 
 
 Sin clave, la demo funciona igualmente con el motor de reglas (con latencia simulada de 60-220 ms por aviso).
 
-### Formatos de endpoint aceptados
+### Endpoint y ruta de API
 
-- Recurso Azure OpenAI: `https://<recurso>.openai.azure.com` + nombre del deployment.
-- Recurso Foundry (Models as a Service): `https://<recurso>.services.ai.azure.com` + nombre del modelo.
-- URL completa de `chat/completions` (se usa tal cual).
+En **Endpoint** pon la URL base del recurso (`https://<recurso>.openai.azure.com`, `https://<recurso>.cognitiveservices.azure.com` o `https://<recurso>.services.ai.azure.com`) y en **Deployment** el nombre del despliegue. Rutas disponibles:
+
+| Ruta | URL que se construye | api-version |
+|---|---|---|
+| **v1** (por defecto) | `{endpoint}/openai/v1/chat/completions` | no necesita |
+| Clásica | `{endpoint}/openai/deployments/{deployment}/chat/completions` | `2024-10-21` por defecto |
+| Foundry Models | `{endpoint}/models/chat/completions` | `2024-05-01-preview` por defecto |
+
+Si pegas una URL completa que ya contenga `chat/completions`, se usa tal cual. Si Azure responde «API version not supported», cambia de ruta.
 
 ## Estructura
 

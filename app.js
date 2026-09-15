@@ -155,14 +155,16 @@
   // ---------------------------------------------------------------------------
   // Cliente Azure AI Foundry (API compatible OpenAI)
   // ---------------------------------------------------------------------------
+  const DEFAULT_API_VERSION = { deployments: '2024-10-21', models: '2024-05-01-preview' };
+
   function buildEndpointUrl(cfg) {
     const base = cfg.endpoint.trim().replace(/\/+$/, '');
+    // URL completa pegada por el usuario: se usa tal cual
     if (/chat\/completions/i.test(base)) return base;
-    const version = encodeURIComponent(cfg.apiVersion || '2024-10-21');
-    if (/services\.ai\.azure\.com$/i.test(new URL(base).host)) {
-      // Foundry "Models as a Service": el modelo va en el body
-      return `${base}/models/chat/completions?api-version=${version}`;
-    }
+    const route = cfg.route || 'v1';
+    if (route === 'v1') return `${base}/openai/v1/chat/completions`;
+    const version = encodeURIComponent(cfg.apiVersion || DEFAULT_API_VERSION[route]);
+    if (route === 'models') return `${base}/models/chat/completions?api-version=${version}`;
     return `${base}/openai/deployments/${encodeURIComponent(cfg.deployment)}/chat/completions?api-version=${version}`;
   }
 
@@ -243,6 +245,7 @@
     return {
       endpoint: $('cfg-endpoint').value.trim(),
       deployment: $('cfg-deployment').value.trim(),
+      route: $('cfg-route').value,
       apiVersion: $('cfg-api-version').value.trim(),
       apiKey: $('cfg-api-key').value.trim(),
     };
@@ -250,7 +253,7 @@
 
   function saveConfig(cfg) {
     try {
-      localStorage.setItem(CFG_LOCAL_KEY, JSON.stringify({ endpoint: cfg.endpoint, deployment: cfg.deployment, apiVersion: cfg.apiVersion }));
+      localStorage.setItem(CFG_LOCAL_KEY, JSON.stringify({ endpoint: cfg.endpoint, deployment: cfg.deployment, route: cfg.route, apiVersion: cfg.apiVersion }));
       if (cfg.apiKey) sessionStorage.setItem(CFG_SESSION_KEY, cfg.apiKey);
       else sessionStorage.removeItem(CFG_SESSION_KEY);
     } catch { /* almacenamiento no disponible */ }
@@ -261,7 +264,8 @@
       const pub = JSON.parse(localStorage.getItem(CFG_LOCAL_KEY) || '{}');
       $('cfg-endpoint').value = pub.endpoint || '';
       $('cfg-deployment').value = pub.deployment || '';
-      if (pub.apiVersion) $('cfg-api-version').value = pub.apiVersion;
+      if (pub.route) $('cfg-route').value = pub.route;
+      $('cfg-api-version').value = pub.apiVersion || '';
       $('cfg-api-key').value = sessionStorage.getItem(CFG_SESSION_KEY) || '';
     } catch { /* ignorar */ }
   }
@@ -461,8 +465,8 @@
       $('btn-toggle-config').setAttribute('aria-expanded', String(!panel.hidden));
     });
 
-    ['cfg-endpoint', 'cfg-deployment', 'cfg-api-version', 'cfg-api-key'].forEach((id) => {
-      $(id).addEventListener('input', () => { saveConfig(readConfigFromForm()); updateModeBadge(); });
+    ['cfg-endpoint', 'cfg-deployment', 'cfg-route', 'cfg-api-version', 'cfg-api-key'].forEach((id) => {
+      $(id).addEventListener(id === 'cfg-route' ? 'change' : 'input', () => { saveConfig(readConfigFromForm()); updateModeBadge(); });
     });
 
     $('btn-test-ai').addEventListener('click', async () => {
@@ -474,7 +478,8 @@
         const raw = await callChat(cfg, [{ role: 'user', content: 'Responde solo con {"ok": true}' }], { maxTokens: 20 });
         setStatus('ai-status', `Conexión correcta. Respuesta: ${String(raw).slice(0, 60)}`, 'ok');
       } catch (err) {
-        setStatus('ai-status', `Error: ${err.message}`, 'error');
+        const hint = /api version/i.test(err.message) ? ' → Prueba otra «Ruta de API» (v1 no necesita api-version).' : '';
+        setStatus('ai-status', `Error: ${err.message}${hint}`, 'error');
       } finally {
         $('btn-test-ai').disabled = false;
       }
