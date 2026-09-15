@@ -256,13 +256,17 @@
     return false;
   }
 
-  async function callChat(cfg, messages, { jsonMode = true, maxTokens = 1200 } = {}) {
+  async function callChat(cfg, messages, { jsonMode = true, maxTokens = 1200, onProgress = null } = {}) {
     const url = buildEndpointUrl(cfg);
+    const started = performance.now();
+    const progress = (label) => onProgress && onProgress(`${label} · ${((performance.now() - started) / 1000).toFixed(0)} s`);
 
     for (let attempt = 0, adaptations = 0; ; attempt++) {
       const body = buildBody(cfg, messages, { jsonMode, maxTokens });
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+      progress(attempt ? `Reintento ${attempt}` : 'Esperando respuesta del modelo');
+      const ticker = setInterval(() => progress(attempt ? `Reintento ${attempt}` : 'Esperando respuesta del modelo'), 1000);
       let res;
       try {
         res = await fetch(url, {
@@ -273,13 +277,17 @@
         });
       } catch (err) {
         clearTimeout(timer);
+        clearInterval(ticker);
+        const reason = err.name === 'AbortError' ? `sin respuesta en ${REQUEST_TIMEOUT_MS / 1000} s` : err.message;
         if (attempt >= NETWORK_RETRIES) {
-          throw new PermanentError(`Red/timeout tras ${attempt + 1} intentos: ${err.message}. Revisa que el endpoint sea la URL del recurso y que la ruta de API coincida (${url}).`);
+          throw new PermanentError(`Red/timeout tras ${attempt + 1} intentos (${reason}). Revisa que el endpoint sea la URL del recurso y que la ruta de API coincida (${url}).`);
         }
+        progress(`Sin respuesta (${reason}), reintentando`);
         await sleep(Math.min(RETRY.cap, RETRY.base * 2 ** attempt) + rnd(0, 500));
         continue;
       }
       clearTimeout(timer);
+      clearInterval(ticker);
 
       if (res.ok) {
         const data = await res.json();
@@ -323,7 +331,7 @@
     const raw = await callChat(cfg, [
       { role: 'system', content: FNOL_SYSTEM_PROMPT },
       { role: 'user', content: buildFnolUserPrompt(claim) },
-    ]);
+    ], { onProgress: (p) => setStatus('run-status', `${claim.id}: ${p}…`) });
     const parsed = parseDecision(raw);
     if (!parsed) throw new Error('Respuesta del modelo no válida');
     return parsed;
@@ -570,10 +578,13 @@
     $('btn-test-ai').addEventListener('click', async () => {
       const cfg = readConfigFromForm();
       if (!aiEnabled(cfg)) { setStatus('ai-status', 'Faltan endpoint, deployment o clave.', 'error'); return; }
-      setStatus('ai-status', 'Probando…');
+      setStatus('ai-status', `Probando ${buildEndpointUrl(cfg)}…`);
       $('btn-test-ai').disabled = true;
       try {
-        const raw = await callChat(cfg, [{ role: 'user', content: 'Responde solo con {"ok": true}' }], { maxTokens: 300 });
+        const raw = await callChat(cfg, [{ role: 'user', content: 'Responde solo con este JSON: {"ok": true}' }], {
+          maxTokens: 300,
+          onProgress: (p) => setStatus('ai-status', `${p}…`),
+        });
         setStatus('ai-status', `Conexión correcta. Respuesta: ${String(raw).slice(0, 60)}`, 'ok');
       } catch (err) {
         const hint = /api version/i.test(err.message) ? ' → Prueba otra «Ruta de API» (v1 no necesita api-version).' : '';
