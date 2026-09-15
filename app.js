@@ -170,17 +170,48 @@
 
   class PermanentError extends Error {}
 
-  async function callChat(cfg, messages, { jsonMode = true, maxTokens = 200 } = {}) {
-    const url = buildEndpointUrl(cfg);
-    const body = {
-      model: cfg.deployment,
-      messages,
-      temperature: 0,
-      max_tokens: maxTokens,
-    };
-    if (jsonMode) body.response_format = { type: 'json_object' };
+  // Compatibilidad de parámetros entre modelos: los modelos de razonamiento
+  // (gpt-5*, o1/o3/o4) rechazan temperature y max_tokens. Empezamos con la
+  // configuración más compatible y, si el modelo rechaza un parámetro, lo
+  // adaptamos y recordamos el ajuste para el resto del lote.
+  const paramCompat = { drop: new Set(), useMaxTokens: false };
+  const isReasoningModel = (name) => /^(gpt-5|o[1-9])/i.test(String(name || '').trim());
 
-    for (let attempt = 0; ; attempt++) {
+  function buildBody(cfg, messages, { jsonMode, maxTokens }) {
+    const body = { model: cfg.deployment, messages };
+    if (paramCompat.useMaxTokens) body.max_tokens = maxTokens;
+    else body.max_completion_tokens = maxTokens;
+    if (!isReasoningModel(cfg.deployment)) body.temperature = 0;
+    else body.reasoning_effort = 'low';
+    if (jsonMode) body.response_format = { type: 'json_object' };
+    paramCompat.drop.forEach((p) => delete body[p]);
+    return body;
+  }
+
+  // Devuelve true si el error 400 describe un parámetro no soportado y hemos podido adaptarlo
+  function adaptParams(errorText) {
+    const msg = String(errorText);
+    if (/max_completion_tokens/i.test(msg) && /unsupported|not supported|unrecognized|unknown/i.test(msg) && !paramCompat.useMaxTokens) {
+      paramCompat.useMaxTokens = true;
+      return true;
+    }
+    if (/use 'max_completion_tokens'/i.test(msg) && paramCompat.useMaxTokens) {
+      paramCompat.useMaxTokens = false;
+      return true;
+    }
+    const m = msg.match(/Unsupported (?:parameter|value): '([a-z_]+)'/i) || msg.match(/'([a-z_]+)' (?:is not supported|does not support)/i);
+    if (m && !paramCompat.drop.has(m[1])) {
+      paramCompat.drop.add(m[1]);
+      return true;
+    }
+    return false;
+  }
+
+  async function callChat(cfg, messages, { jsonMode = true, maxTokens = 1200 } = {}) {
+    const url = buildEndpointUrl(cfg);
+
+    for (let attempt = 0, adaptations = 0; ; attempt++) {
+      const body = buildBody(cfg, messages, { jsonMode, maxTokens });
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
       let res;
@@ -202,10 +233,25 @@
       if (res.ok) {
         const data = await res.json();
         const usage = data.usage || {};
-        console.info('[fnol][llm] tokens', { input: usage.prompt_tokens, output: usage.completion_tokens });
-        return data.choices?.[0]?.message?.content ?? '';
+        console.info('[fnol][llm] tokens', {
+          input: usage.prompt_tokens,
+          output: usage.completion_tokens,
+          reasoning: usage.completion_tokens_details?.reasoning_tokens,
+        });
+        const choice = data.choices?.[0];
+        const content = choice?.message?.content ?? '';
+        if (!content && choice?.finish_reason === 'length') {
+          throw new Error('Respuesta vacía: el modelo agotó los tokens en razonamiento (sube el límite de tokens)');
+        }
+        return content;
       }
       const text = await res.text().catch(() => '');
+      if (res.status === 400 && adaptations < 4 && adaptParams(text)) {
+        adaptations++;
+        console.info('[fnol][llm] parámetro adaptado', { drop: [...paramCompat.drop], useMaxTokens: paramCompat.useMaxTokens });
+        attempt--; // la adaptación no consume reintento
+        continue;
+      }
       if (RETRY.transient.includes(res.status) && attempt < RETRY.max) {
         const retryAfter = Number(res.headers.get('retry-after')) * 1000;
         await sleep(retryAfter || Math.min(RETRY.cap, RETRY.base * 2 ** attempt) + rnd(0, 500));
@@ -475,7 +521,7 @@
       setStatus('ai-status', 'Probando…');
       $('btn-test-ai').disabled = true;
       try {
-        const raw = await callChat(cfg, [{ role: 'user', content: 'Responde solo con {"ok": true}' }], { maxTokens: 20 });
+        const raw = await callChat(cfg, [{ role: 'user', content: 'Responde solo con {"ok": true}' }], { maxTokens: 300 });
         setStatus('ai-status', `Conexión correcta. Respuesta: ${String(raw).slice(0, 60)}`, 'ok');
       } catch (err) {
         const hint = /api version/i.test(err.message) ? ' → Prueba otra «Ruta de API» (v1 no necesita api-version).' : '';

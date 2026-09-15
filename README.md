@@ -23,6 +23,8 @@ La pantalla no es un expediente: son tres contadores — **despejados**, **en re
 | IA (opcional) | Llamada directa desde el navegador a **Azure AI Foundry / Azure OpenAI** (`chat/completions`, cabecera `api-key`). El modelo devuelve `{decision, motivo, confianza}` en JSON; la respuesta se valida y, si es inválida o hay error transitorio, se usa el motor de reglas. |
 | Registro | Cada decisión se guarda en `localStorage` con aviso, decisión, motivo, origen (reglas / IA), confianza y duración. |
 
+Compatibilidad de modelos: para modelos de razonamiento (`gpt-5*`, `o1`/`o3`/`o4`) no se envían `temperature` ni `max_tokens` (se usa `max_completion_tokens` y `reasoning_effort: low`). Si el modelo rechaza algún parámetro con un 400 «Unsupported parameter», el cliente lo retira y reintenta, recordando el ajuste para el resto del lote.
+
 Reintentos con backoff exponencial (base 2 s, tope 32 s, máx. 5) para 429/5xx; los errores permanentes (400/401/403) abortan el lote.
 
 ## Uso
