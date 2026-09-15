@@ -37,15 +37,16 @@ Sin clave, la demo funciona igualmente con el motor de reglas (con latencia simu
 
 ### Endpoint y ruta de API
 
-En **Endpoint** pon la URL base del recurso (`https://<recurso>.openai.azure.com`, `https://<recurso>.cognitiveservices.azure.com` o `https://<recurso>.services.ai.azure.com`) y en **Deployment** el nombre del despliegue. Rutas disponibles:
+En **Endpoint** puedes pegar la URL base del recurso o la URL completa que muestra el portal de Foundry (p. ej. `https://<recurso>.services.ai.azure.com/openai/v1/responses`); la app extrae el origen del recurso y selecciona la ruta automáticamente. En **Deployment** va el nombre del despliegue.
 
 | Ruta | URL que se construye | api-version |
 |---|---|---|
-| **v1** (por defecto) | `{endpoint}/openai/v1/chat/completions` | no necesita |
-| Clásica | `{endpoint}/openai/deployments/{deployment}/chat/completions` | `2024-10-21` por defecto |
-| Foundry Models | `{endpoint}/models/chat/completions` | `2024-05-01-preview` por defecto |
+| **v1** (por defecto) | `{origen}/openai/v1/chat/completions` | no necesita |
+| Responses API | `{origen}/openai/v1/responses` | no necesita |
+| Clásica | `{origen}/openai/deployments/{deployment}/chat/completions` | `2024-10-21` por defecto |
+| Foundry Models | `{origen}/models/chat/completions` | `2024-05-01-preview` por defecto |
 
-Si pegas una URL completa que ya contenga `chat/completions`, se usa tal cual. Si Azure responde «API version not supported», cambia de ruta.
+Si Azure responde «API version not supported», cambia de ruta. Un «Failed to fetch» suele ser una URL inexistente (sin cabeceras CORS) o un endpoint mal escrito.
 
 ## Estructura
 

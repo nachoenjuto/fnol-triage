@@ -20,6 +20,7 @@
   // Reintentos para errores transitorios: base 2s, tope 32s, máx 5
   const RETRY = { base: 2000, cap: 32000, max: 5, transient: [408, 429, 500, 502, 503, 504] };
   const REQUEST_TIMEOUT_MS = 30000;
+  const NETWORK_RETRIES = 2; // «Failed to fetch» suele ser CORS o URL errónea: no insistir 5 veces
 
   // Latencia simulada del motor de reglas (integración con core / consulta de póliza)
   const RULES_LATENCY_MS = [60, 220];
@@ -157,15 +158,27 @@
   // ---------------------------------------------------------------------------
   const DEFAULT_API_VERSION = { deployments: '2024-10-21', models: '2024-05-01-preview' };
 
+  // Detecta la ruta a partir de una URL pegada por el usuario (o null si no es concluyente)
+  function routeFromUrl(raw) {
+    if (/\/openai\/v1\/responses/i.test(raw)) return 'responses';
+    if (/\/openai\/v1\/chat\/completions/i.test(raw)) return 'v1';
+    if (/\/models\/chat\/completions/i.test(raw)) return 'models';
+    if (/\/openai\/deployments\//i.test(raw)) return 'deployments';
+    return null;
+  }
+
   function buildEndpointUrl(cfg) {
-    const base = cfg.endpoint.trim().replace(/\/+$/, '');
-    // URL completa pegada por el usuario: se usa tal cual
-    if (/chat\/completions/i.test(base)) return base;
+    const raw = cfg.endpoint.trim().replace(/\/+$/, '');
+    let origin;
+    try { origin = new URL(raw).origin; } catch { throw new PermanentError(`Endpoint no válido: ${raw}`); }
     const route = cfg.route || 'v1';
-    if (route === 'v1') return `${base}/openai/v1/chat/completions`;
+    // El usuario pegó una URL completa coherente con la ruta elegida: se usa tal cual
+    if (routeFromUrl(raw) === route && /\?api-version=|\/openai\/v1\//i.test(raw)) return raw;
+    if (route === 'responses') return `${origin}/openai/v1/responses`;
+    if (route === 'v1') return `${origin}/openai/v1/chat/completions`;
     const version = encodeURIComponent(cfg.apiVersion || DEFAULT_API_VERSION[route]);
-    if (route === 'models') return `${base}/models/chat/completions?api-version=${version}`;
-    return `${base}/openai/deployments/${encodeURIComponent(cfg.deployment)}/chat/completions?api-version=${version}`;
+    if (route === 'models') return `${origin}/models/chat/completions?api-version=${version}`;
+    return `${origin}/openai/deployments/${encodeURIComponent(cfg.deployment)}/chat/completions?api-version=${version}`;
   }
 
   class PermanentError extends Error {}
@@ -178,14 +191,50 @@
   const isReasoningModel = (name) => /^(gpt-5|o[1-9])/i.test(String(name || '').trim());
 
   function buildBody(cfg, messages, { jsonMode, maxTokens }) {
-    const body = { model: cfg.deployment, messages };
-    if (paramCompat.useMaxTokens) body.max_tokens = maxTokens;
-    else body.max_completion_tokens = maxTokens;
-    if (!isReasoningModel(cfg.deployment)) body.temperature = 0;
-    else body.reasoning_effort = 'low';
-    if (jsonMode) body.response_format = { type: 'json_object' };
+    const reasoning = isReasoningModel(cfg.deployment);
+    let body;
+    if (cfg.route === 'responses') {
+      // Responses API: el mensaje de sistema va en `instructions`
+      const system = messages.filter((m) => m.role === 'system').map((m) => m.content).join('\n\n');
+      body = {
+        model: cfg.deployment,
+        input: messages.filter((m) => m.role !== 'system').map((m) => ({ role: m.role, content: m.content })),
+        max_output_tokens: maxTokens,
+      };
+      if (system) body.instructions = system;
+      if (reasoning) body.reasoning = { effort: 'low' }; else body.temperature = 0;
+      if (jsonMode) body.text = { format: { type: 'json_object' } };
+    } else {
+      body = { model: cfg.deployment, messages };
+      if (paramCompat.useMaxTokens) body.max_tokens = maxTokens;
+      else body.max_completion_tokens = maxTokens;
+      if (reasoning) body.reasoning_effort = 'low'; else body.temperature = 0;
+      if (jsonMode) body.response_format = { type: 'json_object' };
+    }
     paramCompat.drop.forEach((p) => delete body[p]);
     return body;
+  }
+
+  // Extrae el texto de la respuesta según la API usada
+  function extractContent(cfg, data) {
+    if (cfg.route === 'responses') {
+      const text = (data.output || [])
+        .filter((o) => o.type === 'message')
+        .flatMap((o) => o.content || [])
+        .filter((c) => c.type === 'output_text')
+        .map((c) => c.text)
+        .join('');
+      const truncated = data.status === 'incomplete' && data.incomplete_details?.reason === 'max_output_tokens';
+      const u = data.usage || {};
+      return { text, truncated, usage: { input: u.input_tokens, output: u.output_tokens, reasoning: u.output_tokens_details?.reasoning_tokens } };
+    }
+    const choice = data.choices?.[0];
+    const u = data.usage || {};
+    return {
+      text: choice?.message?.content ?? '',
+      truncated: choice?.finish_reason === 'length',
+      usage: { input: u.prompt_tokens, output: u.completion_tokens, reasoning: u.completion_tokens_details?.reasoning_tokens },
+    };
   }
 
   // Devuelve true si el error 400 describe un parámetro no soportado y hemos podido adaptarlo
@@ -224,7 +273,9 @@
         });
       } catch (err) {
         clearTimeout(timer);
-        if (attempt >= RETRY.max) throw new Error(`Red/timeout tras ${attempt + 1} intentos: ${err.message}`);
+        if (attempt >= NETWORK_RETRIES) {
+          throw new PermanentError(`Red/timeout tras ${attempt + 1} intentos: ${err.message}. Revisa que el endpoint sea la URL del recurso y que la ruta de API coincida (${url}).`);
+        }
         await sleep(Math.min(RETRY.cap, RETRY.base * 2 ** attempt) + rnd(0, 500));
         continue;
       }
@@ -232,18 +283,12 @@
 
       if (res.ok) {
         const data = await res.json();
-        const usage = data.usage || {};
-        console.info('[fnol][llm] tokens', {
-          input: usage.prompt_tokens,
-          output: usage.completion_tokens,
-          reasoning: usage.completion_tokens_details?.reasoning_tokens,
-        });
-        const choice = data.choices?.[0];
-        const content = choice?.message?.content ?? '';
-        if (!content && choice?.finish_reason === 'length') {
+        const { text, truncated, usage } = extractContent(cfg, data);
+        console.info('[fnol][llm] tokens', usage);
+        if (!text && truncated) {
           throw new Error('Respuesta vacía: el modelo agotó los tokens en razonamiento (sube el límite de tokens)');
         }
-        return content;
+        return text;
       }
       const text = await res.text().catch(() => '');
       if (res.status === 400 && adaptations < 4 && adaptParams(text)) {
@@ -512,7 +557,14 @@
     });
 
     ['cfg-endpoint', 'cfg-deployment', 'cfg-route', 'cfg-api-version', 'cfg-api-key'].forEach((id) => {
-      $(id).addEventListener(id === 'cfg-route' ? 'change' : 'input', () => { saveConfig(readConfigFromForm()); updateModeBadge(); });
+      $(id).addEventListener(id === 'cfg-route' ? 'change' : 'input', () => {
+        if (id === 'cfg-endpoint') {
+          const detected = routeFromUrl($('cfg-endpoint').value);
+          if (detected) $('cfg-route').value = detected;
+        }
+        saveConfig(readConfigFromForm());
+        updateModeBadge();
+      });
     });
 
     $('btn-test-ai').addEventListener('click', async () => {

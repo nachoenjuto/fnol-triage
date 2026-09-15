@@ -34,7 +34,7 @@
         <label>
           <span>Endpoint</span>
           <input id="cfg-endpoint" type="url" placeholder="https://mi-recurso.openai.azure.com" autocomplete="off" spellcheck="false">
-          <small>Recurso Azure OpenAI / Foundry, o URL completa de <code>chat/completions</code>.</small>
+          <small>URL del recurso. Si pegas la URL completa del portal (<code>…/openai/v1/responses</code> o <code>…/chat/completions</code>) la ruta se selecciona sola.</small>
         </label>
         <label>
           <span>Deployment / modelo</span>
@@ -44,6 +44,7 @@
           <span>Ruta de API</span>
           <select id="cfg-route">
             <option value="v1">v1 — /openai/v1/chat/completions (recomendada, sin api-version)</option>
+            <option value="responses">Responses API — /openai/v1/responses (sin api-version)</option>
             <option value="deployments">Clásica — /openai/deployments/{deployment}/chat/completions</option>
             <option value="models">Foundry Models — /models/chat/completions</option>
           </select>
