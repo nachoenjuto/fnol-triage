@@ -904,12 +904,214 @@
   }
 
   // ---------------------------------------------------------------------------
+  // Fases de la cabecera: panel emergente con la descripción de cada paso
+  // ---------------------------------------------------------------------------
+  // Iconos Lucide (https://lucide.dev, licencia ISC) usados en los paneles de fase; solo el contenido del <svg>.
+  const LUCIDE = {
+    'mail': '<rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />',
+    'message-circle': '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />',
+    'messages-square': '<path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z" /><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1" />',
+    'globe': '<circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /><path d="M2 12h20" />',
+    'phone': '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />',
+    'car': '<path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" /><circle cx="7" cy="17" r="2" /><path d="M9 17h6" /><circle cx="17" cy="17" r="2" />',
+    'house': '<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />',
+    'heart-pulse': '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />',
+    'circle-help': '<circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" />',
+    'user': '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />',
+    'file-text': '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" />',
+    'tag': '<path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" /><circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />',
+    'calendar': '<path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" />',
+    'euro': '<path d="M4 10h12" /><path d="M4 14h9" /><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2" />',
+    'map-pin': '<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" />',
+    'users': '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />',
+    'bandage': '<path d="M10 10.01h.01" /><path d="M10 14.01h.01" /><path d="M14 10.01h.01" /><path d="M14 14.01h.01" /><path d="M18 6v11.5" /><path d="M6 6v12" /><rect x="2" y="6" width="20" height="12" rx="2" />',
+    'paperclip': '<path d="M13.234 20.252 21 12.3" /><path d="m16 6-8.414 8.586a2 2 0 0 0 0 2.828 2 2 0 0 0 2.828 0l8.414-8.586a4 4 0 0 0 0-5.656 4 4 0 0 0-5.656 0l-8.415 8.585a6 6 0 1 0 8.486 8.486" />',
+    'check': '<path d="M20 6 9 17l-5-5" />',
+    'x': '<path d="M18 6 6 18" /><path d="m6 6 12 12" />',
+    'minus': '<path d="M5 12h14" />',
+    'tags': '<path d="m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19" /><path d="M9.586 5.586A2 2 0 0 0 8.172 5H3a1 1 0 0 0-1 1v5.172a2 2 0 0 0 .586 1.414L8.29 18.29a2.426 2.426 0 0 0 3.42 0l3.58-3.58a2.426 2.426 0 0 0 0-3.42z" /><circle cx="6.5" cy="9.5" r=".5" fill="currentColor" />',
+    'list-checks': '<path d="m3 17 2 2 4-4" /><path d="m3 7 2 2 4-4" /><path d="M13 6h8" /><path d="M13 12h8" /><path d="M13 18h8" />',
+    'cpu': '<rect width="16" height="16" x="4" y="4" rx="2" /><rect width="6" height="6" x="9" y="9" rx="1" /><path d="M15 2v2" /><path d="M15 20v2" /><path d="M2 15h2" /><path d="M2 9h2" /><path d="M20 15h2" /><path d="M20 9h2" /><path d="M9 2v2" /><path d="M9 20v2" />',
+    'timer': '<line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" />',
+    'file-search': '<path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M4.268 21a2 2 0 0 0 1.727 1H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3" /><path d="m9 18-1.5-1.5" /><circle cx="5" cy="14" r="3" />',
+    'filter': '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />',
+    'download': '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" />',
+    'play': '<polygon points="6 3 20 12 6 21 6 3" />',
+    'circle-check': '<circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" />',
+    'user-check': '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><polyline points="16 11 18 13 22 9" />',
+    'chart-column': '<path d="M3 3v16a2 2 0 0 0 2 2h16" /><path d="M18 17V9" /><path d="M13 17V5" /><path d="M8 17v-3" />',
+    'gauge': '<path d="m12 14 4-4" /><path d="M3.34 19a10 10 0 1 1 17.32 0" />',
+    'sparkles': '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /><path d="M20 3v4" /><path d="M22 5h-4" /><path d="M4 17v2" /><path d="M5 18H3" />',
+    'workflow': '<rect width="8" height="8" x="3" y="3" rx="2" /><path d="M7 11v4a2 2 0 0 0 2 2h4" /><rect width="8" height="8" x="13" y="13" rx="2" />',
+  };
+  const lucide = (name) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${LUCIDE[name] || ''}</svg>`;
+
+  // Colores por grupo semántico (variables de styles.css)
+  const C = { primary: 'var(--primary)', ok: 'var(--ok)', review: 'var(--review)', muted: 'var(--muted)', time: 'var(--time)', auto: 'var(--auto)', hogar: 'var(--hogar)', salud: 'var(--salud)', teal: '#0f766e' };
+  const RAMO_ITEMS = (detalles) => [
+    { icono: 'car', color: C.auto, etiqueta: '<strong>Auto</strong>', detalle: detalles[0] },
+    { icono: 'house', color: C.hogar, etiqueta: '<strong>Hogar</strong>', detalle: detalles[1] },
+    { icono: 'heart-pulse', color: C.salud, etiqueta: '<strong>Salud</strong>', detalle: detalles[2] },
+  ];
+
+  // Contenido de cada panel: título, descripción, secciones con lista de ítems (icono + color + etiqueta + detalle), cierre y tipo de motor
+  const PHASE_INFO = {
+    ramo: {
+      titulo: 'Clasificación por ramo',
+      descripcion: 'Determina a qué ramo pertenece cada mensaje recibido, sea cual sea el canal de entrada.',
+      secciones: [
+        { titulo: 'Canales de entrada', cols: true, items: [
+          { icono: 'mail', color: C.primary, etiqueta: 'Email' },
+          { icono: 'message-circle', color: C.primary, etiqueta: 'WhatsApp' },
+          { icono: 'messages-square', color: C.primary, etiqueta: 'Chat' },
+          { icono: 'globe', color: C.primary, etiqueta: 'Formulario web' },
+          { icono: 'phone', color: C.primary, etiqueta: 'Teléfono' },
+        ] },
+        { titulo: 'Ramos', items: [
+          ...RAMO_ITEMS(['vehículo: colisión, lunas, robo, granizo', 'vivienda o contenido: agua, cristales, robo, eléctrico', 'prestación sanitaria: urgencias, cirugía, reembolsos']),
+          { icono: 'circle-help', color: C.muted, etiqueta: 'Indeterminado', detalle: 'si no puede decidirse, pasa a revisión' },
+        ] },
+      ],
+      cierre: 'Se utiliza <strong>lógica semántica</strong> e <strong>IA generativa</strong> para asignar el ramo y <strong>justificar la decisión</strong> citando los <strong>indicios del texto</strong>.',
+      ia: true,
+    },
+    datos: {
+      titulo: 'Extracción de datos',
+      descripcion: 'Convierte el texto libre del mensaje en datos estructurados listos para tramitar.',
+      secciones: [
+        { titulo: 'Datos que se extraen', cols: true, items: [
+          { icono: 'user', color: C.time, etiqueta: 'Nombre del cliente' },
+          { icono: 'file-text', color: C.time, etiqueta: 'Número de póliza' },
+          { icono: 'tag', color: C.time, etiqueta: 'Tipo de siniestro' },
+          { icono: 'calendar', color: C.time, etiqueta: 'Fecha del hecho' },
+          { icono: 'euro', color: C.time, etiqueta: 'Importe estimado' },
+          { icono: 'map-pin', color: C.time, etiqueta: 'Lugar' },
+          { icono: 'users', color: C.time, etiqueta: 'Terceros implicados' },
+          { icono: 'bandage', color: C.time, etiqueta: 'Lesionados' },
+          { icono: 'paperclip', color: C.time, etiqueta: 'Documentación' },
+        ] },
+      ],
+      cierre: 'Solo se recoge lo que <strong>aparece en el mensaje</strong>; <strong>nunca se inventa</strong> un dato — si falta, queda como <strong>nulo</strong> y puede motivar la revisión.',
+      ia: true,
+    },
+    reglas: {
+      titulo: 'Reglas de negocio',
+      descripcion: 'Aplica el bloque de reglas del ramo clasificado a los datos extraídos.',
+      secciones: [
+        { titulo: 'Reglas por ramo (ejemplos)', items: RAMO_ITEMS(['7 días, conductor declarado, sin agravantes, &lt; 6.000 €', 'agua súbita, robo con fuerza y denuncia, &lt; 10.000 €', 'carencia, preexistencias, autorización, cuadro médico']) },
+        { titulo: 'Resultado de cada regla', cols: true, items: [
+          { icono: 'check', color: C.ok, etiqueta: 'Cumple' },
+          { icono: 'x', color: C.review, etiqueta: 'Incumple' },
+          { icono: 'minus', color: C.muted, etiqueta: 'No aplica' },
+        ] },
+      ],
+      cierre: 'Cada regla se evalúa <strong>citando la evidencia textual</strong>; el conjunto determina la decisión: <span class="pill pill-ok">Aprobado</span> o <span class="pill pill-review">A revisar</span>.',
+      ia: true,
+    },
+    registro: {
+      titulo: 'Registro de decisiones',
+      descripcion: 'Deja traza completa de cada mensaje procesado para consulta y auditoría.',
+      secciones: [
+        { titulo: 'Qué se registra', cols: true, items: [
+          { icono: 'tags', color: C.teal, etiqueta: 'Ramo y decisión' },
+          { icono: 'list-checks', color: C.teal, etiqueta: 'Motivo y criterios' },
+          { icono: 'cpu', color: C.teal, etiqueta: 'Motor y tokens' },
+          { icono: 'timer', color: C.teal, etiqueta: 'Tiempo de proceso' },
+        ] },
+        { titulo: 'Qué se puede hacer', cols: true, items: [
+          { icono: 'file-search', color: C.primary, etiqueta: 'Abrir la ficha' },
+          { icono: 'filter', color: C.primary, etiqueta: 'Filtrar por ramo / estado' },
+          { icono: 'download', color: C.primary, etiqueta: 'Exportar JSON / CSV' },
+          { icono: 'play', color: C.primary, etiqueta: 'Reproducir desde archivo' },
+        ] },
+      ],
+      cierre: 'Todo queda <strong>trazable</strong> y <strong>reproducible</strong>, sin volver a llamar al modelo.',
+      ia: false,
+    },
+    automatizacion: {
+      titulo: 'Automatización',
+      descripcion: 'Convierte las decisiones en flujo de trabajo, reduciendo la intervención humana a los casos que la necesitan.',
+      secciones: [
+        { titulo: 'Salidas del triaje', items: [
+          { icono: 'circle-check', color: C.ok, etiqueta: '<strong>Aprobado</strong>', detalle: 'continúa la tramitación sin intervención humana' },
+          { icono: 'user-check', color: C.review, etiqueta: '<strong>A revisar</strong>', detalle: 'se deriva a un tramitador con la información preparada' },
+        ] },
+        { titulo: 'Indicadores', cols: true, items: [
+          { icono: 'chart-column', color: C.time, etiqueta: '% aprobados / a revisar' },
+          { icono: 'gauge', color: C.time, etiqueta: 'Tiempo medio de ciclo' },
+        ] },
+      ],
+      cierre: 'El objetivo es <strong>maximizar el porcentaje automatizado</strong> manteniendo el <strong>control humano</strong> sobre los casos dudosos.',
+      ia: false,
+    },
+  };
+
+  function renderPhase(info) {
+    const item = (it) => `<li><span class="phase-ico" style="--c:${it.color}">${lucide(it.icono)}</span><span>${it.etiqueta}${it.detalle ? ` <small>— ${it.detalle}</small>` : ''}</span></li>`;
+    const seccion = (sec) => `<h4>${escapeHtml(sec.titulo)}</h4><ul class="phase-list${sec.cols ? ' cols' : ''}">${sec.items.map(item).join('')}</ul>`;
+    const badge = info.ia
+      ? `<span class="phase-badge phase-badge-ia">${lucide('sparkles')} IA generativa</span>`
+      : `<span class="phase-badge phase-badge-logica">${lucide('workflow')} Lógica de negocio</span>`;
+    return `<h3>${escapeHtml(info.titulo)}</h3><p class="phase-desc">${escapeHtml(info.descripcion)}</p>${info.secciones.map(seccion).join('')}<p class="phase-cierre">${info.cierre}</p>${badge}`;
+  }
+
+  function bindPhases() {
+    const pop = $('phase-pop');
+    const caret = pop.querySelector('.phase-pop-caret');
+    const topbar = pop.closest('.topbar');
+    const buttons = [...document.querySelectorAll('.phase')];
+    let active = null; // botón cuya descripción se muestra
+    let pinned = false; // fijado con clic (móvil / teclado)
+    let hideTimer = null;
+
+    const show = (btn) => {
+      clearTimeout(hideTimer);
+      const info = PHASE_INFO[btn.dataset.phase];
+      if (!info) return;
+      buttons.forEach((b) => { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-expanded', String(b === btn)); });
+      $('phase-pop-body').innerHTML = renderPhase(info);
+      pop.hidden = false;
+      // Alineado bajo la fase, sin salirse del ancho de la cabecera
+      const tb = topbar.getBoundingClientRect();
+      const bb = btn.getBoundingClientRect();
+      const maxLeft = Math.max(16, tb.width - pop.offsetWidth - 16);
+      const left = Math.min(bb.left - tb.left, maxLeft);
+      pop.style.left = `${left}px`;
+      caret.style.left = `${Math.max(12, Math.min(bb.left - tb.left - left + 18, pop.offsetWidth - 24))}px`;
+      active = btn;
+    };
+    const hide = () => {
+      pop.hidden = true;
+      buttons.forEach((b) => { b.classList.remove('is-active'); b.setAttribute('aria-expanded', 'false'); });
+      active = null; pinned = false;
+    };
+    const scheduleHide = () => { if (!pinned) hideTimer = setTimeout(hide, 150); };
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('mouseenter', () => { if (!pinned) show(btn); });
+      btn.addEventListener('mouseleave', scheduleHide);
+      btn.addEventListener('focus', () => { if (!pinned) show(btn); });
+      btn.addEventListener('blur', scheduleHide);
+      btn.addEventListener('click', () => {
+        if (pinned && active === btn) { hide(); return; }
+        show(btn); pinned = true;
+      });
+    });
+    pop.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+    pop.addEventListener('mouseleave', scheduleHide);
+    document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && !pop.hidden) hide(); });
+    document.addEventListener('click', (ev) => { if (!pop.hidden && !ev.target.closest('.phase, #phase-pop')) hide(); });
+    window.addEventListener('resize', () => { if (active) show(active); });
+  }
+
+  // ---------------------------------------------------------------------------
   // Init
   // ---------------------------------------------------------------------------
   loadConfig();
   renderPromptSections();
   renderPaquete();
   bind();
+  bindPhases();
   updateModeBadge();
   setRunButtons();
   renderCounters();

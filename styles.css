@@ -48,6 +48,30 @@ a { color: var(--primary); }
 .brand-icon { flex: none; filter: drop-shadow(0 2px 4px rgba(0,0,0,.25)); }
 .subtitle { margin: .3rem 0 0; color: rgba(255,255,255,.88); font-size: 1.15rem; display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .5rem; }
 .subtitle .arrow { color: #ffd166; font-weight: 700; }
+/* Fases de la cabecera: botones con aspecto de texto que abren el panel de descripción */
+.phase { font: inherit; color: inherit; background: transparent; border: 0; padding: .1rem .45rem; margin: 0 -.2rem; border-radius: 6px; cursor: pointer; line-height: inherit; transition: background .12s, color .12s; }
+.phase:hover, .phase:focus-visible, .phase.is-active { background: rgba(255,255,255,.18); color: #ffd166; outline: none; }
+.phase:focus-visible { box-shadow: 0 0 0 2px #ffd166; }
+.phase-pop { position: absolute; top: calc(100% + 10px); left: 0; width: min(440px, calc(100vw - 2rem)); background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 12px 32px rgba(10, 20, 50, .28); z-index: 6; }
+.phase-pop-body { padding: 1rem 1.1rem 1.1rem; max-height: 70vh; overflow-y: auto; }
+.phase-pop-caret { position: absolute; top: -7px; left: 24px; width: 12px; height: 12px; background: var(--surface); border-left: 1px solid var(--border); border-top: 1px solid var(--border); transform: rotate(45deg); }
+.phase-pop h3 { margin: 0 0 .35rem; font-size: 1rem; text-transform: none; letter-spacing: 0; color: var(--primary); }
+.phase-pop h4 { margin: .75rem 0 .35rem; font-size: .7rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 700; }
+.phase-pop p { margin: 0; font-size: .88rem; line-height: 1.5; }
+.phase-pop .phase-desc { color: var(--muted); margin-bottom: .6rem; }
+.phase-pop .phase-cierre { margin-top: .8rem; padding-top: .7rem; border-top: 1px dashed var(--border); }
+.phase-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .3rem; font-size: .86rem; }
+.phase-list.cols { grid-template-columns: 1fr 1fr; }
+.phase-list li { display: flex; align-items: center; gap: .55rem; }
+.phase-list li small { color: var(--muted); }
+.phase-ico { --c: var(--primary); flex: none; width: 1.7rem; height: 1.7rem; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; color: var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); }
+.phase-ico svg { width: 1.05rem; height: 1.05rem; }
+.phase-badge { display: inline-flex; align-items: center; gap: .35rem; margin-top: .7rem; padding: .2rem .6rem; border-radius: 999px; font-size: .75rem; font-weight: 600; border: 1px solid; }
+.phase-badge svg { width: 1em; height: 1em; }
+.phase-badge-ia { color: #7a4d00; background: #fff1c2; border-color: #ffd166; } .phase-badge-ia svg { color: #e0a200; }
+.phase-badge-logica { color: #0f4c5c; background: #e0f2f7; border-color: #7cc4d6; } .phase-badge-logica svg { color: #0e7490; }
+@media (prefers-color-scheme: dark) { .phase-badge-ia { color: #ffd166; background: #3a2c07; } .phase-badge-logica { color: #9fe1f2; background: #0b2f36; border-color: #17677c; } }
+@media (max-width: 600px) { .phase-pop { left: 1rem !important; right: 1rem; width: auto; } .phase-pop-caret { display: none; } .phase-list.cols { grid-template-columns: 1fr; } }
 .topbar .badge { background: rgba(255,255,255,.14); color: #fff; }
 .btn-topbar { background: #fff; color: var(--header); border-color: #fff; display: inline-flex; align-items: center; gap: .45rem; white-space: nowrap; }
 .btn-topbar:hover { background: #eef2ff; }

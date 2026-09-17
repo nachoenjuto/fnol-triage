@@ -25,14 +25,19 @@
       </svg>
       <div>
         <h1>Triage de mensajes</h1>
-        <p class="subtitle">
-          <span>Clasificación por ramo</span><span class="arrow" aria-hidden="true">→</span>
-          <span>Extracción de datos</span><span class="arrow" aria-hidden="true">→</span>
-          <span>Reglas de negocio</span><span class="arrow" aria-hidden="true">→</span>
-          <span>Registro de decisiones</span><span class="arrow" aria-hidden="true">→</span>
-          <span>Automatización</span>
+        <p class="subtitle" id="phases">
+          <button type="button" class="phase" data-phase="ramo" aria-expanded="false">Clasificación por ramo</button><span class="arrow" aria-hidden="true">→</span>
+          <button type="button" class="phase" data-phase="datos" aria-expanded="false">Extracción de datos</button><span class="arrow" aria-hidden="true">→</span>
+          <button type="button" class="phase" data-phase="reglas" aria-expanded="false">Reglas de negocio</button><span class="arrow" aria-hidden="true">→</span>
+          <button type="button" class="phase" data-phase="registro" aria-expanded="false">Registro de decisiones</button><span class="arrow" aria-hidden="true">→</span>
+          <button type="button" class="phase" data-phase="automatizacion" aria-expanded="false">Automatización</button>
         </p>
       </div>
+    </div>
+    <!-- Panel emergente con la descripción de la fase (se rellena en app.js) -->
+    <div id="phase-pop" class="phase-pop" role="tooltip" hidden>
+      <div class="phase-pop-caret" aria-hidden="true"></div>
+      <div id="phase-pop-body" class="phase-pop-body"></div>
     </div>
     <div class="row">
       <span id="mode-badge" class="badge">Motor: reglas</span>
