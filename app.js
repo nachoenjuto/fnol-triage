@@ -560,7 +560,7 @@
         `<td><strong>${escapeHtml(e.id)}</strong><br><span class="muted small">${escapeHtml(e.asunto)}</span></td>`,
         `<td><span class="pill pill-ramo-${e.ramo.toLowerCase()}">${escapeHtml(e.ramo)}</span> ${ramoMark}</td>`,
         `<td>${fmtEur(e.importe)}</td>`,
-        `<td><span class="pill ${e.decision === DECISION.REVIEW ? 'pill-review' : 'pill-ok'}">${e.decision === DECISION.REVIEW ? 'Revisión' : 'Despejado'}</span></td>`,
+        `<td><span class="pill ${e.decision === DECISION.REVIEW ? 'pill-review' : 'pill-ok'}">${e.decision === DECISION.REVIEW ? 'A revisar' : 'Aprobado'}</span></td>`,
         `<td class="motivo">${escapeHtml(e.motivo)}</td>`,
         `<td>${escapeHtml(e.origen)}</td>`,
         `<td>${Math.round(e.confianza * 100)} %</td>`,
@@ -597,7 +597,7 @@
   function openModal(entry) {
     const m = entry.mensaje;
     $('modal-title').textContent = `${entry.id} · ${m.asunto}`;
-    $('modal-subtitle').innerHTML = `<span class="pill pill-ramo-${entry.ramo.toLowerCase()}">${escapeHtml(entry.ramo)}</span> <span class="pill ${entry.decision === DECISION.REVIEW ? 'pill-review' : 'pill-ok'}">${entry.decision === DECISION.REVIEW ? 'Revisión humana' : 'Despejado'}</span>`;
+    $('modal-subtitle').innerHTML = `<span class="pill pill-ramo-${entry.ramo.toLowerCase()}">${escapeHtml(entry.ramo)}</span> <span class="pill ${entry.decision === DECISION.REVIEW ? 'pill-review' : 'pill-ok'}">${entry.decision === DECISION.REVIEW ? 'A revisar' : 'Aprobado'}</span>`;
     $('modal-mensaje').innerHTML = kv([
       ['Remitente', escapeHtml(m.remitente.nombre)],
       ['Contacto', escapeHtml(m.remitente.contacto)],
@@ -624,14 +624,14 @@
     if (!(entry.criterios || []).length) $('modal-criterios').innerHTML = '<li class="muted">El resultado no incluye criterios.</li>';
 
     $('modal-resultado').innerHTML = kv([
-      ['Decisión', entry.decision === DECISION.REVIEW ? 'Revisión humana' : 'Despejado automáticamente'],
+      ['Decisión', entry.decision === DECISION.REVIEW ? 'A revisar (revisión humana)' : 'Aprobado automáticamente'],
       ['Motivo', escapeHtml(entry.motivo)],
       ['Confianza', `${Math.round(entry.confianza * 100)} %`],
       ['Origen', escapeHtml(entry.origen)],
       ['Ciclo', fmtMs(entry.duracion_ms)],
       ['Tokens', entry.usage ? `${entry.usage.input ?? '?'} entrada · ${entry.usage.output ?? '?'} salida${entry.usage.reasoning != null ? ` (${entry.usage.reasoning} razonamiento)` : ''}` : undefined],
       ...(entry.pasos && entry.pasos.length > 1 ? entry.pasos.map((p) => [`↳ ${p.nombre}`, `${p.usage?.input ?? '?'} entrada · ${p.usage?.output ?? '?'} salida${p.usage?.reasoning != null ? ` (${p.usage.reasoning} razonamiento)` : ''}`]) : []),
-      ['Referencia demo', esperado.ramo ? `${esperado.revision ? 'Revisión esperada' : 'Despeje esperado'}${esperado.nota ? ` — ${escapeHtml(esperado.nota)}` : ''}` : undefined],
+      ['Referencia demo', esperado.ramo ? `${esperado.revision ? 'A revisar (esperado)' : 'Aprobado (esperado)'}${esperado.nota ? ` — ${escapeHtml(esperado.nota)}` : ''}` : undefined],
     ]);
     $('modal-raw').textContent = entry.raw || '(sin respuesta cruda: decisión del motor local)';
     $('modal').showModal();
@@ -755,7 +755,7 @@
         const lote = state.motor === 'archivo' ? 'archivo' : paquete.id;
         const nombre = state.motor === 'archivo' ? `Archivo ${state.archivo.nombre}` : paquete.nombre;
         const review = state.log.filter((e) => e.paquete === lote && e.decision === DECISION.REVIEW).length;
-        setStatus('run-status', `${nombre} completado: ${mensajes.length - review} despejados, ${review} a revisión humana.`, 'ok');
+        setStatus('run-status', `${nombre} completado: ${mensajes.length - review} aprobados, ${review} a revisar.`, 'ok');
       }
     } catch (err) {
       setStatus('run-status', `Lote interrumpido: ${err.message}`, 'error');

@@ -10,10 +10,10 @@ Llega un paquete de mensajes de clientes (emails, formularios web, chats, transc
 
 1. **Clasifica el ramo** (Auto, Hogar, Salud).
 2. **Extrae los datos** del texto libre (póliza, fecha del hecho, importe, terceros, lesionados, documentación…).
-3. **Aplica el bloque de reglas** del ramo y decide: **DESPEJADO** (se tramita automáticamente) o **REVISIÓN** humana, con el motivo y cada criterio evaluado.
+3. **Aplica el bloque de reglas** del ramo y decide: **Aprobado** (`DESPEJADO`, se tramita automáticamente) o **A revisar** (`REVISION`, revisión humana), con el motivo y cada criterio evaluado.
 4. **Registra la decisión.**
 
-La pantalla son tres contadores — **despejados**, **en revisión**, **tiempo medio de ciclo** — más el registro. Al hacer clic en un mensaje se abre su ficha: texto original, datos extraídos y, a la derecha, los criterios que ha aplicado el modelo.
+La pantalla son tres contadores — **aprobados**, **a revisar**, **tiempo medio de ciclo** — más el registro. Al hacer clic en un mensaje se abre su ficha: texto original, datos extraídos y, a la derecha, los criterios que ha aplicado el modelo.
 
 ## Paquetes de mensajes
 
@@ -62,7 +62,7 @@ Sin clave, la demo funciona en modo degradado: ramo por palabras clave, extracci
 2. Opcional: ⚙ **Configurar IA** con endpoint, deployment y clave de Azure AI Foundry. Todo se guarda solo en `sessionStorage` (se borra al cerrar la pestaña).
 3. Elige un paquete en la barra lateral y, si quieres, edita los prompts.
 4. **Procesar paquete**. Puedes **pausar / continuar**; **Reiniciar lote** cancela y vacía el registro.
-5. Filtra por ramo o solo revisión, ordena por columnas, abre la ficha de cualquier fila, exporta a JSON/CSV.
+5. Filtra por ramo o solo a revisar, ordena por columnas, abre la ficha de cualquier fila, exporta a JSON/CSV.
 
 ### Endpoint y ruta de API
 
