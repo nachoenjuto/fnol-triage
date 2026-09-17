@@ -105,18 +105,19 @@ _docs/            arquitectura (C4 en Mermaid)
 
 | Pestaña | Qué muestra |
 |---|---|
-| **Resumen** | KPI (mensajes, autonomía efectiva, escalados, overrides, coste vs cap mensual, alertas), tarjetas de agentes (modelo, prompt, nivel de autonomía, estado, coste del día vs cap, kill switch), coste diario frente al cap, alertas activas y últimas trazas |
-| **Trazabilidad** | trazas filtrables por agente, canal, decisión y resultado; detalle con waterfall de spans por agente (modelo, tokens, latencia, coste), guardrail disparado y override humano |
-| **Reasoning & Replay** | razonamiento estructurado por agente (entrada → pasos → salida → políticas evaluadas) y replay idéntico o what-if (otro modelo o versión de prompt) con diff de decisión, coste y latencia; histórico de replays |
-| **Autonomía** | niveles L0 Manual · L1 Asistido · L2 Supervisado · L3 Autónomo, guardrails con disparos y auditoría de cambios de nivel |
-| **FinOps** | caps de consumo (global, por agente, por traza) con consumo y acción al superar, coste diario por agente, tokens por agente y recomendaciones de ahorro |
-| **Histórico** | línea de tiempo de alertas, políticas, replays, overrides, despliegues e incidentes |
+| **Resumen** | KPI (mensajes, autonomía efectiva, escalados, overrides, coste vs cap mensual, alertas), tarjetas de agentes (modelo, prompt, nivel de autonomía, estado, coste del día vs cap, **kill switch** funcional), coste diario frente al cap, alertas activas y últimas trazas; clic en una traza abre su **ficha explicada** (qué llegó, qué hizo cada agente, decisión, coste) |
+| **Trazabilidad** | panel de detalle **fijo bajo las pestañas** (waterfall de spans por agente, guardrail disparado, override humano) que no se oculta al recorrer la lista; lista de trazas filtrable por agente, canal, decisión y resultado; «Ver razonamiento» y «Replay» abren Reasoning & Replay con esa traza |
+| **Reasoning & Replay** | la misma lista de trazas (colapsable, con filtros) y, para la seleccionada, el razonamiento estructurado por agente (entrada → pasos → salida) y el replay idéntico o what-if (otro modelo o versión de prompt) con diff de decisión, coste y latencia; histórico de replays |
+| **Autonomía** | niveles L0 Manual · L1 Asistido · L2 Supervisado · L3 Autónomo coloreados de rojo a verde, tarjetas de agentes con umbrales y tasas; clic en un agente abre su **ficha** (histórico de autonomía, cambios de modelo y prompt, comportamiento por modelo, variables que le afectan); auditoría de cambios de nivel |
+| **Guardrails** | condiciones que limitan la autonomía (G-01…G-09): agente, condición, acción, severidad, disparos por día y toggle activo/inactivo; últimos disparos enlazados a su traza. Cualquier referencia a un guardrail o cap (G-04, CAP-03) en el panel muestra su descripción al pasar el ratón |
+| **FinOps** | caps de consumo (global, por agente, por traza) con consumo y acción al superar, coste diario por agente, tokens por agente, sección de **modelos** (proveedor, precio, agentes que lo usan, llamadas, tokens, coste, latencia y éxito: JSON válido, sin reintento, estable en replay, precisión) con coste por modelo × agente y tokens por modelo; las leyendas de los gráficos activan y desactivan series; recomendaciones de ahorro |
+| **Histórico** | línea de tiempo de alertas, políticas, replays, overrides, despliegues, incidentes y operaciones (kill switch, guardrails) |
 
 Fuentes de datos (selector de la cabecera):
 
 - **Demo**: `data/gobierno.js`, datos inventados coherentes con los 13 mensajes del Paquete A (mismos ids, ramo, decisión, confianza y tokens que `data/resultados.js`) más 14 días de histórico.
 - **Sesión actual**: convierte el registro del triaje de esta pestaña (`sessionStorage`) en trazas reales: tokens y pasos → spans, ciclo, decisión, confianza, fallback como incidencia y coste según la tabla de precios por modelo. Histórico, caps y guardrails siguen siendo de demostración.
-- **Archivo JSON**: «Cargar JSON» con el esquema de `data/gobierno-paquete-A.json` (`agentes[]`, `trazas[]` con `spans`, y opcionalmente `caps`, `politicas`, `razonamiento`, `replays`, `diario`, `eventos`…); las secciones ausentes se toman de la demo. «Exportar trazas» descarga el dataset activo con ese mismo esquema.
+- **Archivo JSON**: «Cargar JSON» con el esquema de `data/gobierno-paquete-A.json` (`agentes[]` con `historial`, `modelos` y `variables`; `trazas[]` con `spans` y `motivo`; y opcionalmente `caps`, `politicas` con `descripcion`, `severidad`, `disparos_dia` y `ultimos`, `razonamiento`, `replays`, `diario`, `eventos`, `modelos`…); las secciones ausentes se toman de la demo. «Exportar trazas» descarga el dataset activo con ese mismo esquema.
 
 Todos los iconos de la web (triaje y panel) son [Lucide](https://lucide.dev) (licencia ISC), inline desde `icons.js`.
 

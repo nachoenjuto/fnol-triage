@@ -42,7 +42,7 @@
 <section class="view is-active" data-view="resumen">
   <div class="kpis" id="kpis"></div>
   <div class="card">
-    <div class="card-head"><h2 id="h-agentes"></h2><span class="muted small">Estado en vivo · nivel de autonomía · consumo del día frente al cap · interruptor de pausa por agente</span></div>
+    <div class="card-head"><h2 id="h-agentes"></h2><span class="muted small">Estado en vivo · nivel de autonomía · consumo del día frente al cap · interruptor de pausa por agente · clic en un agente para ver su ficha</span></div>
     <div class="agents" id="agents"></div>
   </div>
   <div class="two">
@@ -52,44 +52,57 @@
       <div class="legend" id="legend-coste"></div>
     </div>
     <div class="card">
-      <div class="card-head"><h2 id="h-alertas"></h2><button class="btn btn-sm" type="button">Ver todas</button></div>
+      <div class="card-head"><h2 id="h-alertas"></h2><button class="btn btn-sm" type="button" data-goto="historico">Ver histórico</button></div>
       <div class="alerts" id="alerts"></div>
     </div>
   </div>
   <div class="card">
-    <div class="card-head"><h2 id="h-ultimas"></h2><button class="btn btn-sm" type="button" data-goto="trazas">Abrir trazabilidad</button></div>
+    <div class="card-head"><h2 id="h-ultimas"></h2><span class="muted small">Clic en una traza para abrir su ficha explicada</span><button class="btn btn-sm" type="button" data-goto="trazas">Abrir trazabilidad</button></div>
     <div class="tw"><table><thead><tr><th>Traza</th><th>Hora</th><th>Mensaje</th><th>Canal</th><th>Ramo</th><th>Decisión</th><th>Autonomía</th><th>Ciclo</th><th>Coste</th></tr></thead><tbody id="ultimas"></tbody></table></div>
   </div>
 </section>
 
 <!-- ───────────── TRAZABILIDAD ───────────── -->
 <section class="view" data-view="trazas">
+  <div class="card detalle-fijo" id="traza-detalle"></div>
   <div class="card">
     <div class="card-head">
       <h2 id="h-trazas"></h2>
       <div class="row">
-        <label class="f">Agente<select id="f-agente"><option value="">Todos</option><option value="multicanal">Multicanalidad</option><option value="clasificacion">Clasificación</option><option value="extraccion">Extracción</option><option value="reglas">Reglas</option></select></label>
-        <label class="f">Canal<select id="f-canal"><option value="">Todos</option><option value="email">Email</option><option value="web">Formulario web</option><option value="chat">Chat</option><option value="telefono">Teléfono</option><option value="whatsapp">WhatsApp</option></select></label>
-        <label class="f">Decisión<select id="f-dec"><option value="">Todas</option><option value="DESPEJADO">Aprobado</option><option value="REVISION">A revisar</option></select></label>
-        <label class="f">Resultado<select id="f-res"><option value="">Todos</option><option value="auto">Autónomo</option><option value="humano">Escalado a humano</option><option value="override">Con override</option><option value="incidencia">Con incidencia</option></select></label>
-        <button class="btn btn-sm" type="button" id="btn-export-trazas"></button>
+        <label class="f">Agente<select id="t-agente"><option value="">Todos</option><option value="multicanal">Multicanalidad</option><option value="clasificacion">Clasificación</option><option value="extraccion">Extracción</option><option value="reglas">Reglas</option></select></label>
+        <label class="f">Canal<select id="t-canal"><option value="">Todos</option><option value="email">Email</option><option value="web">Formulario web</option><option value="chat">Chat</option><option value="telefono">Teléfono</option><option value="whatsapp">WhatsApp</option></select></label>
+        <label class="f">Decisión<select id="t-dec"><option value="">Todas</option><option value="DESPEJADO">Aprobado</option><option value="REVISION">A revisar</option></select></label>
+        <label class="f">Resultado<select id="t-res"><option value="">Todos</option><option value="auto">Autónomo</option><option value="humano">Escalado a humano</option><option value="override">Con override</option><option value="incidencia">Con incidencia</option></select></label>
       </div>
+      <button class="btn btn-sm" type="button" id="btn-export-trazas"></button>
     </div>
-    <div class="tw"><table><thead><tr><th>Traza</th><th>Hora</th><th>Mensaje</th><th>Canal</th><th>Ramo</th><th>Decisión</th><th>Autonomía</th><th>Conf.</th><th>Ciclo</th><th>Tokens</th><th>Coste</th><th>Incidencias</th></tr></thead><tbody id="trazas"></tbody></table></div>
+    <div class="tw"><table><thead><tr><th>Traza</th><th>Hora</th><th>Mensaje</th><th>Canal</th><th>Ramo</th><th>Decisión</th><th>Autonomía</th><th>Conf.</th><th>Ciclo</th><th>Tokens</th><th>Coste</th><th>Incidencias</th></tr></thead><tbody id="t-trazas"></tbody></table></div>
   </div>
-  <div class="card" id="traza-detalle"></div>
 </section>
 
 <!-- ───────────── REASONING & REPLAY ───────────── -->
 <section class="view" data-view="replay">
+  <details class="card lista-colapsable" id="r-lista" open>
+    <summary><span id="r-summary"></span><span class="muted small" id="r-summary-sel"></span></summary>
+    <div class="card-head" style="margin-top:.8rem">
+      <div class="row">
+        <label class="f">Agente<select id="r-agente"><option value="">Todos</option><option value="multicanal">Multicanalidad</option><option value="clasificacion">Clasificación</option><option value="extraccion">Extracción</option><option value="reglas">Reglas</option></select></label>
+        <label class="f">Canal<select id="r-canal"><option value="">Todos</option><option value="email">Email</option><option value="web">Formulario web</option><option value="chat">Chat</option><option value="telefono">Teléfono</option><option value="whatsapp">WhatsApp</option></select></label>
+        <label class="f">Decisión<select id="r-dec"><option value="">Todas</option><option value="DESPEJADO">Aprobado</option><option value="REVISION">A revisar</option></select></label>
+        <label class="f">Resultado<select id="r-res"><option value="">Todos</option><option value="auto">Autónomo</option><option value="humano">Escalado a humano</option><option value="override">Con override</option><option value="incidencia">Con incidencia</option></select></label>
+      </div>
+      <span class="muted small">Clic en una traza para cargar su razonamiento y su replay</span>
+    </div>
+    <div class="tw"><table><thead><tr><th>Traza</th><th>Hora</th><th>Mensaje</th><th>Canal</th><th>Ramo</th><th>Decisión</th><th>Autonomía</th><th>Conf.</th><th>Ciclo</th><th>Tokens</th><th>Coste</th><th>Incidencias</th></tr></thead><tbody id="r-trazas"></tbody></table></div>
+  </details>
   <div class="two">
     <div class="card">
-      <div class="card-head"><h2 id="h-reasoning"></h2><label class="f">Traza<select id="sel-traza"></select></label></div>
-      <p class="muted small" style="margin-bottom:.8rem">Razonamiento resumido por agente tal y como quedó registrado (entrada → razonamiento → salida → políticas evaluadas). No es la cadena de pensamiento cruda del modelo: es el registro estructurado que devuelve cada agente.</p>
+      <div class="card-head"><h2 id="h-reasoning"></h2><span class="muted small" id="r-traza-sel"></span></div>
+      <p class="muted small" style="margin-bottom:.8rem">Razonamiento resumido por agente tal y como quedó registrado (entrada → pasos → salida). No es la cadena de pensamiento cruda del modelo: es el registro estructurado que devuelve cada agente.</p>
       <div class="steps" id="steps"></div>
     </div>
     <div class="detail">
-      <div class="card">
+      <div class="card" id="card-replay">
         <div class="card-head"><h2 id="h-replay"></h2></div>
         <div class="row" style="margin-bottom:.8rem">
           <label class="f">Modo<select id="rp-modo"><option value="identico">Idéntico — mismos prompts y modelos (verificación determinista)</option><option value="whatif">What-if — cambiar modelo o versión de prompt</option></select></label>
@@ -111,19 +124,26 @@
 <section class="view" data-view="autonomia">
   <div class="kpis" id="kpis-aut"></div>
   <div class="card">
-    <div class="card-head"><h2 id="h-niveles"></h2><span class="muted small">Cada agente opera en un nivel; el motor escala a humano cuando un guardrail no se cumple</span></div>
+    <div class="card-head"><h2 id="h-niveles"></h2><span class="muted small">De rojo (manual) a verde (autónomo). Clic en un agente para ver su histórico; el interruptor pausa el agente</span></div>
     <div class="levels" id="levels"></div>
     <div class="agents" id="agents-aut" style="margin-top:1rem"></div>
   </div>
-  <div class="two">
-    <div class="card">
-      <div class="card-head"><h2 id="h-guardrails"></h2><button class="btn btn-sm" type="button" id="btn-new-policy"></button></div>
-      <div class="tw"><table><thead><tr><th>Id</th><th>Agente</th><th>Condición</th><th>Acción</th><th>Disparos 14 d</th><th>Estado</th></tr></thead><tbody id="policies"></tbody></table></div>
-    </div>
-    <div class="card">
-      <div class="card-head"><h2 id="h-cambios"></h2></div>
-      <div class="tw"><table><thead><tr><th>Fecha</th><th>Agente</th><th>Cambio</th><th>Motivo</th><th>Usuario</th></tr></thead><tbody id="cambios"></tbody></table></div>
-    </div>
+  <div class="card">
+    <div class="card-head"><h2 id="h-cambios"></h2><span class="muted small">Cambios de nivel, de modelo y de guardrails con su motivo y quién los aprobó</span></div>
+    <div class="tw"><table><thead><tr><th>Fecha</th><th>Agente</th><th>Cambio</th><th>Motivo</th><th>Usuario</th></tr></thead><tbody id="cambios"></tbody></table></div>
+  </div>
+</section>
+
+<!-- ───────────── GUARDRAILS ───────────── -->
+<section class="view" data-view="guardrails">
+  <div class="kpis" id="kpis-gr"></div>
+  <div class="card">
+    <div class="card-head"><h2 id="h-guardrails"></h2><span class="muted small">Condiciones que limitan la autonomía de cada agente · pasa el ratón por un código (G-04, CAP-03) en cualquier pestaña para ver su descripción</span><button class="btn btn-sm" type="button" id="btn-new-policy"></button></div>
+    <div class="tw"><table><thead><tr><th>Id</th><th>Agente</th><th>Condición</th><th>Acción</th><th>Severidad</th><th style="min-width:150px">Disparos 14 d</th><th>Estado</th></tr></thead><tbody id="policies"></tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2 id="h-disparos"></h2></div>
+    <div class="tw"><table><thead><tr><th>Fecha</th><th>Guardrail</th><th>Agente</th><th>Traza</th><th>Resultado</th></tr></thead><tbody id="disparos"></tbody></table></div>
   </div>
 </section>
 
@@ -136,14 +156,30 @@
   </div>
   <div class="two">
     <div class="card">
-      <div class="card-head"><h2 id="h-coste-ag"></h2><span class="muted small">€/día apilado por agente</span></div>
+      <div class="card-head"><h2 id="h-coste-ag"></h2><span class="muted small">€/día apilado por agente · clic en la leyenda para ocultar o mostrar un agente</span></div>
       <div id="chart-stack"></div>
       <div class="legend" id="legend-stack"></div>
     </div>
     <div class="card">
-      <div class="card-head"><h2 id="h-tokens"></h2><span class="muted small">Lote actual · miles de tokens</span></div>
+      <div class="card-head"><h2 id="h-tokens"></h2><span class="muted small">Lote actual · miles de tokens · clic en la leyenda para filtrar</span></div>
       <div id="chart-tokens"></div>
       <div class="legend" id="legend-tokens"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2 id="h-modelos"></h2><span class="muted small">Consumo y éxito de cada modelo en los agentes que lo usan · 14 días</span></div>
+    <div class="tw"><table><thead><tr><th>Modelo</th><th>Proveedor</th><th>Precio in / out</th><th>Agentes</th><th>Llamadas</th><th>Tokens in · out · razonamiento</th><th>Coste 14 d</th><th style="min-width:120px">% del coste</th><th>p95</th><th>JSON válido</th><th>Sin reintento</th><th>Estable en replay</th><th>Precisión</th></tr></thead><tbody id="modelos"></tbody></table></div>
+    <div class="two" style="margin-top:1rem">
+      <div>
+        <h3 style="margin-bottom:.5rem">Coste por modelo y agente</h3>
+        <div id="chart-modelos"></div>
+        <div class="legend" id="legend-modelos"></div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:.5rem">Tokens por modelo</h3>
+        <div id="chart-modelos-tok"></div>
+        <div class="legend" id="legend-modelos-tok"></div>
+      </div>
     </div>
   </div>
   <div class="card">
@@ -159,6 +195,19 @@
     <div class="timeline" id="timeline"></div>
   </div>
 </section>
+
+<!-- Ficha de una traza (Resumen) -->
+<dialog id="modal-traza" class="modal" aria-labelledby="modal-traza-title">
+  <div class="modal-head"><h2 id="modal-traza-title"></h2><button class="btn btn-sm" type="button" data-close="modal-traza" aria-label="Cerrar"></button></div>
+  <div class="modal-body" id="modal-traza-body"></div>
+</dialog>
+
+<!-- Ficha de un agente (Resumen y Autonomía) -->
+<dialog id="modal-agente" class="modal" aria-labelledby="modal-agente-title">
+  <div class="modal-head"><h2 id="modal-agente-title"></h2><button class="btn btn-sm" type="button" data-close="modal-agente" aria-label="Cerrar"></button></div>
+  <div class="modal-body" id="modal-agente-body"></div>
+</dialog>
+
 <p class="foot">Panel «Gobierno de Agentes» · demo estática · los datos de demostración son inventados y coherentes con el Paquete A del triaje · <a href="https://github.com/nachoenjuto/fnol-triage" target="_blank" rel="noopener">Código en GitHub</a></p>
   <script src="icons.js"></script>
   <script src="data/gobierno.js"></script>

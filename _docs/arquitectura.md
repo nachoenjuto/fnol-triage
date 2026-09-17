@@ -54,11 +54,16 @@ flowchart LR
   json --> G
   sesion -->|trazasDesdeSesion| G
   G --> resumen[Resumen · KPI, agentes, alertas, coste vs cap]
-  G --> trazas[Trazabilidad · tabla + waterfall de spans]
-  G --> replay[Reasoning & Replay · pasos por agente + diff]
-  G --> autonomia[Autonomía · niveles, guardrails, auditoría]
-  G --> finops[FinOps · caps, coste por agente, tokens, recomendaciones]
+  G --> trazas[Trazabilidad · panel fijo + lista filtrable]
+  G --> replay[Reasoning & Replay · lista + pasos por agente + diff]
+  G --> autonomia[Autonomía · niveles L0–L3, agentes, auditoría]
+  G --> guardrails[Guardrails · condiciones, disparos, toggles]
+  G --> finops[FinOps · caps, coste por agente, modelos, recomendaciones]
   G --> historico[Histórico · línea de tiempo por tipo de evento]
+  resumen -. clic en traza .-> mTraza([Modal · ficha explicada de la traza])
+  resumen -. clic en agente .-> mAgente([Modal · ficha del agente])
+  autonomia -. clic en agente .-> mAgente
+  resumen -. kill switch .-> estado[(sessionStorage gobierno.estados)]
 ```
 
-Esquema del dataset (`data/gobierno-paquete-A.json`): `version`, `periodo`, `precios{modelo:{in,out}}`, `agentes[]`, `niveles[]`, `politicas[]`, `cambios_autonomia[]`, `caps[]`, `kpis`, `alertas[]`, `trazas[]` (cada una con `spans: [[agente, inicio_ms, duracion_ms, modelo, tok_in, tok_out, tok_reasoning]]`), `razonamiento{trazaId: pasos[]}`, `replays[]`, `diario[[fecha, mensajes, [€ por agente]]]`, `eventos[]`, `recomendaciones[]`.
+Esquema del dataset (`data/gobierno-paquete-A.json`): `version`, `periodo`, `precios{modelo:{in,out}}`, `agentes[]` (con `historial[]`, `modelos[]`, `variables[]`), `niveles[]`, `politicas[]` (con `descripcion`, `severidad`, `disparos_dia[]`, `ultimos[]`), `cambios_autonomia[]`, `caps[]`, `kpis`, `alertas[]`, `modelos[]` (consumo, `coste_por_agente`, `exito`), `trazas[]` (cada una con `motivo` y `spans: [[agente, inicio_ms, duracion_ms, modelo, tok_in, tok_out, tok_reasoning]]`), `razonamiento{trazaId: pasos[]}`, `replays[]`, `diario[[fecha, mensajes, [€ por agente]]]`, `eventos[]`, `recomendaciones[]`.

@@ -38,7 +38,78 @@
       "cap_hoy": 1,
       "umbral": "STT ≥ 0,7 (G-09, inactivo)",
       "escalado_14d": "0,1 %",
-      "override_14d": "—"
+      "override_14d": "—",
+      "historial": [
+        {
+          "fecha": "2026-08-18T10:00:00",
+          "tipo": "nivel",
+          "de": "L2",
+          "a": "L3",
+          "motivo": "Normalización sin errores en 9.000 mensajes; no toma decisiones de negocio",
+          "usuario": "Comité IA"
+        },
+        {
+          "fecha": "2026-08-25T09:30:00",
+          "tipo": "modelo",
+          "de": "gpt-4o-mini",
+          "a": "gpt-5-nano",
+          "motivo": "Mismo resultado de normalización con −60 % de coste",
+          "usuario": "J. Rey"
+        },
+        {
+          "fecha": "2026-09-05T08:15:00",
+          "tipo": "prompt",
+          "de": "v1.1",
+          "a": "v1.2",
+          "motivo": "Canal WhatsApp: abreviaturas, emojis y audios transcritos",
+          "usuario": "Equipo Canales"
+        },
+        {
+          "fecha": "2026-09-12T11:00:00",
+          "tipo": "guardrail",
+          "de": "G-09 activo",
+          "a": "G-09 inactivo",
+          "motivo": "Confianza STT media 0,91: el guardrail solo generaba escalados innecesarios",
+          "usuario": "M. Ortega"
+        }
+      ],
+      "modelos": [
+        {
+          "modelo": "gpt-4o-mini",
+          "periodo": "01/08 – 25/08",
+          "precision": "99,6 %",
+          "escalado": "0,2 %",
+          "override": "—",
+          "coste_msg": "0,0006 €",
+          "p95_ms": 710
+        },
+        {
+          "modelo": "gpt-5-nano",
+          "periodo": "25/08 – hoy",
+          "precision": "99,7 %",
+          "escalado": "0,1 %",
+          "override": "—",
+          "coste_msg": "0,0002 €",
+          "p95_ms": 640
+        }
+      ],
+      "variables": [
+        {
+          "nombre": "Confianza STT mínima",
+          "valor": "0,7 (G-09 inactivo)",
+          "efecto": "Por debajo, la llamada telefónica se escala a una persona que escucha el audio"
+        },
+        {
+          "nombre": "Canales activos",
+          "valor": "email · web · chat · teléfono · WhatsApp",
+          "efecto": "Cada canal tiene su normalizador; WhatsApp desde el 05/09"
+        },
+        {
+          "nombre": "Cap diario",
+          "valor": "1,00 €",
+          "efecto": "Al 100 % se detiene la transcripción de audio y se encola"
+        }
+      ]
     },
     {
       "id": "clasificacion",
@@ -54,7 +125,78 @@
       "cap_hoy": 2,
       "umbral": "≥ 0,80 · Indeterminado → humano",
       "escalado_14d": "0,5 %",
-      "override_14d": "0,3 %"
+      "override_14d": "0,3 %",
+      "historial": [
+        {
+          "fecha": "2026-08-11T09:00:00",
+          "tipo": "nivel",
+          "de": "L1",
+          "a": "L2",
+          "motivo": "Precisión 97,8 % en piloto de 1.200 mensajes; discrepancias solo en Auto/Salud con lesionados",
+          "usuario": "Comité IA"
+        },
+        {
+          "fecha": "2026-08-27T16:00:00",
+          "tipo": "modelo",
+          "de": "gpt-5-mini",
+          "a": "gpt-5-nano",
+          "motivo": "Replay de 500 mensajes: misma precisión (99,1 % vs 99,2 %) con −80 % de coste",
+          "usuario": "J. Rey"
+        },
+        {
+          "fecha": "2026-09-03T10:30:00",
+          "tipo": "prompt",
+          "de": "v3.0",
+          "a": "v3.1",
+          "motivo": "Regla explícita: el hecho causante decide el ramo cuando hay pólizas de Auto y Salud",
+          "usuario": "M. Ortega"
+        },
+        {
+          "fecha": "2026-09-10T11:05:00",
+          "tipo": "nivel",
+          "de": "L2",
+          "a": "L3",
+          "motivo": "Precisión 99,2 % sobre 4.800 mensajes en 7 días; override 0,3 %",
+          "usuario": "M. Ortega"
+        }
+      ],
+      "modelos": [
+        {
+          "modelo": "gpt-5-mini",
+          "periodo": "01/08 – 27/08",
+          "precision": "99,2 %",
+          "escalado": "0,6 %",
+          "override": "0,4 %",
+          "coste_msg": "0,0006 €",
+          "p95_ms": 1380
+        },
+        {
+          "modelo": "gpt-5-nano",
+          "periodo": "27/08 – hoy",
+          "precision": "99,1 %",
+          "escalado": "0,5 %",
+          "override": "0,3 %",
+          "coste_msg": "0,0001 €",
+          "p95_ms": 1120
+        }
+      ],
+      "variables": [
+        {
+          "nombre": "Confianza mínima de ramo",
+          "valor": "0,80",
+          "efecto": "Por debajo devuelve Indeterminado y G-06 escala a una persona"
+        },
+        {
+          "nombre": "Indicios mínimos",
+          "valor": "2 en el texto",
+          "efecto": "Con un solo indicio la confianza baja de 0,80 y se escala"
+        },
+        {
+          "nombre": "Cap diario",
+          "valor": "2,00 €",
+          "efecto": "Sin acción automática: el agente es barato (21 % de uso hoy)"
+        }
+      ]
     },
     {
       "id": "extraccion",
@@ -70,7 +212,86 @@
       "cap_hoy": 5,
       "umbral": "sin umbral · G-05 datos nulos",
       "escalado_14d": "2,0 %",
-      "override_14d": "0,9 %"
+      "override_14d": "0,9 %",
+      "historial": [
+        {
+          "fecha": "2026-08-04T09:00:00",
+          "tipo": "nivel",
+          "de": "L0",
+          "a": "L1",
+          "motivo": "Arranque del piloto: una persona confirma cada ficha extraída",
+          "usuario": "Comité IA"
+        },
+        {
+          "fecha": "2026-08-20T12:00:00",
+          "tipo": "prompt",
+          "de": "v1.4",
+          "a": "v2.0",
+          "motivo": "Instrucción «nunca inventar»: los campos ausentes quedan nulos; se añade observaciones",
+          "usuario": "M. Ortega"
+        },
+        {
+          "fecha": "2026-08-29T10:00:00",
+          "tipo": "modelo",
+          "de": "gpt-5",
+          "a": "gpt-5-mini",
+          "motivo": "Auditoría de 400 fichas: 0 datos inventados con ambos modelos; −85 % de coste",
+          "usuario": "J. Rey"
+        },
+        {
+          "fecha": "2026-09-08T09:30:00",
+          "tipo": "nivel",
+          "de": "L1",
+          "a": "L2",
+          "motivo": "Fin del piloto: 0 datos inventados en auditoría de 600 fichas",
+          "usuario": "Comité IA"
+        },
+        {
+          "fecha": "2026-09-15T10:12:00",
+          "tipo": "incidencia",
+          "de": "—",
+          "a": "429 Azure",
+          "motivo": "Ráfaga de 429 (10:12–10:19): 38 reintentos, 1 fallback al motor local",
+          "usuario": "Sistema"
+        }
+      ],
+      "modelos": [
+        {
+          "modelo": "gpt-5",
+          "periodo": "04/08 – 29/08",
+          "precision": "99,8 % campos",
+          "escalado": "1,9 %",
+          "override": "0,8 %",
+          "coste_msg": "0,0110 €",
+          "p95_ms": 3900
+        },
+        {
+          "modelo": "gpt-5-mini",
+          "periodo": "29/08 – hoy",
+          "precision": "99,7 % campos",
+          "escalado": "2,0 %",
+          "override": "0,9 %",
+          "coste_msg": "0,0018 €",
+          "p95_ms": 2380
+        }
+      ],
+      "variables": [
+        {
+          "nombre": "Datos esenciales",
+          "valor": "nº de póliza y fecha del hecho",
+          "efecto": "Si los dos son nulos, G-05 escala y se pide al cliente"
+        },
+        {
+          "nombre": "Política de nulos",
+          "valor": "nunca inventar",
+          "efecto": "Un dato ausente queda nulo y puede motivar la revisión"
+        },
+        {
+          "nombre": "Cap diario",
+          "valor": "5,00 €",
+          "efecto": "Aviso al 80 %; hoy al 58 %"
+        }
+      ]
     },
     {
       "id": "reglas",
@@ -86,7 +307,126 @@
       "cap_hoy": 12,
       "umbral": "≥ 0,85 (G-01)",
       "escalado_14d": "16,4 %",
-      "override_14d": "2,1 %"
+      "override_14d": "2,1 %",
+      "historial": [
+        {
+          "fecha": "2026-08-04T09:00:00",
+          "tipo": "nivel",
+          "de": "L0",
+          "a": "L1",
+          "motivo": "Arranque: el agente propone y un tramitador confirma cada decisión",
+          "usuario": "Comité IA"
+        },
+        {
+          "fecha": "2026-08-22T15:00:00",
+          "tipo": "nivel",
+          "de": "L1",
+          "a": "L2",
+          "motivo": "Coincidencia con el tramitador 96,4 % en 2.000 decisiones; guardrails G-01…G-05 activos",
+          "usuario": "Comité IA"
+        },
+        {
+          "fecha": "2026-09-01T09:00:00",
+          "tipo": "nivel",
+          "de": "L2",
+          "a": "L3",
+          "motivo": "Override 1,8 % en dos semanas; escalados solo por guardrail",
+          "usuario": "M. Ortega"
+        },
+        {
+          "fecha": "2026-09-09T15:30:00",
+          "tipo": "guardrail",
+          "de": "—",
+          "a": "G-07",
+          "motivo": "Degradar a gpt-5-mini al 100 % del cap diario en lugar de detener el lote",
+          "usuario": "Comité IA"
+        },
+        {
+          "fecha": "2026-09-11T09:00:00",
+          "tipo": "prompt",
+          "de": "v2.2",
+          "a": "v2.3",
+          "motivo": "Añade H7 (póliza reciente) y aclara S8 (mutua laboral); 200 mensajes sin regresión",
+          "usuario": "Comité IA"
+        },
+        {
+          "fecha": "2026-09-15T16:40:00",
+          "tipo": "nivel",
+          "de": "L3",
+          "a": "L2",
+          "motivo": "Override 4,1 % en la semana (> 3 % objetivo): vuelve a supervisado",
+          "usuario": "M. Ortega"
+        },
+        {
+          "fecha": "2026-09-16T17:40:00",
+          "tipo": "modelo",
+          "de": "gpt-5",
+          "a": "gpt-5-mini (degradado)",
+          "motivo": "CAP-03 superado: G-07 degrada el modelo hasta las 00:00",
+          "usuario": "Sistema"
+        }
+      ],
+      "modelos": [
+        {
+          "modelo": "gpt-5",
+          "periodo": "04/08 – hoy",
+          "precision": "98,9 % decisión",
+          "escalado": "16,4 %",
+          "override": "2,1 %",
+          "coste_msg": "0,0110 €",
+          "p95_ms": 5210
+        },
+        {
+          "modelo": "gpt-5-mini",
+          "periodo": "tramos degradados (16/09, 17/09)",
+          "precision": "97,6 % decisión",
+          "escalado": "18,2 %",
+          "override": "3,4 %",
+          "coste_msg": "0,0020 €",
+          "p95_ms": 3070
+        },
+        {
+          "modelo": "gpt-5-nano",
+          "periodo": "solo replay RP-0005",
+          "precision": "regresión (Aprobado ≠ A revisar)",
+          "escalado": "—",
+          "override": "—",
+          "coste_msg": "0,0004 €",
+          "p95_ms": 2340
+        }
+      ],
+      "variables": [
+        {
+          "nombre": "Confianza mínima",
+          "valor": "0,85 (G-01)",
+          "efecto": "Por debajo, la decisión pasa a una persona"
+        },
+        {
+          "nombre": "Importe máximo automático",
+          "valor": "6.000 € Auto · 10.000 € Hogar · 2.000 € reembolso Salud (G-02)",
+          "efecto": "Origen del 62 % de los escalados"
+        },
+        {
+          "nombre": "Lesionados",
+          "valor": "siempre a persona (G-04)",
+          "efecto": "Daños corporales fuera del alcance del agente"
+        },
+        {
+          "nombre": "Reasoning effort",
+          "valor": "medium",
+          "efecto": "A «low» ahorraría ~35 % de tokens de razonamiento (recomendación R-01)"
+        },
+        {
+          "nombre": "Objetivo de override",
+          "valor": "≤ 3 % semanal",
+          "efecto": "Al superarlo baja un nivel de autonomía (ocurrió el 15/09)"
+        },
+        {
+          "nombre": "Cap diario",
+          "valor": "12,00 €",
+          "efecto": "Al 100 % G-07 degrada a gpt-5-mini (activo desde ayer)"
+        }
+      ]
     }
   ],
   "niveles": [
@@ -117,81 +457,347 @@
       "agente": "reglas",
       "condicion": "Confianza de la decisión < 0,85",
       "accion": "Escalar a humano",
+      "severidad": "humano",
       "disparos": 41,
-      "activa": true
+      "activa": true,
+      "descripcion": "Si el modelo devuelve una confianza inferior a 0,85 la decisión no se ejecuta: pasa a un tramitador con la ficha preparada.",
+      "disparos_dia": [
+        3,
+        4,
+        1,
+        1,
+        3,
+        4,
+        3,
+        4,
+        3,
+        1,
+        2,
+        4,
+        5,
+        3
+      ],
+      "ultimos": [
+        [
+          "2026-09-16T18:44:00",
+          "TRZ-3D02 (MSG-B-14)",
+          "escalado"
+        ],
+        [
+          "2026-09-16T11:20:00",
+          "TRZ-3C77 (MSG-C-03)",
+          "escalado"
+        ]
+      ]
     },
     {
       "id": "G-02",
       "agente": "reglas",
       "condicion": "Importe > 6.000 € (Auto) · > 10.000 € (Hogar) · reembolso > 2.000 € (Salud)",
       "accion": "Escalar a humano",
+      "severidad": "humano",
       "disparos": 118,
-      "activa": true
+      "activa": true,
+      "descripcion": "Los importes por encima del límite del ramo nunca se aprueban automáticamente, aunque el resto de reglas se cumplan.",
+      "disparos_dia": [
+        9,
+        10,
+        4,
+        3,
+        10,
+        11,
+        10,
+        11,
+        10,
+        4,
+        5,
+        12,
+        12,
+        7
+      ],
+      "ultimos": [
+        [
+          "2026-09-17T08:52:00",
+          "TRZ-4F1E (MSG-B-07)",
+          "escalado"
+        ],
+        [
+          "2026-09-16T19:05:00",
+          "TRZ-3D11 (MSG-C-09)",
+          "escalado"
+        ]
+      ]
     },
     {
       "id": "G-03",
       "agente": "reglas",
       "condicion": "Ramo del paso Reglas ≠ ramo de Clasificación",
       "accion": "Escalar a humano",
+      "severidad": "humano",
       "disparos": 9,
-      "activa": true
+      "activa": true,
+      "descripcion": "Si al aplicar las reglas el modelo cambia de ramo respecto al asignado por Clasificación, la traza se marca como discrepante y se escala.",
+      "disparos_dia": [
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "ultimos": [
+        [
+          "2026-09-16T15:10:00",
+          "TRZ-3C98 (MSG-B-19)",
+          "escalado"
+        ]
+      ]
     },
     {
       "id": "G-04",
       "agente": "reglas",
       "condicion": "Lesionados = sí",
       "accion": "Escalar a humano (daños corporales)",
+      "severidad": "humano",
       "disparos": 63,
-      "activa": true
+      "activa": true,
+      "descripcion": "Cualquier mensaje con lesionados se deriva a gestión especializada de daños corporales: el agente no decide.",
+      "disparos_dia": [
+        5,
+        5,
+        2,
+        2,
+        5,
+        6,
+        5,
+        6,
+        5,
+        2,
+        3,
+        6,
+        6,
+        5
+      ],
+      "ultimos": [
+        [
+          "2026-09-17T09:03:09",
+          "TRZ-4F31 (MSG-A-08)",
+          "escalado"
+        ],
+        [
+          "2026-09-16T20:31:00",
+          "TRZ-3D19 (MSG-B-05)",
+          "escalado"
+        ]
+      ]
     },
     {
       "id": "G-05",
       "agente": "extraccion",
       "condicion": "Nº de póliza y fecha del hecho nulos a la vez",
       "accion": "Escalar a humano + pedir datos al cliente",
+      "severidad": "humano",
       "disparos": 87,
-      "activa": true
+      "activa": true,
+      "descripcion": "Sin póliza ni fecha no se puede tramitar: se escala y se envía al cliente una petición de datos por su mismo canal.",
+      "disparos_dia": [
+        7,
+        7,
+        3,
+        3,
+        7,
+        8,
+        7,
+        8,
+        7,
+        3,
+        4,
+        8,
+        8,
+        7
+      ],
+      "ultimos": [
+        [
+          "2026-09-17T09:03:49",
+          "TRZ-4F36 (MSG-A-13)",
+          "escalado + petición de datos"
+        ],
+        [
+          "2026-09-16T17:22:00",
+          "TRZ-3D08 (MSG-C-12)",
+          "escalado + petición de datos"
+        ]
+      ]
     },
     {
       "id": "G-06",
       "agente": "clasificacion",
       "condicion": "Ramo = Indeterminado",
       "accion": "Escalar a humano",
+      "severidad": "humano",
       "disparos": 22,
-      "activa": true
+      "activa": true,
+      "descripcion": "Si Clasificación no alcanza la confianza mínima (0,80) devuelve Indeterminado y una persona asigna el ramo.",
+      "disparos_dia": [
+        2,
+        2,
+        1,
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        1,
+        1,
+        2,
+        2,
+        1
+      ],
+      "ultimos": [
+        [
+          "2026-09-16T13:02:00",
+          "TRZ-3C81 (MSG-C-15)",
+          "escalado"
+        ]
+      ]
     },
     {
       "id": "G-07",
       "agente": "reglas",
       "condicion": "Cap diario de coste ≥ 100 %",
       "accion": "Degradar modelo a gpt-5-mini hasta las 00:00",
+      "severidad": "degradar",
       "disparos": 2,
-      "activa": true
+      "activa": true,
+      "descripcion": "Guardrail FinOps: al agotar el cap diario del agente (CAP-03) se cambia a un modelo más barato en lugar de detener el lote; se registra cada mensaje procesado en modo degradado.",
+      "disparos_dia": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "ultimos": [
+        [
+          "2026-09-17T08:00:00",
+          "lote de la mañana",
+          "degradado desde el arranque"
+        ],
+        [
+          "2026-09-16T17:40:00",
+          "312 mensajes",
+          "degradado hasta las 00:00"
+        ]
+      ]
     },
     {
       "id": "G-08",
       "agente": "reglas",
       "condicion": "JSON inválido tras 2 reintentos",
       "accion": "Fallback a motor local + marcar traza",
+      "severidad": "marcar",
       "disparos": 5,
-      "activa": true
+      "activa": true,
+      "descripcion": "Si el modelo no devuelve un JSON válido tras dos reintentos, decide el motor local de reglas y la traza queda marcada para revisión.",
+      "disparos_dia": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "ultimos": [
+        [
+          "2026-09-15T10:14:00",
+          "TRZ-3A62 (MSG-B-11)",
+          "fallback + revisión"
+        ]
+      ]
     },
     {
       "id": "G-09",
       "agente": "multicanal",
       "condicion": "Transcripción telefónica con confianza STT < 0,7",
       "accion": "Escalar a humano (escuchar audio)",
+      "severidad": "humano",
       "disparos": 14,
-      "activa": false
+      "activa": false,
+      "descripcion": "Con una transcripción poco fiable, una persona escucha el audio antes de continuar. Desactivado el 12/09: la confianza media es 0,91 y solo generaba escalados innecesarios.",
+      "disparos_dia": [
+        2,
+        1,
+        1,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "ultimos": [
+        [
+          "2026-09-11T16:40:00",
+          "TRZ-2E90 (MSG-B-08)",
+          "escalado"
+        ]
+      ]
     }
   ],
   "cambios_autonomia": [
+    {
+      "fecha": "2026-09-16T17:40:00",
+      "agente": "reglas",
+      "de": 2,
+      "a": 2,
+      "motivo": "Sin cambio de nivel: modelo degradado a gpt-5-mini por CAP-03 (G-07)",
+      "usuario": "Sistema"
+    },
     {
       "fecha": "2026-09-15T16:40:00",
       "agente": "reglas",
       "de": 3,
       "a": 2,
       "motivo": "Tasa de override humano 4,1 % en la semana (> 3 % objetivo)",
+      "usuario": "M. Ortega (Gobierno IA)"
+    },
+    {
+      "fecha": "2026-09-12T11:00:00",
+      "agente": "multicanal",
+      "de": 3,
+      "a": 3,
+      "motivo": "Sin cambio de nivel: G-09 desactivado (confianza STT media 0,91)",
       "usuario": "M. Ortega (Gobierno IA)"
     },
     {
@@ -207,8 +813,198 @@
       "agente": "extraccion",
       "de": 1,
       "a": 2,
-      "motivo": "Fin del piloto: 0 datos inventados detectados en auditoría de 600 fichas",
+      "motivo": "Fin del piloto: 0 datos inventados en auditoría de 600 fichas",
       "usuario": "Comité IA"
+    },
+    {
+      "fecha": "2026-09-01T09:00:00",
+      "agente": "reglas",
+      "de": 2,
+      "a": 3,
+      "motivo": "Override 1,8 % en dos semanas; escalados solo por guardrail",
+      "usuario": "M. Ortega (Gobierno IA)"
+    },
+    {
+      "fecha": "2026-08-29T10:00:00",
+      "agente": "extraccion",
+      "de": 1,
+      "a": 1,
+      "motivo": "Sin cambio de nivel: modelo gpt-5 → gpt-5-mini tras auditoría de 400 fichas",
+      "usuario": "J. Rey"
+    },
+    {
+      "fecha": "2026-08-27T16:00:00",
+      "agente": "clasificacion",
+      "de": 2,
+      "a": 2,
+      "motivo": "Sin cambio de nivel: modelo gpt-5-mini → gpt-5-nano (misma precisión, −80 % coste)",
+      "usuario": "J. Rey"
+    },
+    {
+      "fecha": "2026-08-25T09:30:00",
+      "agente": "multicanal",
+      "de": 3,
+      "a": 3,
+      "motivo": "Sin cambio de nivel: modelo gpt-4o-mini → gpt-5-nano",
+      "usuario": "J. Rey"
+    },
+    {
+      "fecha": "2026-08-22T15:00:00",
+      "agente": "reglas",
+      "de": 1,
+      "a": 2,
+      "motivo": "Coincidencia con el tramitador 96,4 % en 2.000 decisiones; guardrails G-01…G-05 activos",
+      "usuario": "Comité IA"
+    },
+    {
+      "fecha": "2026-08-18T10:00:00",
+      "agente": "multicanal",
+      "de": 2,
+      "a": 3,
+      "motivo": "Normalización sin errores en 9.000 mensajes; no toma decisiones de negocio",
+      "usuario": "Comité IA"
+    },
+    {
+      "fecha": "2026-08-14T12:30:00",
+      "agente": "reglas",
+      "de": 2,
+      "a": 1,
+      "motivo": "Vuelta a asistido: 3 aprobaciones indebidas de importes altos antes de existir G-02",
+      "usuario": "Comité IA"
+    },
+    {
+      "fecha": "2026-08-11T09:00:00",
+      "agente": "clasificacion",
+      "de": 1,
+      "a": 2,
+      "motivo": "Precisión 97,8 % en piloto de 1.200 mensajes",
+      "usuario": "Comité IA"
+    },
+    {
+      "fecha": "2026-08-08T10:00:00",
+      "agente": "reglas",
+      "de": 1,
+      "a": 2,
+      "motivo": "Primer paso a supervisado con umbral de confianza 0,90",
+      "usuario": "Comité IA"
+    },
+    {
+      "fecha": "2026-08-04T09:00:00",
+      "agente": "extraccion",
+      "de": 0,
+      "a": 1,
+      "motivo": "Arranque del piloto: una persona confirma cada ficha extraída",
+      "usuario": "Comité IA"
+    },
+    {
+      "fecha": "2026-08-04T09:00:00",
+      "agente": "reglas",
+      "de": 0,
+      "a": 1,
+      "motivo": "Arranque del piloto: el agente propone y un tramitador confirma cada decisión",
+      "usuario": "Comité IA"
+    }
+  ],
+  "modelos": [
+    {
+      "id": "gpt-5",
+      "proveedor": "Azure AI Foundry",
+      "agentes": [
+        "reglas"
+      ],
+      "coste_por_agente": {
+        "reglas": 161.9
+      },
+      "llamadas": 16720,
+      "tokens": {
+        "in": 23100000,
+        "out": 10000000,
+        "reasoning": 3300000
+      },
+      "coste": 161.9,
+      "p95_ms": 5210,
+      "exito": {
+        "json_valido": "99,6 %",
+        "sin_reintento": "99,2 %",
+        "estable_replay": "99,5 %",
+        "precision": "98,9 %"
+      }
+    },
+    {
+      "id": "gpt-5-mini",
+      "proveedor": "Azure AI Foundry",
+      "agentes": [
+        "extraccion",
+        "reglas"
+      ],
+      "coste_por_agente": {
+        "extraccion": 30.2,
+        "reglas": 3.3
+      },
+      "llamadas": 17032,
+      "tokens": {
+        "in": 15600000,
+        "out": 4400000,
+        "reasoning": 380000
+      },
+      "coste": 33.5,
+      "p95_ms": 2380,
+      "exito": {
+        "json_valido": "99,3 %",
+        "sin_reintento": "98,7 %",
+        "estable_replay": "98,1 %",
+        "precision": "97,6 % (Reglas, degradado)"
+      }
+    },
+    {
+      "id": "gpt-5-nano",
+      "proveedor": "Azure AI Foundry",
+      "agentes": [
+        "multicanal",
+        "clasificacion"
+      ],
+      "coste_por_agente": {
+        "multicanal": 1.2,
+        "clasificacion": 4.4
+      },
+      "llamadas": 33440,
+      "tokens": {
+        "in": 10500000,
+        "out": 1500000,
+        "reasoning": 0
+      },
+      "coste": 5.6,
+      "p95_ms": 1120,
+      "exito": {
+        "json_valido": "99,8 %",
+        "sin_reintento": "99,5 %",
+        "estable_replay": "99,9 %",
+        "precision": "99,1 %"
+      }
+    },
+    {
+      "id": "stt-es",
+      "proveedor": "Azure AI Speech",
+      "agentes": [
+        "multicanal"
+      ],
+      "coste_por_agente": {
+        "multicanal": 2.1
+      },
+      "llamadas": 1340,
+      "tokens": {
+        "in": 0,
+        "out": 0,
+        "reasoning": 0
+      },
+      "coste": 2.1,
+      "p95_ms": 1840,
+      "exito": {
+        "json_valido": "—",
+        "sin_reintento": "99,1 %",
+        "estable_replay": "—",
+        "precision": "confianza media 0,91"
+      }
     }
   ],
   "caps": [
@@ -394,6 +1190,7 @@
       "ramo": "Auto",
       "decision": "DESPEJADO",
       "confianza": 0.95,
+      "motivo": "Colisión leve con parte amistoso, sin heridos y presupuesto de 1.350 €: cumple todas las reglas del ramo Auto.",
       "resultado": "auto",
       "spans": [
         [
@@ -443,6 +1240,7 @@
       "ramo": "Hogar",
       "decision": "DESPEJADO",
       "confianza": 0.94,
+      "motivo": "Daño por agua súbito por rotura de latiguillo, comunicado al día siguiente con facturas y fotos; importe 1.080 €.",
       "resultado": "auto",
       "spans": [
         [
@@ -492,6 +1290,7 @@
       "ramo": "Salud",
       "decision": "DESPEJADO",
       "confianza": 0.93,
+      "motivo": "Urgencias por esguince en hospital del cuadro médico: prestación directa sin carencia ni autorización.",
       "resultado": "auto",
       "spans": [
         [
@@ -541,6 +1340,7 @@
       "ramo": "Auto",
       "decision": "REVISION",
       "confianza": 0.9,
+      "motivo": "Conducía el hijo del tomador (22 años), no consta como conductor declarado: comprobar conductores habituales y condiciones de la póliza antes de tramitar.",
       "resultado": "override",
       "guardrail": "A3 incumple → escalado",
       "override": {
@@ -598,6 +1398,7 @@
       "ramo": "Hogar",
       "decision": "DESPEJADO",
       "confianza": 0.95,
+      "motivo": "Daño eléctrico por sobretensión reconocida por la compañía, con informe y 640 €: supuesto de despeje directo.",
       "resultado": "auto",
       "spans": [
         [
@@ -647,6 +1448,7 @@
       "ramo": "Salud",
       "decision": "DESPEJADO",
       "confianza": 0.92,
+      "motivo": "Radiografía y analítica prescritas por traumatólogo del cuadro: pruebas básicas sin autorización previa.",
       "resultado": "auto",
       "spans": [
         [
@@ -696,6 +1498,7 @@
       "ramo": "Auto",
       "decision": "DESPEJADO",
       "confianza": 0.97,
+      "motivo": "Rotura de luna por gravilla, 280 € en taller concertado: despeje directo.",
       "resultado": "auto",
       "spans": [
         [
@@ -745,6 +1548,7 @@
       "ramo": "Auto",
       "decision": "REVISION",
       "confianza": 0.9,
+      "motivo": "Accidente de moto con lesionado ingresado y tercero implicado: gestión especializada de daños corporales y coordinación con la póliza de salud SA-662371.",
       "resultado": "humano",
       "guardrail": "G-04 lesionados · A5 incumple",
       "incidencias": [
@@ -799,6 +1603,7 @@
       "ramo": "Hogar",
       "decision": "DESPEJADO",
       "confianza": 0.93,
+      "motivo": "Rotura de cristal de 400 € con foto y presupuesto: despeje directo; anotar posible recobro al vecino.",
       "resultado": "auto",
       "spans": [
         [
@@ -848,6 +1653,7 @@
       "ramo": "Salud",
       "decision": "DESPEJADO",
       "confianza": 0.94,
+      "motivo": "Urgencias por crisis de asma en hospital del cuadro con informe adjunto: prestación directa sin carencia.",
       "resultado": "auto",
       "incidencias": [
         "429 Azure · reintento 1 (2 s)"
@@ -900,6 +1706,7 @@
       "ramo": "Auto",
       "decision": "DESPEJADO",
       "confianza": 0.94,
+      "motivo": "Rayón en puerta por tercero desconocido, con fotos y denuncia, 600 €: despeje directo.",
       "resultado": "auto",
       "spans": [
         [
@@ -949,6 +1756,7 @@
       "ramo": "Salud",
       "decision": "DESPEJADO",
       "confianza": 0.94,
+      "motivo": "Urgencias pediátricas por caída con radiografía en hospital del cuadro, beneficiario incluido en póliza familiar: prestación directa.",
       "resultado": "auto",
       "spans": [
         [
@@ -998,6 +1806,7 @@
       "ramo": "Hogar",
       "decision": "REVISION",
       "confianza": 0.9,
+      "motivo": "Robo en vivienda sin denuncia, sin relación de objetos ni importe y sin indicar signos de fuerza: falta información esencial; solicitar denuncia y lista valorada y enviar perito.",
       "resultado": "humano",
       "guardrail": "G-05 datos esenciales nulos · H4 incumple",
       "spans": [
@@ -1041,6 +1850,132 @@
     }
   ],
   "razonamiento": {
+    "TRZ-4F2A": [
+      {
+        "agente": "multicanal",
+        "entrada": "Email de marta.gil@correo.es · 540 caracteres · 1 adjunto (parte amistoso escaneado)",
+        "pasos": [
+          "Canal email: se conserva el asunto y se registra el adjunto como documentación",
+          "Fecha de recepción 14/09 09:12 · idioma es-ES"
+        ],
+        "salida": "Mensaje normalizado MSG-A-01"
+      },
+      {
+        "agente": "clasificacion",
+        "entrada": "Texto normalizado",
+        "pasos": [
+          "Indicios Auto: \"Seat León 4521 KLM\", \"póliza AU-483920\", \"M-30\", \"parte amistoso\"",
+          "Sin indicios de Hogar ni Salud",
+          "Confianza de ramo 0,99"
+        ],
+        "salida": "Ramo = Auto"
+      },
+      {
+        "agente": "extraccion",
+        "entrada": "Texto + ramo Auto",
+        "pasos": [
+          "Póliza AU-483920 · fecha \"sábado 12 de septiembre\" → 2026-09-12 · lugar M-30, Madrid",
+          "Importe 1.350 € (presupuesto de taller: paragolpes y faro derecho)",
+          "Tercero implicado = sí (parte amistoso firmado por ambos) · lesionados = no (\"No hubo heridos\")"
+        ],
+        "salida": "10 campos · 0 inventados · 0 nulos"
+      },
+      {
+        "agente": "reglas",
+        "entrada": "Datos extraídos + bloque de reglas Auto v2.3",
+        "pasos": [
+          "A1 cumple (póliza identificada, sin impago) · A2 cumple (2 días) · A3 cumple (conducía la tomadora)",
+          "A4 cumple · A5 cumple (tercero documentado, sin heridos) · A6 cumple (1.350 € < 6.000 €)",
+          "A7 cumple: colisión simple con parte amistoso y presupuesto → despeje directo · A8 relato coherente",
+          "Decisión DESPEJADO con confianza 0,95"
+        ],
+        "salida": "DESPEJADO · cumple todas las reglas del ramo Auto"
+      }
+    ],
+    "TRZ-4F2B": [
+      {
+        "agente": "multicanal",
+        "entrada": "Formulario web · campos: nombre, teléfono, asunto, texto (410 caracteres) · fotos y 2 facturas adjuntas",
+        "pasos": [
+          "Canal web: los campos estructurados se vuelcan al formato único",
+          "Fecha de recepción 14/09 11:40"
+        ],
+        "salida": "Mensaje normalizado MSG-A-02"
+      },
+      {
+        "agente": "clasificacion",
+        "entrada": "Texto normalizado",
+        "pasos": [
+          "Indicios Hogar: \"fregadero\", \"salón\", \"tarima\", \"póliza de hogar HO-220114\", \"latiguillo\"",
+          "Sin indicios de Auto ni Salud",
+          "Confianza de ramo 0,98"
+        ],
+        "salida": "Ramo = Hogar"
+      },
+      {
+        "agente": "extraccion",
+        "entrada": "Texto + ramo Hogar",
+        "pasos": [
+          "Póliza HO-220114 · fecha \"ayer 13/09\" → 2026-09-13 · lugar C/ Alcalá 210, Madrid",
+          "Importe 1.080 € = 180 € fontanero + 900 € parquetista (dos facturas)",
+          "Sin terceros · sin lesionados · documentación: fotos y facturas"
+        ],
+        "salida": "10 campos · 0 inventados · 0 nulos"
+      },
+      {
+        "agente": "reglas",
+        "entrada": "Datos extraídos + bloque de reglas Hogar v2.3",
+        "pasos": [
+          "H1 cumple · H2 cumple (comunicado al día siguiente)",
+          "H3 cumple: rotura súbita del latiguillo, no filtración progresiva",
+          "H4–H8 no aplican · H9 cumple (1.080 € < 10.000 €)",
+          "Decisión DESPEJADO con confianza 0,94"
+        ],
+        "salida": "DESPEJADO · daño por agua súbito con facturas y fotos"
+      }
+    ],
+    "TRZ-4F2C": [
+      {
+        "agente": "multicanal",
+        "entrada": "Chat de la app móvil · 3 mensajes seguidos unidos en uno · 300 caracteres",
+        "pasos": [
+          "Canal chat: se concatenan los mensajes de la misma conversación",
+          "Fecha de recepción 14/09 20:05"
+        ],
+        "salida": "Mensaje normalizado MSG-A-03"
+      },
+      {
+        "agente": "clasificacion",
+        "entrada": "Texto normalizado",
+        "pasos": [
+          "Indicios Salud: \"urgencias\", \"Hospital Quirón Pozuelo\", \"cuadro médico\", \"radiografía\", \"férula\", \"tarjeta\"",
+          "Sin indicios de Auto ni Hogar",
+          "Confianza de ramo 0,97"
+        ],
+        "salida": "Ramo = Salud"
+      },
+      {
+        "agente": "extraccion",
+        "entrada": "Texto + ramo Salud",
+        "pasos": [
+          "Número de póliza no mencionado → nulo; se registra la tarjeta 7712 0034 8891 como identificación",
+          "Fecha \"esta tarde\" → 2026-09-14 · lugar Hospital Quirón Pozuelo · lesionados = sí (la propia asegurada)",
+          "Importe no mencionado → nulo (prestación directa)"
+        ],
+        "salida": "10 campos · 0 inventados · 2 nulos"
+      },
+      {
+        "agente": "reglas",
+        "entrada": "Datos extraídos + bloque de reglas Salud v2.3",
+        "pasos": [
+          "S1 cumple (tarjeta sanitaria) · S2 cumple (urgencia por traumatismo: sin carencia)",
+          "S3 cumple · S4 cumple (urgencias y radiografía no requieren autorización) · S5 cumple (centro del cuadro)",
+          "S6 cumple: urgencias en centro del cuadro → despeje directo · S8 cumple (lesión deportiva)",
+          "Decisión DESPEJADO con confianza 0,93"
+        ],
+        "salida": "DESPEJADO · prestación directa sin carencia ni autorización"
+      }
+    ],
     "TRZ-4F2D": [
       {
         "agente": "multicanal",
@@ -1049,13 +1984,7 @@
           "Canal email → sin transcripción; se conserva el asunto original",
           "Fecha de recepción 13/09 17:22 · idioma es-ES"
         ],
-        "salida": "Mensaje normalizado MSG-A-04",
-        "politicas": [
-          [
-            "G-09",
-            "na"
-          ]
-        ]
+        "salida": "Mensaje normalizado MSG-A-04"
       },
       {
         "agente": "clasificacion",
@@ -1065,13 +1994,7 @@
           "Sin indicios de Hogar ni Salud",
           "Confianza de ramo 0,98"
         ],
-        "salida": "Ramo = Auto",
-        "politicas": [
-          [
-            "G-06",
-            "pass"
-          ]
-        ]
+        "salida": "Ramo = Auto"
       },
       {
         "agente": "extraccion",
@@ -1081,13 +2004,7 @@
           "Importe 2.200 € (taller de confianza) · sin terceros · sin lesionados",
           "Conductor: \"mi hijo Pablo (22 años)\" → observaciones"
         ],
-        "salida": "10 campos · 0 inventados · 1 nulo (lugar exacto)",
-        "politicas": [
-          [
-            "G-05",
-            "pass"
-          ]
-        ]
+        "salida": "10 campos · 0 inventados · 1 nulo (lugar exacto)"
       },
       {
         "agente": "reglas",
@@ -1098,29 +2015,131 @@
           "A7 no aplica al haber una regla incumplida · A8 cumple",
           "Decisión REVISION con confianza 0,90: comprobar conductores habituales"
         ],
-        "salida": "REVISION · motivo: conductor no declarado",
-        "politicas": [
-          [
-            "G-01",
-            "pass"
-          ],
-          [
-            "G-02",
-            "pass"
-          ],
-          [
-            "G-03",
-            "pass"
-          ],
-          [
-            "G-04",
-            "pass"
-          ],
-          [
-            "A3",
-            "fail"
-          ]
-        ]
+        "salida": "REVISION · motivo: conductor no declarado"
+      }
+    ],
+    "TRZ-4F2E": [
+      {
+        "agente": "multicanal",
+        "entrada": "Formulario web · 380 caracteres · informe de incidencia de la eléctrica adjunto",
+        "pasos": [
+          "Canal web: campos estructurados + texto libre",
+          "Fecha de recepción 12/09 08:50"
+        ],
+        "salida": "Mensaje normalizado MSG-A-05"
+      },
+      {
+        "agente": "clasificacion",
+        "entrada": "Texto normalizado",
+        "pasos": [
+          "Indicios Hogar: \"urbanización\", \"televisor\", \"router\", \"póliza HO-334902\", \"subida de tensión\"",
+          "Sin indicios de Auto ni Salud",
+          "Confianza de ramo 0,98"
+        ],
+        "salida": "Ramo = Hogar"
+      },
+      {
+        "agente": "extraccion",
+        "entrada": "Texto + ramo Hogar",
+        "pasos": [
+          "Póliza HO-334902 · fecha \"11 de septiembre por la noche\" → 2026-09-11",
+          "Importe 640 € (reposición de televisor y router) · documentación: informe de la compañía eléctrica",
+          "Sin terceros (la eléctrica reconoce la incidencia) · sin lesionados"
+        ],
+        "salida": "10 campos · 0 inventados · 1 nulo (lugar exacto)"
+      },
+      {
+        "agente": "reglas",
+        "entrada": "Datos extraídos + bloque de reglas Hogar v2.3",
+        "pasos": [
+          "H1 cumple · H2 cumple (1 día)",
+          "H5 cumple: daño eléctrico < 1.500 € con informe → despeje directo",
+          "H3, H4, H6–H8 no aplican · H9 cumple (640 € < 10.000 €)",
+          "Decisión DESPEJADO con confianza 0,95"
+        ],
+        "salida": "DESPEJADO · sobretensión reconocida, supuesto de despeje directo"
+      }
+    ],
+    "TRZ-4F2F": [
+      {
+        "agente": "multicanal",
+        "entrada": "Email de svega@empresa.com · 330 caracteres · sin adjuntos",
+        "pasos": [
+          "Canal email: asunto conservado",
+          "Fecha de recepción 11/09 10:15"
+        ],
+        "salida": "Mensaje normalizado MSG-A-06"
+      },
+      {
+        "agente": "clasificacion",
+        "entrada": "Texto normalizado",
+        "pasos": [
+          "Indicios Salud: \"traumatólogo\", \"cuadro médico\", \"Clínica Santa Elena\", \"radiografía\", \"analítica\", \"SA-770213\"",
+          "\"Caída en casa\" no es un siniestro de Hogar: es el origen de la lesión",
+          "Confianza de ramo 0,96"
+        ],
+        "salida": "Ramo = Salud"
+      },
+      {
+        "agente": "extraccion",
+        "entrada": "Texto + ramo Salud",
+        "pasos": [
+          "Póliza SA-770213 · fecha \"el pasado día 8\" → 2026-09-08 · lugar Clínica Santa Elena",
+          "Tipo: pruebas diagnósticas prescritas (radiografía lumbar y analítica) · importe no mencionado → nulo",
+          "Lesionados = sí (el propio asegurado, caída en casa)"
+        ],
+        "salida": "10 campos · 0 inventados · 1 nulo (importe)"
+      },
+      {
+        "agente": "reglas",
+        "entrada": "Datos extraídos + bloque de reglas Salud v2.3",
+        "pasos": [
+          "S1 cumple · S2 cumple (pruebas básicas: sin carencia)",
+          "S4 cumple: radiografía y analítica no requieren autorización previa · S5 cumple (prescriptor del cuadro)",
+          "S6 cumple: pruebas básicas en cuadro → despeje directo · S8 cumple (no laboral ni tráfico)",
+          "Decisión DESPEJADO con confianza 0,92"
+        ],
+        "salida": "DESPEJADO · pruebas básicas prescritas por el cuadro médico"
+      }
+    ],
+    "TRZ-4F30": [
+      {
+        "agente": "multicanal",
+        "entrada": "Chat web · 2 mensajes · 210 caracteres · foto de la luna adjunta",
+        "pasos": [
+          "Canal chat: mensajes concatenados; la foto se registra como documentación",
+          "Fecha de recepción 14/09 13:30"
+        ],
+        "salida": "Mensaje normalizado MSG-A-07"
+      },
+      {
+        "agente": "clasificacion",
+        "entrada": "Texto normalizado",
+        "pasos": [
+          "Indicios Auto: \"parabrisas\", \"Toyota Corolla 8834 LPT\", \"AU-905512\", \"taller de lunas concertado\"",
+          "Sin indicios de Hogar ni Salud",
+          "Confianza de ramo 0,99"
+        ],
+        "salida": "Ramo = Auto"
+      },
+      {
+        "agente": "extraccion",
+        "entrada": "Texto + ramo Auto",
+        "pasos": [
+          "Póliza AU-905512 · fecha \"esta mañana\" → 2026-09-14 · lugar autovía A-6",
+          "Importe 280 € (presupuesto del taller de lunas concertado) · sin terceros · sin lesionados"
+        ],
+        "salida": "10 campos · 0 inventados · 0 nulos"
+      },
+      {
+        "agente": "reglas",
+        "entrada": "Datos extraídos + bloque de reglas Auto v2.3",
+        "pasos": [
+          "A1 cumple · A2 cumple (mismo día) · A3 cumple · A4 cumple · A5 cumple (sin terceros ni heridos)",
+          "A6 cumple (280 € < 6.000 €) · A7 cumple: rotura de luna en taller concertado → despeje directo",
+          "Decisión DESPEJADO con confianza 0,97"
+        ],
+        "salida": "DESPEJADO · luna en taller concertado, despeje directo"
       }
     ],
     "TRZ-4F31": [
@@ -1131,13 +2150,7 @@
           "Transcripción con confianza STT 0,88 (≥ 0,7)",
           "Se elimina el ruido de la centralita y se conserva la marca temporal"
         ],
-        "salida": "Mensaje normalizado MSG-A-08",
-        "politicas": [
-          [
-            "G-09",
-            "pass"
-          ]
-        ]
+        "salida": "Mensaje normalizado MSG-A-08"
       },
       {
         "agente": "clasificacion",
@@ -1147,13 +2160,7 @@
           "Indicios Salud: \"ingreso hospitalario\", \"SA-662371\"",
           "El hecho causante es el accidente de tráfico → ramo principal Auto; se anota la póliza de salud"
         ],
-        "salida": "Ramo = Auto (ambiguo con Salud)",
-        "politicas": [
-          [
-            "G-06",
-            "pass"
-          ]
-        ]
+        "salida": "Ramo = Auto (ambiguo con Salud)"
       },
       {
         "agente": "extraccion",
@@ -1162,13 +2169,7 @@
           "Póliza AU-662371 · fecha 14/09 · lesionados = sí (ingreso) · tercero = sí",
           "Importe no mencionado → nulo (no se estima)"
         ],
-        "salida": "10 campos · 2 nulos",
-        "politicas": [
-          [
-            "G-05",
-            "pass"
-          ]
-        ]
+        "salida": "10 campos · 2 nulos"
       },
       {
         "agente": "reglas",
@@ -1178,25 +2179,215 @@
           "A5 INCUMPLE: lesionado ingresado y tercero implicado",
           "Decisión REVISION 0,90: daños corporales → gestión especializada"
         ],
-        "salida": "REVISION · daños corporales",
-        "politicas": [
-          [
-            "G-01",
-            "pass"
-          ],
-          [
-            "G-04",
-            "fail"
-          ],
-          [
-            "CAP-04",
-            "fail"
-          ],
-          [
-            "CAP-05",
-            "fail"
-          ]
-        ]
+        "salida": "REVISION · daños corporales"
+      }
+    ],
+    "TRZ-4F32": [
+      {
+        "agente": "multicanal",
+        "entrada": "Formulario web · 290 caracteres · foto y presupuesto adjuntos",
+        "pasos": [
+          "Canal web: campos estructurados + texto libre",
+          "Fecha de recepción 13/09 12:00"
+        ],
+        "salida": "Mensaje normalizado MSG-A-09"
+      },
+      {
+        "agente": "clasificacion",
+        "entrada": "Texto normalizado",
+        "pasos": [
+          "Indicios Hogar: \"cristal de la ventana del salón\", \"póliza de hogar HO-118830\", \"vecino\"",
+          "Sin indicios de Auto ni Salud",
+          "Confianza de ramo 0,98"
+        ],
+        "salida": "Ramo = Hogar"
+      },
+      {
+        "agente": "extraccion",
+        "entrada": "Texto + ramo Hogar",
+        "pasos": [
+          "Póliza HO-118830 · fecha 12/09 · importe 400 € (presupuesto del cristalero)",
+          "Causa: balón de los hijos del vecino → terceros = sí (posible recobro) · sin lesionados",
+          "Documentación: foto y presupuesto"
+        ],
+        "salida": "10 campos · 0 inventados · 1 nulo (lugar exacto)"
+      },
+      {
+        "agente": "reglas",
+        "entrada": "Datos extraídos + bloque de reglas Hogar v2.3",
+        "pasos": [
+          "H1 cumple · H2 cumple (1 día)",
+          "H5 cumple: rotura de cristal < 1.500 € con foto y presupuesto → despeje directo",
+          "H9 cumple (400 € < 10.000 €) · se anota el posible recobro al vecino",
+          "Decisión DESPEJADO con confianza 0,93"
+        ],
+        "salida": "DESPEJADO · cristal, despeje directo; anotar recobro"
+      }
+    ],
+    "TRZ-4F33": [
+      {
+        "agente": "multicanal",
+        "entrada": "Email de la asegurada · 420 caracteres · informe de urgencias adjunto",
+        "pasos": [
+          "Canal email: asunto conservado; el informe se registra como documentación",
+          "Fecha de recepción 11/09 09:05"
+        ],
+        "salida": "Mensaje normalizado MSG-A-10"
+      },
+      {
+        "agente": "clasificacion",
+        "entrada": "Texto normalizado",
+        "pasos": [
+          "Indicios Salud: \"urgencias\", \"crisis de asma\", \"Hospital Universitario Quirónsalud Madrid\", \"cuadro médico\", \"SA-337700\"",
+          "Sin indicios de Auto ni Hogar",
+          "Confianza de ramo 0,98"
+        ],
+        "salida": "Ramo = Salud"
+      },
+      {
+        "agente": "extraccion",
+        "entrada": "Texto + ramo Salud",
+        "pasos": [
+          "Primera llamada respondida con 429 (Azure): reintento con backoff de 2 s, completada",
+          "Póliza SA-337700 · fecha 10/09 · lugar Hospital Universitario Quirónsalud Madrid",
+          "Lesionados = sí (la propia asegurada) · importe no mencionado → nulo · documentación: informe de urgencias"
+        ],
+        "salida": "10 campos · 0 inventados · 1 nulo (importe)"
+      },
+      {
+        "agente": "reglas",
+        "entrada": "Datos extraídos + bloque de reglas Salud v2.3",
+        "pasos": [
+          "S1 cumple · S2 cumple (urgencia: sin carencia) · S3 cumple (no consta preexistencia no declarada)",
+          "S4 cumple (urgencias sin autorización) · S5 cumple (centro del cuadro) · S6 cumple → despeje directo",
+          "Decisión DESPEJADO con confianza 0,94"
+        ],
+        "salida": "DESPEJADO · urgencias en centro del cuadro con informe"
+      }
+    ],
+    "TRZ-4F34": [
+      {
+        "agente": "multicanal",
+        "entrada": "WhatsApp · 4 mensajes cortos · 3 fotos · abreviaturas (\"q\", \"xq\") y emojis",
+        "pasos": [
+          "Canal WhatsApp: se unen los mensajes, se expanden abreviaturas y se eliminan emojis",
+          "Fecha de recepción 14/09 18:42"
+        ],
+        "salida": "Mensaje normalizado MSG-A-11"
+      },
+      {
+        "agente": "clasificacion",
+        "entrada": "Texto normalizado",
+        "pasos": [
+          "Indicios Auto: \"puerta del Peugeot 2008\", \"AU-742210\", \"parking del Carrefour\", \"rayón\"",
+          "Sin indicios de Hogar ni Salud",
+          "Confianza de ramo 0,98"
+        ],
+        "salida": "Ramo = Auto"
+      },
+      {
+        "agente": "extraccion",
+        "entrada": "Texto + ramo Auto",
+        "pasos": [
+          "Póliza AU-742210 · fecha 14/09 · lugar parking del Carrefour de Alcobendas",
+          "Importe 600 € (presupuesto) · tercero desconocido (no identificado) · sin lesionados",
+          "Documentación: fotos y denuncia"
+        ],
+        "salida": "10 campos · 0 inventados · 0 nulos"
+      },
+      {
+        "agente": "reglas",
+        "entrada": "Datos extraídos + bloque de reglas Auto v2.3",
+        "pasos": [
+          "A1 cumple · A2 cumple (mismo día) · A3 cumple · A4 cumple",
+          "A5 cumple: tercero desconocido con denuncia y fotos, sin heridos · A6 cumple (600 € < 6.000 €)",
+          "A7 cumple: daños propios documentados → despeje directo",
+          "Decisión DESPEJADO con confianza 0,94"
+        ],
+        "salida": "DESPEJADO · rayón documentado con denuncia y fotos"
+      }
+    ],
+    "TRZ-4F35": [
+      {
+        "agente": "multicanal",
+        "entrada": "WhatsApp · 3 mensajes · 1 foto del informe de urgencias",
+        "pasos": [
+          "Canal WhatsApp: mensajes unidos; la foto del informe se registra como documentación",
+          "Fecha de recepción 13/09 19:55"
+        ],
+        "salida": "Mensaje normalizado MSG-A-12"
+      },
+      {
+        "agente": "clasificacion",
+        "entrada": "Texto normalizado",
+        "pasos": [
+          "Indicios Salud: \"urgencias\", \"radiografía\", \"Hospital HM Sanchinarro\", \"póliza familiar SA-518877\", \"hijo\"",
+          "\"Patinete\" no activa Auto: no es un vehículo asegurado ni hay tercero",
+          "Confianza de ramo 0,97"
+        ],
+        "salida": "Ramo = Salud"
+      },
+      {
+        "agente": "extraccion",
+        "entrada": "Texto + ramo Salud",
+        "pasos": [
+          "Póliza familiar SA-518877 (beneficiario: el hijo) · fecha 13/09 · lugar Hospital Universitario HM Sanchinarro",
+          "Lesionados = sí (el hijo) · importe no mencionado → nulo · documentación: informe de urgencias"
+        ],
+        "salida": "10 campos · 0 inventados · 1 nulo (importe)"
+      },
+      {
+        "agente": "reglas",
+        "entrada": "Datos extraídos + bloque de reglas Salud v2.3",
+        "pasos": [
+          "S1 cumple: el hijo consta como asegurado en la póliza familiar · S2 cumple (urgencia)",
+          "S4 cumple (urgencias y radiografía sin autorización) · S5 cumple (centro del cuadro) · S6 cumple → despeje directo",
+          "S8 cumple: caída con patinete, no es accidente de tráfico",
+          "Decisión DESPEJADO con confianza 0,94"
+        ],
+        "salida": "DESPEJADO · urgencias pediátricas, beneficiario incluido"
+      }
+    ],
+    "TRZ-4F36": [
+      {
+        "agente": "multicanal",
+        "entrada": "WhatsApp · 2 mensajes muy cortos · sin adjuntos · tono de urgencia",
+        "pasos": [
+          "Canal WhatsApp: mensajes unidos; sin abreviaturas que expandir",
+          "Fecha de recepción 14/09 08:05"
+        ],
+        "salida": "Mensaje normalizado MSG-A-13"
+      },
+      {
+        "agente": "clasificacion",
+        "entrada": "Texto normalizado",
+        "pasos": [
+          "Indicios Hogar: \"nos han entrado en casa\", \"HO-604118\"",
+          "Sin indicios de Auto ni Salud · pocos indicios, pero inequívocos",
+          "Confianza de ramo 0,91"
+        ],
+        "salida": "Ramo = Hogar"
+      },
+      {
+        "agente": "extraccion",
+        "entrada": "Texto + ramo Hogar",
+        "pasos": [
+          "Póliza HO-604118 · fecha \"esta noche\" → 2026-09-13/14 · tipo: robo en vivienda",
+          "Sin relación de objetos ni importe → nulos · sin mención de denuncia ni de signos de fuerza",
+          "Sin terceros identificados · sin lesionados"
+        ],
+        "salida": "10 campos · 0 inventados · 4 nulos (importe, lugar, documentación, signos de fuerza)"
+      },
+      {
+        "agente": "reglas",
+        "entrada": "Datos extraídos + bloque de reglas Hogar v2.3",
+        "pasos": [
+          "H1 cumple · H2 cumple (mismo día)",
+          "H4 INCUMPLE: robo sin denuncia, sin lista valorada y sin signos de fuerza acreditados",
+          "H9 no evaluable: importe nulo · falta información esencial",
+          "Decisión REVISION con confianza 0,90: pedir denuncia y lista valorada, enviar perito"
+        ],
+        "salida": "REVISION · falta información esencial (H4)"
       }
     ]
   },
