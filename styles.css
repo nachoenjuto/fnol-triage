@@ -64,6 +64,12 @@ a { color: var(--primary); }
 .phase-list.cols { grid-template-columns: 1fr 1fr; }
 .phase-list li { display: flex; align-items: center; gap: .55rem; }
 .phase-list li small { color: var(--muted); }
+.phase-list li.ramo-block { display: block; }
+.ramo-block + .ramo-block { margin-top: .5rem; }
+.ramo-head { display: flex; align-items: center; gap: .55rem; }
+.rule-list { list-style: none; margin: .3rem 0 0 calc(1.7rem + .55rem); padding: 0; display: grid; gap: .22rem; font-size: .8rem; }
+.rule-list li { display: flex; align-items: center; gap: .4rem; }
+.rule-code { --c: var(--primary); flex: none; font-size: .68rem; font-weight: 700; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; padding: .05rem .35rem; border-radius: 5px; color: var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); }
 .phase-ico { --c: var(--primary); flex: none; width: 1.7rem; height: 1.7rem; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; color: var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); }
 .phase-ico svg { width: 1.05rem; height: 1.05rem; }
 .phase-badge { display: inline-flex; align-items: center; gap: .35rem; margin-top: .7rem; padding: .2rem .6rem; border-radius: 999px; font-size: .75rem; font-weight: 600; border: 1px solid; }

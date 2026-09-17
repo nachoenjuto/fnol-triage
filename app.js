@@ -998,7 +998,11 @@
       titulo: 'Reglas de negocio',
       descripcion: 'Aplica el bloque de reglas del ramo clasificado a los datos extraídos.',
       secciones: [
-        { titulo: 'Reglas por ramo (ejemplos)', items: RAMO_ITEMS(['7 días, conductor declarado, sin agravantes, &lt; 6.000 €', 'agua súbita, robo con fuerza y denuncia, &lt; 10.000 €', 'carencia, preexistencias, autorización, cuadro médico']) },
+        { titulo: 'Reglas por ramo', items: [
+          { icono: 'car', color: C.auto, etiqueta: '<strong>Auto</strong>', reglas: [['A2', 'Comunicación en un máximo de 7 días desde el hecho'], ['A3', 'Conductor: tomador o declarado en la póliza'], ['A6', 'Daños estimados inferiores a 6.000 €']] },
+          { icono: 'house', color: C.hogar, etiqueta: '<strong>Hogar</strong>', reglas: [['H3', 'Daños por agua súbitos; no filtraciones ni humedades'], ['H4', 'Robo con signos de fuerza y denuncia policial'], ['H9', 'Daños estimados inferiores a 10.000 €']] },
+          { icono: 'heart-pulse', color: C.salud, etiqueta: '<strong>Salud</strong>', reglas: [['S2', 'Fuera del periodo de carencia (6 / 8 / 10 meses)'], ['S4', 'Autorización previa en cirugías, hospitalización y pruebas'], ['S5', 'Asistencia en centros del cuadro médico']] },
+        ] },
         { titulo: 'Resultado de cada regla', cols: true, items: [
           { icono: 'check', color: C.ok, etiqueta: 'Cumple' },
           { icono: 'x', color: C.review, etiqueta: 'Incumple' },
@@ -1047,7 +1051,10 @@
   };
 
   function renderPhase(info) {
-    const item = (it) => `<li><span class="phase-ico" style="--c:${it.color}">${lucide(it.icono)}</span><span>${it.etiqueta}${it.detalle ? ` <small>— ${it.detalle}</small>` : ''}</span></li>`;
+    const ico = (it) => `<span class="phase-ico" style="--c:${it.color}">${lucide(it.icono)}</span>`;
+    // Ítem con sublista de reglas (código + texto) bajo el ramo
+    const reglas = (it) => `<li class="ramo-block"><div class="ramo-head">${ico(it)}<span>${it.etiqueta}</span></div><ul class="rule-list">${it.reglas.map(([codigo, texto]) => `<li><span class="rule-code" style="--c:${it.color}">${escapeHtml(codigo)}</span><span>${escapeHtml(texto)}</span></li>`).join('')}</ul></li>`;
+    const item = (it) => (it.reglas ? reglas(it) : `<li>${ico(it)}<span>${it.etiqueta}${it.detalle ? ` <small>— ${it.detalle}</small>` : ''}</span></li>`);
     const seccion = (sec) => `<h4>${escapeHtml(sec.titulo)}</h4><ul class="phase-list${sec.cols ? ' cols' : ''}">${sec.items.map(item).join('')}</ul>`;
     const badge = info.ia
       ? `<span class="phase-badge phase-badge-ia">${lucide('sparkles')} IA generativa</span>`
