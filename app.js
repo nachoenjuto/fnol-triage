@@ -942,6 +942,9 @@
     'chart-column': '<path d="M3 3v16a2 2 0 0 0 2 2h16" /><path d="M18 17V9" /><path d="M13 17V5" /><path d="M8 17v-3" />',
     'gauge': '<path d="m12 14 4-4" /><path d="M3.34 19a10 10 0 1 1 17.32 0" />',
     'sparkles': '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /><path d="M20 3v4" /><path d="M22 5h-4" /><path d="M4 17v2" /><path d="M5 18H3" />',
+    'inbox': '<polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />',
+    'route': '<circle cx="6" cy="19" r="3" /><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" /><circle cx="18" cy="5" r="3" />',
+    'merge': '<path d="m8 6 4-4 4 4" /><path d="M12 2v10.3a4 4 0 0 1-1.172 2.872L4 22" /><path d="m20 22-5-5" />',
     'workflow': '<rect width="8" height="8" x="3" y="3" rx="2" /><path d="M7 11v4a2 2 0 0 0 2 2h4" /><rect width="8" height="8" x="13" y="13" rx="2" />',
   };
   const lucide = (name) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${LUCIDE[name] || ''}</svg>`;
@@ -954,26 +957,39 @@
     { icono: 'heart-pulse', color: C.salud, etiqueta: '<strong>Salud</strong>', detalle: detalles[2] },
   ];
 
-  // Contenido de cada panel: título, descripción, secciones con lista de ítems (icono + color + etiqueta + detalle), cierre y tipo de motor
+  // Contenido de cada panel: título, descripción, secciones con lista de ítems (icono + color + etiqueta + detalle), cierre y motores ('ia' | 'logica')
   const PHASE_INFO = {
+    multicanal: {
+      titulo: 'Multicanalidad',
+      descripcion: 'Recibe los mensajes de los clientes por cualquier canal y los unifica en un único flujo de triaje.',
+      secciones: [
+        { titulo: 'Canales de entrada', items: [
+          { icono: 'mail', color: C.primary, etiqueta: '<strong>Email</strong>', detalle: 'texto largo, a veces con adjuntos' },
+          { icono: 'message-circle', color: C.primary, etiqueta: '<strong>WhatsApp</strong>', detalle: 'mensajes cortos e informales' },
+          { icono: 'messages-square', color: C.primary, etiqueta: '<strong>Chat</strong>', detalle: 'conversación desde la web o la app' },
+          { icono: 'globe', color: C.primary, etiqueta: '<strong>Formulario web</strong>', detalle: 'campos estructurados más texto libre' },
+          { icono: 'phone', color: C.primary, etiqueta: '<strong>Teléfono</strong>', detalle: 'transcripción de la llamada (speech-to-text)' },
+        ] },
+        { titulo: 'Unificación', items: [
+          { icono: 'inbox', color: C.teal, etiqueta: 'Un único formato de mensaje', detalle: 'id, canal, asunto, texto y fecha' },
+          { icono: 'route', color: C.teal, etiqueta: 'Se conserva el canal de origen', detalle: 'visible en la lista, la ficha y el registro' },
+          { icono: 'merge', color: C.teal, etiqueta: 'Mismo flujo para todos', detalle: 'clasificación, extracción y reglas' },
+        ] },
+      ],
+      cierre: 'El <strong>canal no cambia el tratamiento</strong>: todos los mensajes entran en el <strong>mismo flujo</strong> de triaje, conservando su <strong>origen</strong> para la trazabilidad.',
+      motores: ['logica', 'ia'],
+    },
     ramo: {
       titulo: 'Clasificación por ramo',
-      descripcion: 'Determina a qué ramo pertenece cada mensaje recibido, sea cual sea el canal de entrada.',
+      descripcion: 'Determina a qué ramo pertenece cada mensaje recibido.',
       secciones: [
-        { titulo: 'Canales de entrada', cols: true, items: [
-          { icono: 'mail', color: C.primary, etiqueta: 'Email' },
-          { icono: 'message-circle', color: C.primary, etiqueta: 'WhatsApp' },
-          { icono: 'messages-square', color: C.primary, etiqueta: 'Chat' },
-          { icono: 'globe', color: C.primary, etiqueta: 'Formulario web' },
-          { icono: 'phone', color: C.primary, etiqueta: 'Teléfono' },
-        ] },
         { titulo: 'Ramos', items: [
           ...RAMO_ITEMS(['vehículo: colisión, lunas, robo, granizo', 'vivienda o contenido: agua, cristales, robo, eléctrico', 'prestación sanitaria: urgencias, cirugía, reembolsos']),
           { icono: 'circle-help', color: C.muted, etiqueta: 'Indeterminado', detalle: 'si no puede decidirse, pasa a revisión' },
         ] },
       ],
       cierre: 'Se utiliza <strong>lógica semántica</strong> e <strong>IA generativa</strong> para asignar el ramo y <strong>justificar la decisión</strong> citando los <strong>indicios del texto</strong>.',
-      ia: true,
+      motores: ['ia'],
     },
     datos: {
       titulo: 'Extracción de datos',
@@ -992,7 +1008,7 @@
         ] },
       ],
       cierre: 'Solo se recoge lo que <strong>aparece en el mensaje</strong>; <strong>nunca se inventa</strong> un dato — si falta, queda como <strong>nulo</strong> y puede motivar la revisión.',
-      ia: true,
+      motores: ['ia'],
     },
     reglas: {
       titulo: 'Reglas de negocio',
@@ -1010,7 +1026,7 @@
         ] },
       ],
       cierre: 'Cada regla se evalúa <strong>citando la evidencia textual</strong>; el conjunto determina la decisión: <span class="pill pill-ok">Aprobado</span> o <span class="pill pill-review">A revisar</span>.',
-      ia: true,
+      motores: ['ia'],
     },
     registro: {
       titulo: 'Registro de decisiones',
@@ -1030,7 +1046,7 @@
         ] },
       ],
       cierre: 'Todo queda <strong>trazable</strong> y <strong>reproducible</strong>, sin volver a llamar al modelo.',
-      ia: false,
+      motores: ['logica'],
     },
     automatizacion: {
       titulo: 'Automatización',
@@ -1046,7 +1062,7 @@
         ] },
       ],
       cierre: 'El objetivo es <strong>maximizar el porcentaje automatizado</strong> manteniendo el <strong>control humano</strong> sobre los casos dudosos.',
-      ia: false,
+      motores: ['logica'],
     },
   };
 
@@ -1056,10 +1072,12 @@
     const reglas = (it) => `<li class="ramo-block"><div class="ramo-head">${ico(it)}<span>${it.etiqueta}</span></div><ul class="rule-list">${it.reglas.map(([codigo, texto]) => `<li><span class="rule-code" style="--c:${it.color}">${escapeHtml(codigo)}</span><span>${escapeHtml(texto)}</span></li>`).join('')}</ul></li>`;
     const item = (it) => (it.reglas ? reglas(it) : `<li>${ico(it)}<span>${it.etiqueta}${it.detalle ? ` <small>— ${it.detalle}</small>` : ''}</span></li>`);
     const seccion = (sec) => `<h4>${escapeHtml(sec.titulo)}</h4><ul class="phase-list${sec.cols ? ' cols' : ''}">${sec.items.map(item).join('')}</ul>`;
-    const badge = info.ia
-      ? `<span class="phase-badge phase-badge-ia">${lucide('sparkles')} IA generativa</span>`
-      : `<span class="phase-badge phase-badge-logica">${lucide('workflow')} Lógica de negocio</span>`;
-    return `<h3>${escapeHtml(info.titulo)}</h3><p class="phase-desc">${escapeHtml(info.descripcion)}</p>${info.secciones.map(seccion).join('')}<p class="phase-cierre">${info.cierre}</p>${badge}`;
+    const BADGE = {
+      ia: `<span class="phase-badge phase-badge-ia">${lucide('sparkles')} IA generativa</span>`,
+      logica: `<span class="phase-badge phase-badge-logica">${lucide('workflow')} Lógica de negocio</span>`,
+    };
+    const badges = (info.motores || []).map((m) => BADGE[m] || '').join(' ');
+    return `<h3>${escapeHtml(info.titulo)}</h3><p class="phase-desc">${escapeHtml(info.descripcion)}</p>${info.secciones.map(seccion).join('')}<p class="phase-cierre">${info.cierre}</p>${badges}`;
   }
 
   function bindPhases() {

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Triage de mensajes — seguros</title>
-  <meta name="description" content="Demo de triaje de mensajes de clientes de una aseguradora: clasificación por ramo, extracción de datos y aplicación de reglas con Azure AI Foundry.">
+  <meta name="description" content="Demo de triaje multicanal de mensajes de clientes de una aseguradora: clasificación por ramo, extracción de datos y aplicación de reglas con Azure AI Foundry.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -26,6 +26,7 @@
       <div>
         <h1>Triage de mensajes</h1>
         <p class="subtitle" id="phases">
+          <button type="button" class="phase" data-phase="multicanal" aria-expanded="false">Multicanalidad</button><span class="arrow" aria-hidden="true">→</span>
           <button type="button" class="phase" data-phase="ramo" aria-expanded="false">Clasificación por ramo</button><span class="arrow" aria-hidden="true">→</span>
           <button type="button" class="phase" data-phase="datos" aria-expanded="false">Extracción de datos</button><span class="arrow" aria-hidden="true">→</span>
           <button type="button" class="phase" data-phase="reglas" aria-expanded="false">Reglas de negocio</button><span class="arrow" aria-hidden="true">→</span>
