@@ -6,7 +6,7 @@ const PAQUETES = [
   {
     id: 'A',
     nombre: 'Paquete A',
-    descripcion: '10 mensajes · Auto 4 · Hogar 3 · Salud 3',
+    descripcion: '13 mensajes · Auto 5 · Hogar 4 · Salud 4 · 3 por WhatsApp',
     mensajes: [
       {
         id: 'MSG-A-01', canal: 'email', fecha_recepcion: '2026-09-14T09:12:00',
@@ -78,12 +78,33 @@ const PAQUETES = [
         texto: 'Anoche 10 de septiembre tuve una crisis de asma y fui a urgencias del Hospital Universitario Quirónsalud Madrid, que está en el cuadro médico. Me pusieron nebulizaciones y corticoides y me dieron el alta de madrugada. Póliza SA-337700. Adjunto el informe de urgencias por si lo necesitáis.',
         esperado: { ramo: 'Salud', revision: false },
       },
+      {
+        id: 'MSG-A-11', canal: 'whatsapp', fecha_recepcion: '2026-09-14T18:42:00',
+        remitente: { nombre: 'Rocío Pascual Mena', contacto: '+34 611 204 377' },
+        asunto: 'Rayón en la puerta en un parking (WhatsApp)',
+        texto: 'Hola!! os escribo por aquí porque no me aclaro con la app 😅 Ayer 13/09 en el parking del Carrefour de Alcobendas alguien me rayó toda la puerta del conductor y se fue sin dejar nota 😩 Tengo fotos y esta mañana he puesto denuncia en la policía. Es el Peugeot 2008 blanco, póliza AU-742210. El taller de al lado de casa me dice que unos 600 €. Qué hago??',
+        esperado: { ramo: 'Auto', revision: false },
+      },
+      {
+        id: 'MSG-A-12', canal: 'whatsapp', fecha_recepcion: '2026-09-13T19:55:00',
+        remitente: { nombre: 'Nerea Ibarra Lago', contacto: '+34 622 908 114' },
+        asunto: 'Hijo en urgencias tras caída con patinete (WhatsApp)',
+        texto: 'Buenas, estoy ahora mismo en urgencias del Hospital Universitario HM Sanchinarro con mi hijo Mateo (8 años), se ha caído del patinete en el parque y le van a hacer una radiografía del brazo 🙏 Está en la póliza familiar SA-518877. Lo comunico por si tengo que hacer algo más. Gracias!',
+        esperado: { ramo: 'Salud', revision: false },
+      },
+      {
+        id: 'MSG-A-13', canal: 'whatsapp', fecha_recepcion: '2026-09-14T08:05:00',
+        remitente: { nombre: 'Luis Miguel Arranz', contacto: '+34 655 330 219' },
+        asunto: 'Nos han entrado en casa (WhatsApp)',
+        texto: 'Hola, nos han entrado en casa este finde mientras estábamos fuera 😡 se han llevado cosas, todavía no sé cuánto, estamos mirando. Luego os mando una lista. Póliza HO-604118. Necesito que venga alguien.',
+        esperado: { ramo: 'Hogar', revision: true, nota: 'Falta información esencial: sin denuncia, sin importe ni signos de fuerza (regla H4)' },
+      },
     ],
   },
   {
     id: 'B',
     nombre: 'Paquete B',
-    descripcion: '20 mensajes · Auto 7 · Hogar 7 · Salud 6',
+    descripcion: '23 mensajes · Auto 8 · Hogar 8 · Salud 7 · 3 por WhatsApp',
     mensajes: [
       {
         id: 'MSG-B-01', canal: 'web', fecha_recepcion: '2026-09-14T10:02:00',
@@ -225,12 +246,33 @@ const PAQUETES = [
         texto: 'Se me ha caído una olla y ha rajado el cristal de la vitrocerámica de lado a lado, ya no funciona. El servicio técnico dice que cambiar el cristal son 260 €. Póliza hogar HO-990017. Adjunto foto y presupuesto.',
         esperado: { ramo: 'Hogar', revision: false },
       },
+      {
+        id: 'MSG-B-21', canal: 'whatsapp', fecha_recepcion: '2026-09-14T16:20:00',
+        remitente: { nombre: 'Ana Belén Cortés', contacto: '+34 633 417 802' },
+        asunto: 'Cristal de la puerta del balcón roto (WhatsApp)',
+        texto: 'Hola! Esta mañana con el viento se ha cerrado de golpe la puerta del balcón y se ha roto el cristal 😬 Es la de la vivienda de la póliza HO-317744. El cristalero me ha dicho 350 € puesto. Os mando foto ahora mismo 📷',
+        esperado: { ramo: 'Hogar', revision: false },
+      },
+      {
+        id: 'MSG-B-22', canal: 'whatsapp', fecha_recepcion: '2026-09-12T21:10:00',
+        remitente: { nombre: 'Carlos Domínguez Rey', contacto: '+34 644 771 905' },
+        asunto: 'Urgencias por fiebre alta (WhatsApp)',
+        texto: 'Buenas noches, os aviso de que he ido a urgencias del Hospital Quirónsalud San José por fiebre de 39,8 y dolor de garganta muy fuerte, está en el cuadro. Me han hecho un test y me han dado tratamiento. Póliza SA-903316. Solo para que conste 👍',
+        esperado: { ramo: 'Salud', revision: false },
+      },
+      {
+        id: 'MSG-B-23', canal: 'whatsapp', fecha_recepcion: '2026-09-14T12:35:00',
+        remitente: { nombre: 'Jaime Redondo Salas', contacto: '+34 688 512 640' },
+        asunto: 'Golpe de hace tres semanas (WhatsApp)',
+        texto: 'Hola, hace 3 semanas me dieron un golpe en el paragolpes en un semáforo, el otro se fue y como parecía poca cosa no os dije nada 🙈 pero ahora he llevado el coche al taller por otra cosa y me dicen que hay que cambiar el paragolpes y el sensor, 1.800 €. Es el Seat Ibiza 6102 LRP, póliza AU-388905. Se puede hacer algo?',
+        esperado: { ramo: 'Auto', revision: true, nota: 'Comunicación fuera de plazo, más de 7 días (regla A2); sin denuncia ni parte' },
+      },
     ],
   },
   {
     id: 'C',
     nombre: 'Paquete C',
-    descripcion: '12 mensajes · Auto 4 · Hogar 4 · Salud 4',
+    descripcion: '15 mensajes · Auto 5 · Hogar 5 · Salud 5 · 3 por WhatsApp',
     mensajes: [
       {
         id: 'MSG-C-01', canal: 'web', fecha_recepcion: '2026-09-14T15:10:00',
@@ -315,6 +357,27 @@ const PAQUETES = [
         asunto: 'Otitis del niño - urgencias',
         texto: 'Hemos llevado a nuestro hijo Leo (5 años, en la póliza familiar SA-230981) a urgencias pediátricas del Hospital Sanitas La Moraleja por dolor de oído y fiebre. Otitis, le han recetado antibiótico. Solo lo comunico.',
         esperado: { ramo: 'Salud', revision: false },
+      },
+      {
+        id: 'MSG-C-13', canal: 'whatsapp', fecha_recepcion: '2026-09-13T09:15:00',
+        remitente: { nombre: 'Marina Esteban Roig', contacto: '+34 616 240 933' },
+        asunto: 'Ventanilla rota para robar una mochila (WhatsApp)',
+        texto: 'Hola, anoche me rompieron la ventanilla trasera del coche para llevarse una mochila que había dejado en el asiento 😤 Acabo de poner la denuncia, os la mando en cuanto llegue a casa. Coche Nissan Qashqai 4471 MHB, póliza AU-270634. El cristal son 220 € en el taller concertado.',
+        esperado: { ramo: 'Auto', revision: false },
+      },
+      {
+        id: 'MSG-C-14', canal: 'whatsapp', fecha_recepcion: '2026-09-14T10:48:00',
+        remitente: { nombre: 'Pedro Almagro Ruiz', contacto: '+34 677 843 120' },
+        asunto: 'Fuga del termo (WhatsApp)',
+        texto: 'Buenos días, esta noche ha reventado el termo eléctrico y ha soltado agua por todo el baño y parte del pasillo 💦 Ya ha venido el fontanero (150 €) y lo ha cerrado. Hay que pintar el techo del baño de abajo, el pintor dice 400 €. Póliza HO-556210. Tengo fotos de todo.',
+        esperado: { ramo: 'Hogar', revision: false },
+      },
+      {
+        id: 'MSG-C-15', canal: 'whatsapp', fecha_recepcion: '2026-09-11T13:02:00',
+        remitente: { nombre: 'Sara Villalba Ortiz', contacto: '+34 699 052 478' },
+        asunto: 'Operación de miopía (WhatsApp)',
+        texto: 'Hola! Me quiero operar de miopía con láser en la Clínica Baviera, que creo que no está en vuestro cuadro. Me han presupuestado 2.400 € los dos ojos. Me cubrís algo o me hacéis reembolso? Póliza SA-441902. Gracias 😊',
+        esperado: { ramo: 'Salud', revision: true, nota: 'Cirugía refractiva excluida, centro fuera del cuadro y reembolso > 2.000 € (reglas S4, S5, S7)' },
       },
     ],
   },

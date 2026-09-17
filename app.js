@@ -44,6 +44,17 @@
   const ssGet = (k, fallback) => { try { const v = sessionStorage.getItem(k); return v ? JSON.parse(v) : fallback; } catch { return fallback; } };
   const ssSet = (k, v) => { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch { /* sin almacenamiento */ } };
 
+  // Iconos de canal (SVG inline, 1em)
+  const CANAL_ICON = {
+    email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
+    web: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 13h8M8 16h5"/></svg>',
+    chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H8l-5 3 1.5-4.5A8 8 0 1 1 21 12z"/></svg>',
+    telefono: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>',
+    whatsapp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.6 7.4L3.5 20l1.2-4.2A8.5 8.5 0 1 1 20.5 11.5z"/><path d="M9 8.5c.2 2.5 2.8 5.2 5.5 5.5l1.2-1.2-1.7-.8-.9.6c-.8-.3-1.9-1.4-2.2-2.2l.6-.9-.8-1.7L9 8.5z" fill="currentColor" stroke="none"/></svg>',
+  };
+  const CANAL_LABEL = { email: 'Email', web: 'Formulario web', chat: 'Chat', telefono: 'Teléfono', whatsapp: 'WhatsApp' };
+  const canalIcon = (canal) => `<span class="canal-icon canal-${escapeHtml(canal)}" title="${escapeHtml(CANAL_LABEL[canal] || canal)}" aria-label="${escapeHtml(CANAL_LABEL[canal] || canal)}">${CANAL_ICON[canal] || CANAL_ICON.chat}</span>`;
+
   // ---------------------------------------------------------------------------
   // Estado (solo sesión)
   // ---------------------------------------------------------------------------
@@ -93,6 +104,10 @@
     let m = t.match(/\b(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\b/i);
     if (m) fecha = `${year}-${String(MESES[m[2].toLowerCase()]).padStart(2, '0')}-${m[1].padStart(2, '0')}`;
     if (!fecha && (m = t.match(/\b(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\b/))) fecha = `${year}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+    if (!fecha && (m = t.match(/\bhace\s+(\d+|un|una|dos|tres|cuatro|cinco|seis)\s+(d[ií]as?|semanas?)\b/i))) {
+      const n = { un: 1, una: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6 }[m[1].toLowerCase()] ?? Number(m[1]);
+      fecha = isoDate(new Date(recepcion.getTime() - n * (/semana/i.test(m[2]) ? 7 : 1) * 86400000));
+    }
     if (!fecha && /\b(ayer|anoche)\b/i.test(t)) fecha = isoDate(new Date(recepcion.getTime() - 86400000));
     if (!fecha && /\b(hoy|esta (ma[ñn]ana|tarde|noche)|acabo de|ahora mismo)\b/i.test(t)) fecha = isoDate(recepcion);
 
@@ -432,7 +447,7 @@
     $('paquete-desc').textContent = p.descripcion;
     $('paquete-lista').replaceChildren(...p.mensajes.map((m) => {
       const li = document.createElement('li');
-      li.innerHTML = `<span class="msg-id">${escapeHtml(m.id)}</span> <span class="msg-canal">${escapeHtml(m.canal)}</span><br><span class="msg-asunto">${escapeHtml(m.asunto)}</span>`;
+      li.innerHTML = `${canalIcon(m.canal)} <span class="msg-id">${escapeHtml(m.id)}</span> <span class="msg-canal">${escapeHtml(CANAL_LABEL[m.canal] || m.canal)}</span><br><span class="msg-asunto">${escapeHtml(m.asunto)}</span>`;
       li.title = m.texto;
       return li;
     }));
@@ -598,10 +613,11 @@
     const m = entry.mensaje;
     $('modal-title').textContent = `${entry.id} · ${m.asunto}`;
     $('modal-subtitle').innerHTML = `<span class="pill pill-ramo-${entry.ramo.toLowerCase()}">${escapeHtml(entry.ramo)}</span> <span class="pill ${entry.decision === DECISION.REVIEW ? 'pill-review' : 'pill-ok'}">${entry.decision === DECISION.REVIEW ? 'A revisar' : 'Aprobado'}</span>`;
+    $('modal-h-mensaje').innerHTML = `${canalIcon(m.canal)} Mensaje <span class="muted">· ${escapeHtml(CANAL_LABEL[m.canal] || m.canal)}</span>`;
     $('modal-mensaje').innerHTML = kv([
       ['Remitente', escapeHtml(m.remitente.nombre)],
       ['Contacto', escapeHtml(m.remitente.contacto)],
-      ['Canal', escapeHtml(m.canal)],
+      ['Canal', escapeHtml(CANAL_LABEL[m.canal] || m.canal)],
       ['Recibido', new Date(m.fecha_recepcion).toLocaleString('es-ES')],
     ]);
     $('modal-texto').textContent = m.texto;

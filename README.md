@@ -19,11 +19,13 @@ La pantalla son tres contadores — **aprobados**, **a revisar**, **tiempo medio
 
 Tres paquetes fijos y mixtos en [`data/mensajes.js`](data/mensajes.js). Cada mensaje lleva un `esperado` (ramo y si debería ir a revisión) que **no se envía a la IA**; solo sirve para contrastar en la ficha y en la columna Ramo (✔/✖).
 
-| Paquete | Mensajes | Auto / Hogar / Salud | Revisión esperada |
+| Paquete | Mensajes | Auto / Hogar / Salud | A revisar (esperado) |
 |---|---|---|---|
-| A | 10 | 4 / 3 / 3 | 2 |
-| B | 20 | 7 / 7 / 6 | 3 |
-| C | 12 | 4 / 4 / 4 | 2 |
+| A | 13 | 5 / 4 / 4 | 3 |
+| B | 23 | 8 / 8 / 7 | 4 |
+| C | 15 | 5 / 5 / 5 | 3 |
+
+Canales: email, formulario web, chat, teléfono y WhatsApp (tres mensajes por paquete, con el tono informal del canal). Cada canal tiene su icono en la lista lateral y en la ficha.
 
 ## Prompts y reglas
 
@@ -49,7 +51,7 @@ La ficha de cada mensaje muestra los tokens de entrada, salida y razonamiento po
 En la barra lateral, **Motor de triaje** permite elegir:
 
 - **Automático**: IA si hay clave; si no, motor local.
-- **Resultados guardados**: reproduce las fichas de [`data/resultados.js`](data/resultados.js), generadas con IA para los 42 mensajes con el mismo esquema que devuelve el modelo (ramo, indicios, datos extraídos, criterios con evidencia, decisión, motivo, confianza y tokens). Cada mensaje tarda entre 5 y 7 s, con el mismo estado en vivo, pausa y reinicio.
+- **Resultados guardados**: reproduce las fichas de [`data/resultados.js`](data/resultados.js), generadas con IA para los 51 mensajes con el mismo esquema que devuelve el modelo (ramo, indicios, datos extraídos, criterios con evidencia, decisión, motivo, confianza y tokens). Cada mensaje tarda entre 5 y 7 s, con el mismo estado en vivo, pausa y reinicio.
 - **Archivo cargado**: con **Reproducir desde archivo** puedes cargar un JSON generado con «Exportar JSON» de un lote real y repetirlo con la misma cadencia.
 
 ## Motor local (sin IA)

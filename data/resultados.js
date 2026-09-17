@@ -289,6 +289,62 @@ const RESULTADOS_GUARDADOS = {
     c: [['S1', 'cumple', 'El hijo está "en la póliza familiar SA-230981"'], ['S2', 'cumple', 'Urgencia sin carencia'], ['S3', 'cumple', 'Proceso agudo'], ['S4', 'cumple', 'Urgencias no requieren autorización'], ['S5', 'cumple', 'Centro habitual del cuadro'], ['S6', 'cumple', 'Urgencias pediátricas en cuadro'], ['S7', 'no_aplica', 'No hay reembolso'], ['S8', 'cumple', 'No aplica']],
     dec: 'DESPEJADO', motivo: 'Urgencias pediátricas por otitis de beneficiario en póliza familiar: prestación directa.', conf: 0.95, tok: [1342, 546, 158],
   },
+
+  // ───────────────────────── Mensajes de WhatsApp ─────────────────────────
+  'MSG-A-11': {
+    ramo: 'Auto', cr: ['Daño en vehículo: puerta del Peugeot 2008', 'Póliza AU-742210', 'Parking del Carrefour de Alcobendas'],
+    d: { nombre_cliente: 'Rocío Pascual Mena', numero_poliza: 'AU-742210', tipo_siniestro: 'Rayón en puerta por tercero desconocido', fecha_hecho: '2026-09-13', importe_estimado_eur: 600, lugar: 'Parking del Carrefour de Alcobendas', terceros_implicados: true, lesionados: false, documentacion_mencionada: ['fotos', 'denuncia en la policía'], observaciones: 'Tercero no identificado que se fue sin dejar nota; mensaje por WhatsApp.' },
+    c: [['A1', 'cumple', 'Póliza AU-742210; sin mención de impago'], ['A2', 'cumple', 'Hecho el 13/09, comunicado el 14/09'], ['A3', 'no_aplica', 'Vehículo estacionado'], ['A4', 'cumple', 'La fuga es del tercero desconocido'], ['A5', 'cumple', 'Tercero no identificable; denuncia presentada; sin heridos'], ['A6', 'cumple', '600 € < 6.000 €'], ['A7', 'cumple', 'Daños por tercero desconocido con fotos y denuncia'], ['A8', 'cumple', 'Relato coherente']],
+    dec: 'DESPEJADO', motivo: 'Rayón en puerta por tercero desconocido, con fotos y denuncia, 600 €: despeje directo.', conf: 0.94, tok: [1366, 590, 186],
+  },
+  'MSG-A-12': {
+    ramo: 'Salud', cr: ['Prestación sanitaria: urgencias pediátricas con radiografía', 'Hospital Universitario HM Sanchinarro', 'Póliza familiar SA-518877 con el hijo incluido'],
+    d: { nombre_cliente: 'Nerea Ibarra Lago (por su hijo Mateo, 8 años)', numero_poliza: 'SA-518877', tipo_siniestro: 'Urgencias por caída con patinete (radiografía de brazo)', fecha_hecho: '2026-09-13', importe_estimado_eur: null, lugar: 'Hospital Universitario HM Sanchinarro', terceros_implicados: false, lesionados: true, documentacion_mencionada: [], observaciones: 'Comunicado en tiempo real desde urgencias por WhatsApp.' },
+    c: [['S1', 'cumple', 'El hijo "está en la póliza familiar SA-518877"'], ['S2', 'cumple', 'Urgencia por traumatismo sin carencia'], ['S3', 'cumple', 'Lesión aguda'], ['S4', 'cumple', 'Urgencias y radiografía no requieren autorización'], ['S5', 'cumple', 'Hospital HM Sanchinarro, centro del cuadro'], ['S6', 'cumple', 'Urgencias con radiografía en cuadro'], ['S7', 'no_aplica', 'No hay reembolso'], ['S8', 'cumple', 'Caída en el parque, no laboral ni de tráfico']],
+    dec: 'DESPEJADO', motivo: 'Urgencias pediátricas por caída con radiografía en hospital del cuadro, beneficiario incluido en póliza familiar: prestación directa.', conf: 0.94, tok: [1352, 566, 176],
+  },
+  'MSG-A-13': {
+    ramo: 'Hogar', cr: ['"nos han entrado en casa": sustracción en la vivienda', 'Póliza HO-604118'],
+    d: { nombre_cliente: 'Luis Miguel Arranz', numero_poliza: 'HO-604118', tipo_siniestro: 'Robo en vivienda (datos pendientes)', fecha_hecho: null, importe_estimado_eur: null, lugar: null, terceros_implicados: false, lesionados: false, documentacion_mencionada: [], observaciones: 'Ocurrido "este finde" en ausencia de los asegurados; no indica denuncia, objetos sustraídos, importe ni cómo accedieron; promete enviar una lista.' },
+    c: [['H1', 'cumple', 'Póliza HO-604118 identificada'], ['H2', 'cumple', 'Ocurrido el fin de semana, comunicado el lunes 14/09'], ['H3', 'no_aplica', 'No es daño por agua'], ['H4', 'incumple', 'No menciona denuncia ni signos de fuerza; sin relación de objetos ni importe'], ['H5', 'no_aplica', 'No es cristal ni eléctrico'], ['H6', 'no_aplica', 'No es vandalismo'], ['H7', 'no_aplica', 'Sin importe'], ['H8', 'no_aplica', 'Ausencia de fin de semana'], ['H9', 'no_aplica', 'Sin importe estimado']],
+    dec: 'REVISION', motivo: 'Robo en vivienda sin denuncia, sin relación de objetos ni importe y sin indicar signos de fuerza: falta información esencial; solicitar denuncia y lista valorada y enviar perito.', conf: 0.9, tok: [1330, 610, 232],
+  },
+  'MSG-B-21': {
+    ramo: 'Hogar', cr: ['Daño en la vivienda: cristal de la puerta del balcón', 'Póliza HO-317744', 'Golpe de viento'],
+    d: { nombre_cliente: 'Ana Belén Cortés', numero_poliza: 'HO-317744', tipo_siniestro: 'Rotura de cristal por golpe de viento', fecha_hecho: '2026-09-14', importe_estimado_eur: 350, lugar: null, terceros_implicados: false, lesionados: false, documentacion_mencionada: ['foto (anunciada)', 'presupuesto del cristalero'], observaciones: 'Mensaje por WhatsApp; la foto se envía a continuación.' },
+    c: [['H1', 'cumple', 'Póliza HO-317744 identificada'], ['H2', 'cumple', 'Hecho y comunicado el 14/09'], ['H3', 'no_aplica', 'No es daño por agua'], ['H4', 'no_aplica', 'No es robo'], ['H5', 'cumple', 'Rotura de cristal de 350 € < 1.500 € con presupuesto y foto'], ['H6', 'no_aplica', 'Fenómeno leve; tratado como rotura de cristales'], ['H7', 'no_aplica', 'Importe < 3.000 €'], ['H8', 'no_aplica', 'Vivienda habitada'], ['H9', 'cumple', '350 € < 10.000 €']],
+    dec: 'DESPEJADO', motivo: 'Rotura de cristal de la puerta del balcón por viento, 350 € con presupuesto y foto: despeje directo.', conf: 0.95, tok: [1340, 552, 160],
+  },
+  'MSG-B-22': {
+    ramo: 'Salud', cr: ['Prestación sanitaria: urgencias por fiebre alta', 'Hospital Quirónsalud San José "en el cuadro"', 'Póliza SA-903316'],
+    d: { nombre_cliente: 'Carlos Domínguez Rey', numero_poliza: 'SA-903316', tipo_siniestro: 'Urgencias por fiebre y faringitis', fecha_hecho: '2026-09-12', importe_estimado_eur: null, lugar: 'Hospital Quirónsalud San José', terceros_implicados: false, lesionados: false, documentacion_mencionada: [], observaciones: 'Test y tratamiento en urgencias.' },
+    c: [['S1', 'cumple', 'Póliza SA-903316 identificada'], ['S2', 'cumple', 'Urgencia sin carencia'], ['S3', 'cumple', 'Proceso agudo'], ['S4', 'cumple', 'Urgencias no requieren autorización'], ['S5', 'cumple', 'Centro del cuadro'], ['S6', 'cumple', 'Urgencias en cuadro'], ['S7', 'no_aplica', 'No hay reembolso'], ['S8', 'cumple', 'No aplica']],
+    dec: 'DESPEJADO', motivo: 'Urgencias por fiebre alta en hospital del cuadro: prestación directa.', conf: 0.95, tok: [1336, 540, 152],
+  },
+  'MSG-B-23': {
+    ramo: 'Auto', cr: ['Daño en vehículo: paragolpes y sensor del Seat Ibiza 6102 LRP', 'Póliza AU-388905', 'Golpe en semáforo por tercero que se fue'],
+    d: { nombre_cliente: 'Jaime Redondo Salas', numero_poliza: 'AU-388905', tipo_siniestro: 'Alcance en semáforo por tercero desconocido', fecha_hecho: '2026-08-24', importe_estimado_eur: 1800, lugar: 'Semáforo (no especificado)', terceros_implicados: true, lesionados: false, documentacion_mencionada: ['presupuesto de taller'], observaciones: '"hace 3 semanas"; no comunicó el hecho; no menciona parte ni denuncia; el daño se detecta en el taller por otro motivo.' },
+    c: [['A1', 'cumple', 'Póliza AU-388905; sin mención de impago'], ['A2', 'incumple', 'Hecho hace 3 semanas (~24/08) y comunicado el 14/09: fuera del plazo de 7 días sin causa justificada'], ['A3', 'cumple', 'Conducía el tomador'], ['A4', 'cumple', 'La fuga es del tercero'], ['A5', 'incumple', 'Tercero implicado sin parte amistoso ni denuncia'], ['A6', 'cumple', '1.800 € < 6.000 €'], ['A7', 'no_aplica', 'No es supuesto de despeje por falta de documentación'], ['A8', 'cumple', 'Relato coherente, aunque el daño se atribuye semanas después']],
+    dec: 'REVISION', motivo: 'Golpe comunicado tres semanas después, sin parte ni denuncia y con tercero desconocido: fuera de plazo (art. 16 LCS) y sin documentación; valorar cobertura.', conf: 0.92, tok: [1374, 628, 240],
+  },
+  'MSG-C-13': {
+    ramo: 'Auto', cr: ['Daño en vehículo: ventanilla trasera del Nissan Qashqai 4471 MHB', 'Póliza AU-270634', 'Robo de mochila con rotura de cristal y denuncia'],
+    d: { nombre_cliente: 'Marina Esteban Roig', numero_poliza: 'AU-270634', tipo_siniestro: 'Rotura de ventanilla por robo en el vehículo', fecha_hecho: '2026-09-12', importe_estimado_eur: 220, lugar: null, terceros_implicados: false, lesionados: false, documentacion_mencionada: ['denuncia (anunciada)', 'presupuesto del taller concertado'], observaciones: 'La mochila sustraída no forma parte del vehículo; solo se reclama el cristal.' },
+    c: [['A1', 'cumple', 'Póliza AU-270634; sin mención de impago'], ['A2', 'cumple', 'Hecho anoche, comunicado el 13/09'], ['A3', 'no_aplica', 'Vehículo estacionado'], ['A4', 'cumple', 'Sin indicios'], ['A5', 'cumple', 'Sin terceros identificables ni lesionados; denuncia presentada'], ['A6', 'cumple', '220 € < 6.000 €'], ['A7', 'cumple', 'Rotura de luna con denuncia y taller concertado'], ['A8', 'cumple', 'Relato coherente']],
+    dec: 'DESPEJADO', motivo: 'Ventanilla rota en robo con denuncia, 220 € en taller concertado: despeje directo (los efectos personales no se cubren por auto).', conf: 0.94, tok: [1358, 580, 184],
+  },
+  'MSG-C-14': {
+    ramo: 'Hogar', cr: ['Daño en la vivienda: baño, pasillo y techo del baño inferior', 'Póliza HO-556210', 'Rotura del termo eléctrico'],
+    d: { nombre_cliente: 'Pedro Almagro Ruiz', numero_poliza: 'HO-556210', tipo_siniestro: 'Daños por agua por rotura de termo', fecha_hecho: '2026-09-14', importe_estimado_eur: 550, lugar: null, terceros_implicados: false, lesionados: false, documentacion_mencionada: ['fotos', 'factura del fontanero (150 €)', 'presupuesto del pintor (400 €)'], observaciones: 'Importe = 150 € fontanero + 400 € pintura; posible daño a la vivienda inferior (techo del baño de abajo).' },
+    c: [['H1', 'cumple', 'Póliza HO-556210 identificada'], ['H2', 'cumple', 'Hecho esa noche, comunicado el 14/09'], ['H3', 'cumple', 'Rotura súbita del termo, no filtración ni mantenimiento'], ['H4', 'no_aplica', 'No es robo'], ['H5', 'no_aplica', 'No es cristal ni eléctrico'], ['H6', 'no_aplica', 'No aplica'], ['H7', 'no_aplica', 'Importe < 3.000 €'], ['H8', 'no_aplica', 'Vivienda habitada'], ['H9', 'cumple', '550 € < 10.000 €']],
+    dec: 'DESPEJADO', motivo: 'Daño por agua súbito por rotura del termo con fotos y facturas, 550 €: cumple las reglas de Hogar.', conf: 0.94, tok: [1362, 584, 182],
+  },
+  'MSG-C-15': {
+    ramo: 'Salud', cr: ['Solicitud de cobertura de una cirugía', 'Clínica Baviera, "no está en vuestro cuadro"', 'Póliza SA-441902 y pregunta por reembolso'],
+    d: { nombre_cliente: 'Sara Villalba Ortiz', numero_poliza: 'SA-441902', tipo_siniestro: 'Cirugía refractiva de miopía con láser', fecha_hecho: null, importe_estimado_eur: 2400, lugar: 'Clínica Baviera', terceros_implicados: false, lesionados: false, documentacion_mencionada: ['presupuesto de la clínica'], observaciones: 'Prestación aún no realizada; consulta cobertura o reembolso.' },
+    c: [['S1', 'cumple', 'Póliza SA-441902 identificada'], ['S2', 'no_aplica', 'No consta antigüedad de la póliza'], ['S3', 'no_aplica', 'La miopía no se presenta como preexistencia relevante'], ['S4', 'cumple', 'Cirugía programada aún no realizada: consulta antes de operarse'], ['S5', 'incumple', 'Centro fuera del cuadro y no consta modalidad de reembolso'], ['S6', 'no_aplica', 'No es prestación básica en cuadro'], ['S7', 'incumple', 'Cirugía refractiva, prestación habitualmente excluida; importe 2.400 € > 2.000 €'], ['S8', 'cumple', 'No aplica']],
+    dec: 'REVISION', motivo: 'Cirugía refractiva de miopía en clínica fuera del cuadro por 2.400 €: prestación habitualmente excluida y sin modalidad de reembolso; revisar condiciones antes de responder.', conf: 0.9, tok: [1348, 606, 226],
+  },
 };
 
 // Expande el formato compacto al esquema completo que devuelve el modelo
