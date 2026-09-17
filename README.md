@@ -1,6 +1,6 @@
 # Triage de mensajes — seguros
 
-Demo autosuficiente (HTML + JavaScript, sin backend, sin build) del **triaje de mensajes de clientes** en una aseguradora: clasificación por ramo, extracción de datos y aplicación de reglas de negocio con IA, con registro de cada decisión.
+Demo autosuficiente (HTML + JavaScript, sin backend, sin build) del **triaje de mensajes de clientes** en una aseguradora: clasificación por ramo, extracción de datos y aplicación de reglas de negocio con IA, con trazabilidad de cada decisión y un panel de **Gobierno de Agentes** (trazabilidad, Reasoning & Replay, autonomía y FinOps).
 
 **Demo en vivo:** https://nachoenjuto.github.io/fnol-triage/
 
@@ -65,6 +65,7 @@ Sin clave, la demo funciona en modo degradado: ramo por palabras clave, extracci
 3. Elige un paquete en la barra lateral y, si quieres, edita los prompts.
 4. **Procesar paquete**. Puedes **pausar / continuar**; **Reiniciar lote** cancela y vacía el registro.
 5. Filtra por ramo o solo a revisar, ordena por columnas, abre la ficha de cualquier fila, exporta a JSON/CSV.
+6. **Gobierno de Agentes** (botón de la cabecera) abre el panel de gobernanza de los agentes; con «Sesión actual» enseña las trazas del lote que acabas de procesar.
 
 ### Endpoint y ruta de API
 
@@ -82,13 +83,42 @@ Compatibilidad: para modelos de razonamiento (`gpt-5*`, `o*`) no se envían `tem
 ## Estructura
 
 ```
-index.html        UI: conexión IA, barra lateral, contadores, registro, ficha modal
+index.html        UI del triaje: conexión IA, barra lateral, contadores, registro, ficha modal
 app.js            motor local, cliente Azure, procesamiento con pausa, registro, render
 prompts.js        prompt base + bloques de reglas Auto / Hogar / Salud
+icons.js          iconos Lucide compartidos (lucide(name) + hidratación de [data-lucide])
+styles.css        estilos del triaje (claro/oscuro, responsive)
+gobierno.html     panel «Gobierno de Agentes» (seis pestañas)
+gobierno.js       render del panel: fuentes de datos, trazas, replay, gráficos SVG
+gobierno.css      estilos del panel (mismos tokens que styles.css)
 data/mensajes.js  tres paquetes de mensajes
 data/resultados.js fichas de triaje guardadas para reproducción
-styles.css        estilos (claro/oscuro, responsive)
+data/gobierno.js  dataset de demostración del panel (Paquete A + 14 días)
+data/gobierno-paquete-A.json      el mismo dataset, para «Cargar JSON» en el panel
+data/triage-registro-paquete-A.json  13 fichas del Paquete A en formato «Exportar JSON», para «Reproducir desde archivo»
+_docs/            arquitectura (C4 en Mermaid)
 ```
+
+## Gobierno de Agentes
+
+`gobierno.html` es el panel de control agéntico del triaje: gobernanza con trazabilidad y observabilidad de los cuatro agentes (Multicanalidad, Clasificación por ramo, Extracción de datos, Reglas de negocio). Seis pestañas:
+
+| Pestaña | Qué muestra |
+|---|---|
+| **Resumen** | KPI (mensajes, autonomía efectiva, escalados, overrides, coste vs cap mensual, alertas), tarjetas de agentes (modelo, prompt, nivel de autonomía, estado, coste del día vs cap, kill switch), coste diario frente al cap, alertas activas y últimas trazas |
+| **Trazabilidad** | trazas filtrables por agente, canal, decisión y resultado; detalle con waterfall de spans por agente (modelo, tokens, latencia, coste), guardrail disparado y override humano |
+| **Reasoning & Replay** | razonamiento estructurado por agente (entrada → pasos → salida → políticas evaluadas) y replay idéntico o what-if (otro modelo o versión de prompt) con diff de decisión, coste y latencia; histórico de replays |
+| **Autonomía** | niveles L0 Manual · L1 Asistido · L2 Supervisado · L3 Autónomo, guardrails con disparos y auditoría de cambios de nivel |
+| **FinOps** | caps de consumo (global, por agente, por traza) con consumo y acción al superar, coste diario por agente, tokens por agente y recomendaciones de ahorro |
+| **Histórico** | línea de tiempo de alertas, políticas, replays, overrides, despliegues e incidentes |
+
+Fuentes de datos (selector de la cabecera):
+
+- **Demo**: `data/gobierno.js`, datos inventados coherentes con los 13 mensajes del Paquete A (mismos ids, ramo, decisión, confianza y tokens que `data/resultados.js`) más 14 días de histórico.
+- **Sesión actual**: convierte el registro del triaje de esta pestaña (`sessionStorage`) en trazas reales: tokens y pasos → spans, ciclo, decisión, confianza, fallback como incidencia y coste según la tabla de precios por modelo. Histórico, caps y guardrails siguen siendo de demostración.
+- **Archivo JSON**: «Cargar JSON» con el esquema de `data/gobierno-paquete-A.json` (`agentes[]`, `trazas[]` con `spans`, y opcionalmente `caps`, `politicas`, `razonamiento`, `replays`, `diario`, `eventos`…); las secciones ausentes se toman de la demo. «Exportar trazas» descarga el dataset activo con ese mismo esquema.
+
+Todos los iconos de la web (triaje y panel) son [Lucide](https://lucide.dev) (licencia ISC), inline desde `icons.js`.
 
 ## Despliegue
 

@@ -1,0 +1,1314 @@
+[
+  {
+    "id": "MSG-A-13",
+    "asunto": "Nos han entrado en casa (WhatsApp)",
+    "paquete": "A",
+    "ramo": "Hogar",
+    "importe": null,
+    "decision": "REVISION",
+    "motivo": "Robo en vivienda sin denuncia, sin relación de objetos ni importe y sin indicar signos de fuerza: falta información esencial; solicitar denuncia y lista valorada y enviar perito.",
+    "confianza": 0.9,
+    "origen": "IA",
+    "criterios": [
+      {
+        "regla": "H1",
+        "descripcion": "Póliza vigente en la fecha del hecho",
+        "resultado": "cumple",
+        "evidencia": "Póliza HO-604118 identificada"
+      },
+      {
+        "regla": "H2",
+        "descripcion": "Comunicación en plazo (7 días desde que se conoce el daño)",
+        "resultado": "cumple",
+        "evidencia": "Ocurrido el fin de semana, comunicado el lunes 14/09"
+      },
+      {
+        "regla": "H3",
+        "descripcion": "Daño por agua súbito, no filtración ni falta de mantenimiento",
+        "resultado": "no_aplica",
+        "evidencia": "No es daño por agua"
+      },
+      {
+        "regla": "H4",
+        "descripcion": "Robo con fuerza, denuncia y dentro de límites",
+        "resultado": "incumple",
+        "evidencia": "No menciona denuncia ni signos de fuerza; sin relación de objetos ni importe"
+      },
+      {
+        "regla": "H5",
+        "descripcion": "Despeje directo: cristales, sanitarios, eléctrico < 1.500 €",
+        "resultado": "no_aplica",
+        "evidencia": "No es cristal ni eléctrico"
+      },
+      {
+        "regla": "H6",
+        "descripcion": "Vandalismo / atmosférico con denuncia o fecha verificable, < 10.000 €",
+        "resultado": "no_aplica",
+        "evidencia": "No es vandalismo"
+      },
+      {
+        "regla": "H7",
+        "descripcion": "Póliza reciente (< 30 días) con siniestro > 3.000 €",
+        "resultado": "no_aplica",
+        "evidencia": "Sin importe"
+      },
+      {
+        "regla": "H8",
+        "descripcion": "Vivienda deshabitada más de 30 días",
+        "resultado": "no_aplica",
+        "evidencia": "Ausencia de fin de semana"
+      },
+      {
+        "regla": "H9",
+        "descripcion": "Importe inferior a 10.000 €",
+        "resultado": "no_aplica",
+        "evidencia": "Sin importe estimado"
+      }
+    ],
+    "criterios_ramo": [
+      "\"nos han entrado en casa\": sustracción en la vivienda",
+      "Póliza HO-604118"
+    ],
+    "pasos": null,
+    "datos_extraidos": {
+      "nombre_cliente": "Luis Miguel Arranz",
+      "numero_poliza": "HO-604118",
+      "tipo_siniestro": "Robo en vivienda (datos pendientes)",
+      "fecha_hecho": null,
+      "importe_estimado_eur": null,
+      "lugar": null,
+      "terceros_implicados": false,
+      "lesionados": false,
+      "documentacion_mencionada": [],
+      "observaciones": "Ocurrido \"este finde\" en ausencia de los asegurados; no indica denuncia, objetos sustraídos, importe ni cómo accedieron; promete enviar una lista."
+    },
+    "raw": "{\n  \"ramo\": \"Hogar\",\n  \"criterios_ramo\": [\n    \"\\\"nos han entrado en casa\\\": sustracción en la vivienda\",\n    \"Póliza HO-604118\"\n  ],\n  \"datos_extraidos\": {\n    \"nombre_cliente\": \"Luis Miguel Arranz\",\n    \"numero_poliza\": \"HO-604118\",\n    \"tipo_siniestro\": \"Robo en vivienda (datos pendientes)\",\n    \"fecha_hecho\": null,\n    \"importe_estimado_eur\": null,\n    \"lugar\": null,\n    \"terceros_implicados\": false,\n    \"lesionados\": false,\n    \"documentacion_mencionada\": [],\n    \"observaciones\": \"Ocurrido \\\"este finde\\\" en ausencia de los asegurados; no indica denuncia, objetos sustraídos, importe ni cómo accedieron; promete enviar una lista.\"\n  },\n  \"criterios\": [\n    {\n      \"regla\": \"H1\",\n      \"descripcion\": \"Póliza vigente en la fecha del hecho\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Póliza HO-604118 identificada\"\n    },\n    {\n      \"regla\": \"H2\",\n      \"descripcion\": \"Comunicación en plazo (7 días desde que se conoce el daño)\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Ocurrido el fin de semana, comunicado el lunes 14/09\"\n    },\n    {\n      \"regla\": \"H3\",\n      \"descripcion\": \"Daño por agua súbito, no filtración ni falta de mantenimiento\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No es daño por agua\"\n    },\n    {\n      \"regla\": \"H4\",\n      \"descripcion\": \"Robo con fuerza, denuncia y dentro de límites\",\n      \"resultado\": \"incumple\",\n      \"evidencia\": \"No menciona denuncia ni signos de fuerza; sin relación de objetos ni importe\"\n    },\n    {\n      \"regla\": \"H5\",\n      \"descripcion\": \"Despeje directo: cristales, sanitarios, eléctrico < 1.500 €\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No es cristal ni eléctrico\"\n    },\n    {\n      \"regla\": \"H6\",\n      \"descripcion\": \"Vandalismo / atmosférico con denuncia o fecha verificable, < 10.000 €\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No es vandalismo\"\n    },\n    {\n      \"regla\": \"H7\",\n      \"descripcion\": \"Póliza reciente (< 30 días) con siniestro > 3.000 €\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"Sin importe\"\n    },\n    {\n      \"regla\": \"H8\",\n      \"descripcion\": \"Vivienda deshabitada más de 30 días\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"Ausencia de fin de semana\"\n    },\n    {\n      \"regla\": \"H9\",\n      \"descripcion\": \"Importe inferior a 10.000 €\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"Sin importe estimado\"\n    }\n  ],\n  \"decision\": \"REVISION\",\n  \"motivo\": \"Robo en vivienda sin denuncia, sin relación de objetos ni importe y sin indicar signos de fuerza: falta información esencial; solicitar denuncia y lista valorada y enviar perito.\",\n  \"confianza\": 0.9\n}",
+    "usage": {
+      "input": 1330,
+      "output": 610,
+      "reasoning": 232
+    },
+    "duracion_ms": 6244,
+    "timestamp": "2026-09-17T07:03:29.086Z",
+    "esperado": {
+      "ramo": "Hogar",
+      "revision": true,
+      "nota": "Falta información esencial: sin denuncia, sin importe ni signos de fuerza (regla H4)"
+    },
+    "mensaje": {
+      "id": "MSG-A-13",
+      "canal": "whatsapp",
+      "asunto": "Nos han entrado en casa (WhatsApp)",
+      "texto": "Hola, nos han entrado en casa este finde mientras estábamos fuera 😡 se han llevado cosas, todavía no sé cuánto, estamos mirando. Luego os mando una lista. Póliza HO-604118. Necesito que venga alguien."
+    }
+  },
+  {
+    "id": "MSG-A-12",
+    "asunto": "Hijo en urgencias tras caída con patinete (WhatsApp)",
+    "paquete": "A",
+    "ramo": "Salud",
+    "importe": null,
+    "decision": "DESPEJADO",
+    "motivo": "Urgencias pediátricas por caída con radiografía en hospital del cuadro, beneficiario incluido en póliza familiar: prestación directa.",
+    "confianza": 0.94,
+    "origen": "IA",
+    "criterios": [
+      {
+        "regla": "S1",
+        "descripcion": "Asegurado activo en la póliza",
+        "resultado": "cumple",
+        "evidencia": "El hijo \"está en la póliza familiar SA-518877\""
+      },
+      {
+        "regla": "S2",
+        "descripcion": "Fuera de periodo de carencia",
+        "resultado": "cumple",
+        "evidencia": "Urgencia por traumatismo sin carencia"
+      },
+      {
+        "regla": "S3",
+        "descripcion": "Sin preexistencias no declaradas",
+        "resultado": "cumple",
+        "evidencia": "Lesión aguda"
+      },
+      {
+        "regla": "S4",
+        "descripcion": "Autorización previa cuando procede",
+        "resultado": "cumple",
+        "evidencia": "Urgencias y radiografía no requieren autorización"
+      },
+      {
+        "regla": "S5",
+        "descripcion": "Centro del cuadro médico o modalidad de reembolso",
+        "resultado": "cumple",
+        "evidencia": "Hospital HM Sanchinarro, centro del cuadro"
+      },
+      {
+        "regla": "S6",
+        "descripcion": "Despeje directo: urgencias, consultas y pruebas básicas en cuadro",
+        "resultado": "cumple",
+        "evidencia": "Urgencias con radiografía en cuadro"
+      },
+      {
+        "regla": "S7",
+        "descripcion": "Reembolso ≤ 2.000 € y prestación cubierta",
+        "resultado": "no_aplica",
+        "evidencia": "No hay reembolso"
+      },
+      {
+        "regla": "S8",
+        "descripcion": "No corresponde a seguro de auto ni a mutua laboral",
+        "resultado": "cumple",
+        "evidencia": "Caída en el parque, no laboral ni de tráfico"
+      }
+    ],
+    "criterios_ramo": [
+      "Prestación sanitaria: urgencias pediátricas con radiografía",
+      "Hospital Universitario HM Sanchinarro",
+      "Póliza familiar SA-518877 con el hijo incluido"
+    ],
+    "pasos": null,
+    "datos_extraidos": {
+      "nombre_cliente": "Nerea Ibarra Lago (por su hijo Mateo, 8 años)",
+      "numero_poliza": "SA-518877",
+      "tipo_siniestro": "Urgencias por caída con patinete (radiografía de brazo)",
+      "fecha_hecho": "2026-09-13",
+      "importe_estimado_eur": null,
+      "lugar": "Hospital Universitario HM Sanchinarro",
+      "terceros_implicados": false,
+      "lesionados": true,
+      "documentacion_mencionada": [],
+      "observaciones": "Comunicado en tiempo real desde urgencias por WhatsApp."
+    },
+    "raw": "{\n  \"ramo\": \"Salud\",\n  \"criterios_ramo\": [\n    \"Prestación sanitaria: urgencias pediátricas con radiografía\",\n    \"Hospital Universitario HM Sanchinarro\",\n    \"Póliza familiar SA-518877 con el hijo incluido\"\n  ],\n  \"datos_extraidos\": {\n    \"nombre_cliente\": \"Nerea Ibarra Lago (por su hijo Mateo, 8 años)\",\n    \"numero_poliza\": \"SA-518877\",\n    \"tipo_siniestro\": \"Urgencias por caída con patinete (radiografía de brazo)\",\n    \"fecha_hecho\": \"2026-09-13\",\n    \"importe_estimado_eur\": null,\n    \"lugar\": \"Hospital Universitario HM Sanchinarro\",\n    \"terceros_implicados\": false,\n    \"lesionados\": true,\n    \"documentacion_mencionada\": [],\n    \"observaciones\": \"Comunicado en tiempo real desde urgencias por WhatsApp.\"\n  },\n  \"criterios\": [\n    {\n      \"regla\": \"S1\",\n      \"descripcion\": \"Asegurado activo en la póliza\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"El hijo \\\"está en la póliza familiar SA-518877\\\"\"\n    },\n    {\n      \"regla\": \"S2\",\n      \"descripcion\": \"Fuera de periodo de carencia\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Urgencia por traumatismo sin carencia\"\n    },\n    {\n      \"regla\": \"S3\",\n      \"descripcion\": \"Sin preexistencias no declaradas\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Lesión aguda\"\n    },\n    {\n      \"regla\": \"S4\",\n      \"descripcion\": \"Autorización previa cuando procede\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Urgencias y radiografía no requieren autorización\"\n    },\n    {\n      \"regla\": \"S5\",\n      \"descripcion\": \"Centro del cuadro médico o modalidad de reembolso\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Hospital HM Sanchinarro, centro del cuadro\"\n    },\n    {\n      \"regla\": \"S6\",\n      \"descripcion\": \"Despeje directo: urgencias, consultas y pruebas básicas en cuadro\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Urgencias con radiografía en cuadro\"\n    },\n    {\n      \"regla\": \"S7\",\n      \"descripcion\": \"Reembolso ≤ 2.000 € y prestación cubierta\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No hay reembolso\"\n    },\n    {\n      \"regla\": \"S8\",\n      \"descripcion\": \"No corresponde a seguro de auto ni a mutua laboral\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Caída en el parque, no laboral ni de tráfico\"\n    }\n  ],\n  \"decision\": \"DESPEJADO\",\n  \"motivo\": \"Urgencias pediátricas por caída con radiografía en hospital del cuadro, beneficiario incluido en póliza familiar: prestación directa.\",\n  \"confianza\": 0.94\n}",
+    "usage": {
+      "input": 1352,
+      "output": 566,
+      "reasoning": 176
+    },
+    "duracion_ms": 5307,
+    "timestamp": "2026-09-17T07:03:22.842Z",
+    "esperado": {
+      "ramo": "Salud",
+      "revision": false
+    },
+    "mensaje": {
+      "id": "MSG-A-12",
+      "canal": "whatsapp",
+      "asunto": "Hijo en urgencias tras caída con patinete (WhatsApp)",
+      "texto": "Buenas, estoy ahora mismo en urgencias del Hospital Universitario HM Sanchinarro con mi hijo Mateo (8 años), se ha caído del patinete en el parque y le van a hacer una radiografía del brazo 🙏 Está en la póliza familiar SA-518877. Lo comunico por si tengo que hacer algo más. Gracias!"
+    }
+  },
+  {
+    "id": "MSG-A-11",
+    "asunto": "Rayón en la puerta en un parking (WhatsApp)",
+    "paquete": "A",
+    "ramo": "Auto",
+    "importe": 600,
+    "decision": "DESPEJADO",
+    "motivo": "Rayón en puerta por tercero desconocido, con fotos y denuncia, 600 €: despeje directo.",
+    "confianza": 0.94,
+    "origen": "IA",
+    "criterios": [
+      {
+        "regla": "A1",
+        "descripcion": "Póliza vigente y al corriente de pago en la fecha del hecho",
+        "resultado": "cumple",
+        "evidencia": "Póliza AU-742210; sin mención de impago"
+      },
+      {
+        "regla": "A2",
+        "descripcion": "Comunicación en plazo (7 días, art. 16 LCS)",
+        "resultado": "cumple",
+        "evidencia": "Hecho el 13/09, comunicado el 14/09"
+      },
+      {
+        "regla": "A3",
+        "descripcion": "Conductor declarado en la póliza",
+        "resultado": "no_aplica",
+        "evidencia": "Vehículo estacionado"
+      },
+      {
+        "regla": "A4",
+        "descripcion": "Sin alcohol, drogas, fuga ni uso no declarado",
+        "resultado": "cumple",
+        "evidencia": "La fuga es del tercero desconocido"
+      },
+      {
+        "regla": "A5",
+        "descripcion": "Terceros documentados y sin lesionados",
+        "resultado": "cumple",
+        "evidencia": "Tercero no identificable; denuncia presentada; sin heridos"
+      },
+      {
+        "regla": "A6",
+        "descripcion": "Importe inferior a 6.000 € y proporcionado",
+        "resultado": "cumple",
+        "evidencia": "600 € < 6.000 €"
+      },
+      {
+        "regla": "A7",
+        "descripcion": "Supuesto de despeje directo con documentación",
+        "resultado": "cumple",
+        "evidencia": "Daños por tercero desconocido con fotos y denuncia"
+      },
+      {
+        "regla": "A8",
+        "descripcion": "Coherencia del relato y siniestralidad",
+        "resultado": "cumple",
+        "evidencia": "Relato coherente"
+      }
+    ],
+    "criterios_ramo": [
+      "Daño en vehículo: puerta del Peugeot 2008",
+      "Póliza AU-742210",
+      "Parking del Carrefour de Alcobendas"
+    ],
+    "pasos": null,
+    "datos_extraidos": {
+      "nombre_cliente": "Rocío Pascual Mena",
+      "numero_poliza": "AU-742210",
+      "tipo_siniestro": "Rayón en puerta por tercero desconocido",
+      "fecha_hecho": "2026-09-13",
+      "importe_estimado_eur": 600,
+      "lugar": "Parking del Carrefour de Alcobendas",
+      "terceros_implicados": true,
+      "lesionados": false,
+      "documentacion_mencionada": [
+        "fotos",
+        "denuncia en la policía"
+      ],
+      "observaciones": "Tercero no identificado que se fue sin dejar nota; mensaje por WhatsApp."
+    },
+    "raw": "{\n  \"ramo\": \"Auto\",\n  \"criterios_ramo\": [\n    \"Daño en vehículo: puerta del Peugeot 2008\",\n    \"Póliza AU-742210\",\n    \"Parking del Carrefour de Alcobendas\"\n  ],\n  \"datos_extraidos\": {\n    \"nombre_cliente\": \"Rocío Pascual Mena\",\n    \"numero_poliza\": \"AU-742210\",\n    \"tipo_siniestro\": \"Rayón en puerta por tercero desconocido\",\n    \"fecha_hecho\": \"2026-09-13\",\n    \"importe_estimado_eur\": 600,\n    \"lugar\": \"Parking del Carrefour de Alcobendas\",\n    \"terceros_implicados\": true,\n    \"lesionados\": false,\n    \"documentacion_mencionada\": [\n      \"fotos\",\n      \"denuncia en la policía\"\n    ],\n    \"observaciones\": \"Tercero no identificado que se fue sin dejar nota; mensaje por WhatsApp.\"\n  },\n  \"criterios\": [\n    {\n      \"regla\": \"A1\",\n      \"descripcion\": \"Póliza vigente y al corriente de pago en la fecha del hecho\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Póliza AU-742210; sin mención de impago\"\n    },\n    {\n      \"regla\": \"A2\",\n      \"descripcion\": \"Comunicación en plazo (7 días, art. 16 LCS)\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Hecho el 13/09, comunicado el 14/09\"\n    },\n    {\n      \"regla\": \"A3\",\n      \"descripcion\": \"Conductor declarado en la póliza\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"Vehículo estacionado\"\n    },\n    {\n      \"regla\": \"A4\",\n      \"descripcion\": \"Sin alcohol, drogas, fuga ni uso no declarado\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"La fuga es del tercero desconocido\"\n    },\n    {\n      \"regla\": \"A5\",\n      \"descripcion\": \"Terceros documentados y sin lesionados\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Tercero no identificable; denuncia presentada; sin heridos\"\n    },\n    {\n      \"regla\": \"A6\",\n      \"descripcion\": \"Importe inferior a 6.000 € y proporcionado\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"600 € < 6.000 €\"\n    },\n    {\n      \"regla\": \"A7\",\n      \"descripcion\": \"Supuesto de despeje directo con documentación\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Daños por tercero desconocido con fotos y denuncia\"\n    },\n    {\n      \"regla\": \"A8\",\n      \"descripcion\": \"Coherencia del relato y siniestralidad\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Relato coherente\"\n    }\n  ],\n  \"decision\": \"DESPEJADO\",\n  \"motivo\": \"Rayón en puerta por tercero desconocido, con fotos y denuncia, 600 €: despeje directo.\",\n  \"confianza\": 0.94\n}",
+    "usage": {
+      "input": 1366,
+      "output": 590,
+      "reasoning": 186
+    },
+    "duracion_ms": 6370,
+    "timestamp": "2026-09-17T07:03:17.535Z",
+    "esperado": {
+      "ramo": "Auto",
+      "revision": false
+    },
+    "mensaje": {
+      "id": "MSG-A-11",
+      "canal": "whatsapp",
+      "asunto": "Rayón en la puerta en un parking (WhatsApp)",
+      "texto": "Hola!! os escribo por aquí porque no me aclaro con la app 😅 Ayer 13/09 en el parking del Carrefour de Alcobendas alguien me rayó toda la puerta del conductor y se fue sin dejar nota 😩 Tengo fotos y esta mañana he puesto denuncia en la policía. Es el Peugeot 2008 blanco, póliza AU-742210. El taller de al lado de casa me dice que unos 600 €. Qué hago??"
+    }
+  },
+  {
+    "id": "MSG-A-10",
+    "asunto": "Urgencias por crisis de asma",
+    "paquete": "A",
+    "ramo": "Salud",
+    "importe": null,
+    "decision": "DESPEJADO",
+    "motivo": "Urgencias por crisis de asma en hospital del cuadro con informe adjunto: prestación directa sin carencia.",
+    "confianza": 0.94,
+    "origen": "IA",
+    "criterios": [
+      {
+        "regla": "S1",
+        "descripcion": "Asegurado activo en la póliza",
+        "resultado": "cumple",
+        "evidencia": "Póliza SA-337700 identificada"
+      },
+      {
+        "regla": "S2",
+        "descripcion": "Fuera de periodo de carencia",
+        "resultado": "cumple",
+        "evidencia": "Urgencia vital sin carencia"
+      },
+      {
+        "regla": "S3",
+        "descripcion": "Sin preexistencias no declaradas",
+        "resultado": "cumple",
+        "evidencia": "No consta que el asma sea preexistencia no declarada; urgencia cubierta en todo caso"
+      },
+      {
+        "regla": "S4",
+        "descripcion": "Autorización previa cuando procede",
+        "resultado": "cumple",
+        "evidencia": "Urgencias no requieren autorización"
+      },
+      {
+        "regla": "S5",
+        "descripcion": "Centro del cuadro médico o modalidad de reembolso",
+        "resultado": "cumple",
+        "evidencia": "Centro del cuadro médico"
+      },
+      {
+        "regla": "S6",
+        "descripcion": "Despeje directo: urgencias, consultas y pruebas básicas en cuadro",
+        "resultado": "cumple",
+        "evidencia": "Urgencias en centro del cuadro con informe"
+      },
+      {
+        "regla": "S7",
+        "descripcion": "Reembolso ≤ 2.000 € y prestación cubierta",
+        "resultado": "no_aplica",
+        "evidencia": "No hay reembolso"
+      },
+      {
+        "regla": "S8",
+        "descripcion": "No corresponde a seguro de auto ni a mutua laboral",
+        "resultado": "cumple",
+        "evidencia": "No es tráfico ni laboral"
+      }
+    ],
+    "criterios_ramo": [
+      "Prestación sanitaria: urgencias por crisis de asma",
+      "Hospital Universitario Quirónsalud Madrid \"en el cuadro médico\"",
+      "Póliza SA-337700"
+    ],
+    "pasos": null,
+    "datos_extraidos": {
+      "nombre_cliente": "Clara Ramos Ortiz",
+      "numero_poliza": "SA-337700",
+      "tipo_siniestro": "Urgencias por crisis de asma",
+      "fecha_hecho": "2026-09-10",
+      "importe_estimado_eur": null,
+      "lugar": "Hospital Universitario Quirónsalud Madrid",
+      "terceros_implicados": false,
+      "lesionados": false,
+      "documentacion_mencionada": [
+        "informe de urgencias"
+      ],
+      "observaciones": "Nebulizaciones y corticoides; alta de madrugada."
+    },
+    "raw": "{\n  \"ramo\": \"Salud\",\n  \"criterios_ramo\": [\n    \"Prestación sanitaria: urgencias por crisis de asma\",\n    \"Hospital Universitario Quirónsalud Madrid \\\"en el cuadro médico\\\"\",\n    \"Póliza SA-337700\"\n  ],\n  \"datos_extraidos\": {\n    \"nombre_cliente\": \"Clara Ramos Ortiz\",\n    \"numero_poliza\": \"SA-337700\",\n    \"tipo_siniestro\": \"Urgencias por crisis de asma\",\n    \"fecha_hecho\": \"2026-09-10\",\n    \"importe_estimado_eur\": null,\n    \"lugar\": \"Hospital Universitario Quirónsalud Madrid\",\n    \"terceros_implicados\": false,\n    \"lesionados\": false,\n    \"documentacion_mencionada\": [\n      \"informe de urgencias\"\n    ],\n    \"observaciones\": \"Nebulizaciones y corticoides; alta de madrugada.\"\n  },\n  \"criterios\": [\n    {\n      \"regla\": \"S1\",\n      \"descripcion\": \"Asegurado activo en la póliza\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Póliza SA-337700 identificada\"\n    },\n    {\n      \"regla\": \"S2\",\n      \"descripcion\": \"Fuera de periodo de carencia\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Urgencia vital sin carencia\"\n    },\n    {\n      \"regla\": \"S3\",\n      \"descripcion\": \"Sin preexistencias no declaradas\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"No consta que el asma sea preexistencia no declarada; urgencia cubierta en todo caso\"\n    },\n    {\n      \"regla\": \"S4\",\n      \"descripcion\": \"Autorización previa cuando procede\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Urgencias no requieren autorización\"\n    },\n    {\n      \"regla\": \"S5\",\n      \"descripcion\": \"Centro del cuadro médico o modalidad de reembolso\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Centro del cuadro médico\"\n    },\n    {\n      \"regla\": \"S6\",\n      \"descripcion\": \"Despeje directo: urgencias, consultas y pruebas básicas en cuadro\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Urgencias en centro del cuadro con informe\"\n    },\n    {\n      \"regla\": \"S7\",\n      \"descripcion\": \"Reembolso ≤ 2.000 € y prestación cubierta\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No hay reembolso\"\n    },\n    {\n      \"regla\": \"S8\",\n      \"descripcion\": \"No corresponde a seguro de auto ni a mutua laboral\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"No es tráfico ni laboral\"\n    }\n  ],\n  \"decision\": \"DESPEJADO\",\n  \"motivo\": \"Urgencias por crisis de asma en hospital del cuadro con informe adjunto: prestación directa sin carencia.\",\n  \"confianza\": 0.94\n}",
+    "usage": {
+      "input": 1352,
+      "output": 562,
+      "reasoning": 178
+    },
+    "duracion_ms": 5433,
+    "timestamp": "2026-09-17T07:03:11.165Z",
+    "esperado": {
+      "ramo": "Salud",
+      "revision": false
+    },
+    "mensaje": {
+      "id": "MSG-A-10",
+      "canal": "email",
+      "asunto": "Urgencias por crisis de asma",
+      "texto": "Anoche 10 de septiembre tuve una crisis de asma y fui a urgencias del Hospital Universitario Quirónsalud Madrid, que está en el cuadro médico. Me pusieron nebulizaciones y corticoides y me dieron el alta de madrugada. Póliza SA-337700. Adjunto el informe de urgencias por si lo necesitáis."
+    }
+  },
+  {
+    "id": "MSG-A-09",
+    "asunto": "Cristal de ventana roto",
+    "paquete": "A",
+    "ramo": "Hogar",
+    "importe": 400,
+    "decision": "DESPEJADO",
+    "motivo": "Rotura de cristal de 400 € con foto y presupuesto: despeje directo; anotar posible recobro al vecino.",
+    "confianza": 0.93,
+    "origen": "IA",
+    "criterios": [
+      {
+        "regla": "H1",
+        "descripcion": "Póliza vigente en la fecha del hecho",
+        "resultado": "cumple",
+        "evidencia": "Póliza HO-118830 identificada"
+      },
+      {
+        "regla": "H2",
+        "descripcion": "Comunicación en plazo (7 días desde que se conoce el daño)",
+        "resultado": "cumple",
+        "evidencia": "Hecho y comunicado el 13/09"
+      },
+      {
+        "regla": "H3",
+        "descripcion": "Daño por agua súbito, no filtración ni falta de mantenimiento",
+        "resultado": "no_aplica",
+        "evidencia": "No es daño por agua"
+      },
+      {
+        "regla": "H4",
+        "descripcion": "Robo con fuerza, denuncia y dentro de límites",
+        "resultado": "no_aplica",
+        "evidencia": "No es robo"
+      },
+      {
+        "regla": "H5",
+        "descripcion": "Despeje directo: cristales, sanitarios, eléctrico < 1.500 €",
+        "resultado": "cumple",
+        "evidencia": "Rotura de cristal de 400 € < 1.500 € con foto y presupuesto"
+      },
+      {
+        "regla": "H6",
+        "descripcion": "Vandalismo / atmosférico con denuncia o fecha verificable, < 10.000 €",
+        "resultado": "no_aplica",
+        "evidencia": "No es vandalismo"
+      },
+      {
+        "regla": "H7",
+        "descripcion": "Póliza reciente (< 30 días) con siniestro > 3.000 €",
+        "resultado": "no_aplica",
+        "evidencia": "Importe < 3.000 €"
+      },
+      {
+        "regla": "H8",
+        "descripcion": "Vivienda deshabitada más de 30 días",
+        "resultado": "no_aplica",
+        "evidencia": "Vivienda habitada"
+      },
+      {
+        "regla": "H9",
+        "descripcion": "Importe inferior a 10.000 €",
+        "resultado": "cumple",
+        "evidencia": "400 € < 10.000 €"
+      }
+    ],
+    "criterios_ramo": [
+      "Daño en la vivienda: cristal de la ventana del salón",
+      "Póliza de hogar HO-118830",
+      "Rotura por balón de los hijos del vecino"
+    ],
+    "pasos": null,
+    "datos_extraidos": {
+      "nombre_cliente": "Iván Castro Luque",
+      "numero_poliza": "HO-118830",
+      "tipo_siniestro": "Rotura de cristal",
+      "fecha_hecho": "2026-09-13",
+      "importe_estimado_eur": 400,
+      "lugar": null,
+      "terceros_implicados": true,
+      "lesionados": false,
+      "documentacion_mencionada": [
+        "foto",
+        "presupuesto del cristalero"
+      ],
+      "observaciones": "Causado por los hijos del vecino: posible recobro al responsable civil."
+    },
+    "raw": "{\n  \"ramo\": \"Hogar\",\n  \"criterios_ramo\": [\n    \"Daño en la vivienda: cristal de la ventana del salón\",\n    \"Póliza de hogar HO-118830\",\n    \"Rotura por balón de los hijos del vecino\"\n  ],\n  \"datos_extraidos\": {\n    \"nombre_cliente\": \"Iván Castro Luque\",\n    \"numero_poliza\": \"HO-118830\",\n    \"tipo_siniestro\": \"Rotura de cristal\",\n    \"fecha_hecho\": \"2026-09-13\",\n    \"importe_estimado_eur\": 400,\n    \"lugar\": null,\n    \"terceros_implicados\": true,\n    \"lesionados\": false,\n    \"documentacion_mencionada\": [\n      \"foto\",\n      \"presupuesto del cristalero\"\n    ],\n    \"observaciones\": \"Causado por los hijos del vecino: posible recobro al responsable civil.\"\n  },\n  \"criterios\": [\n    {\n      \"regla\": \"H1\",\n      \"descripcion\": \"Póliza vigente en la fecha del hecho\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Póliza HO-118830 identificada\"\n    },\n    {\n      \"regla\": \"H2\",\n      \"descripcion\": \"Comunicación en plazo (7 días desde que se conoce el daño)\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Hecho y comunicado el 13/09\"\n    },\n    {\n      \"regla\": \"H3\",\n      \"descripcion\": \"Daño por agua súbito, no filtración ni falta de mantenimiento\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No es daño por agua\"\n    },\n    {\n      \"regla\": \"H4\",\n      \"descripcion\": \"Robo con fuerza, denuncia y dentro de límites\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No es robo\"\n    },\n    {\n      \"regla\": \"H5\",\n      \"descripcion\": \"Despeje directo: cristales, sanitarios, eléctrico < 1.500 €\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Rotura de cristal de 400 € < 1.500 € con foto y presupuesto\"\n    },\n    {\n      \"regla\": \"H6\",\n      \"descripcion\": \"Vandalismo / atmosférico con denuncia o fecha verificable, < 10.000 €\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No es vandalismo\"\n    },\n    {\n      \"regla\": \"H7\",\n      \"descripcion\": \"Póliza reciente (< 30 días) con siniestro > 3.000 €\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"Importe < 3.000 €\"\n    },\n    {\n      \"regla\": \"H8\",\n      \"descripcion\": \"Vivienda deshabitada más de 30 días\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"Vivienda habitada\"\n    },\n    {\n      \"regla\": \"H9\",\n      \"descripcion\": \"Importe inferior a 10.000 €\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"400 € < 10.000 €\"\n    }\n  ],\n  \"decision\": \"DESPEJADO\",\n  \"motivo\": \"Rotura de cristal de 400 € con foto y presupuesto: despeje directo; anotar posible recobro al vecino.\",\n  \"confianza\": 0.93\n}",
+    "usage": {
+      "input": 1355,
+      "output": 584,
+      "reasoning": 190
+    },
+    "duracion_ms": 6496,
+    "timestamp": "2026-09-17T07:03:05.732Z",
+    "esperado": {
+      "ramo": "Hogar",
+      "revision": false
+    },
+    "mensaje": {
+      "id": "MSG-A-09",
+      "canal": "web",
+      "asunto": "Cristal de ventana roto",
+      "texto": "Los niños del vecino han roto con un balón el cristal de la ventana del salón esta mañana (13/09). Es un doble acristalamiento de 120x140. El cristalero me pasa 400 € con la instalación. Póliza de hogar HO-118830. Adjunto foto."
+    }
+  },
+  {
+    "id": "MSG-A-08",
+    "asunto": "Accidente de moto con ingreso hospitalario",
+    "paquete": "A",
+    "ramo": "Auto",
+    "importe": null,
+    "decision": "REVISION",
+    "motivo": "Accidente de moto con lesionado ingresado y tercero implicado: gestión especializada de daños corporales y coordinación con la póliza de salud SA-662371.",
+    "confianza": 0.9,
+    "origen": "IA",
+    "criterios": [
+      {
+        "regla": "A1",
+        "descripcion": "Póliza vigente y al corriente de pago en la fecha del hecho",
+        "resultado": "cumple",
+        "evidencia": "Póliza AU-662371; sin mención de impago"
+      },
+      {
+        "regla": "A2",
+        "descripcion": "Comunicación en plazo (7 días, art. 16 LCS)",
+        "resultado": "cumple",
+        "evidencia": "Hecho y comunicado el 14/09"
+      },
+      {
+        "regla": "A3",
+        "descripcion": "Conductor declarado en la póliza",
+        "resultado": "cumple",
+        "evidencia": "Conducía el asegurado"
+      },
+      {
+        "regla": "A4",
+        "descripcion": "Sin alcohol, drogas, fuga ni uso no declarado",
+        "resultado": "cumple",
+        "evidencia": "Sin indicios; el tercero se quedó en el lugar"
+      },
+      {
+        "regla": "A5",
+        "descripcion": "Terceros documentados y sin lesionados",
+        "resultado": "incumple",
+        "evidencia": "Tercero implicado con atestado, pero hay lesionado ingresado: gestión de daños corporales"
+      },
+      {
+        "regla": "A6",
+        "descripcion": "Importe inferior a 6.000 € y proporcionado",
+        "resultado": "no_aplica",
+        "evidencia": "Importe no indicado; moto \"bastante destrozada\", posible siniestro total"
+      },
+      {
+        "regla": "A7",
+        "descripcion": "Supuesto de despeje directo con documentación",
+        "resultado": "no_aplica",
+        "evidencia": "No es supuesto de despeje directo por existir lesiones"
+      },
+      {
+        "regla": "A8",
+        "descripcion": "Coherencia del relato y siniestralidad",
+        "resultado": "cumple",
+        "evidencia": "Relato coherente"
+      }
+    ],
+    "criterios_ramo": [
+      "Accidente de circulación de una moto (Honda CB500)",
+      "Póliza AU-662371",
+      "También menciona seguro de salud SA-662371 y hospitalización: el hecho causante es el accidente de tráfico, ramo principal Auto"
+    ],
+    "pasos": null,
+    "datos_extraidos": {
+      "nombre_cliente": "Carlos Ortega (comunica su esposa, Rosa Molina Serrano)",
+      "numero_poliza": "AU-662371",
+      "tipo_siniestro": "Accidente de moto con tercero y lesiones",
+      "fecha_hecho": "2026-09-14",
+      "importe_estimado_eur": null,
+      "lugar": "Rotonda en Alcorcón",
+      "terceros_implicados": true,
+      "lesionados": true,
+      "documentacion_mencionada": [
+        "atestado de la Guardia Civil"
+      ],
+      "observaciones": "Asegurado ingresado en el Hospital Fundación Alcorcón (fractura de clavícula y dos costillas); moto en el depósito; el otro conductor permaneció en el lugar."
+    },
+    "raw": "{\n  \"ramo\": \"Auto\",\n  \"criterios_ramo\": [\n    \"Accidente de circulación de una moto (Honda CB500)\",\n    \"Póliza AU-662371\",\n    \"También menciona seguro de salud SA-662371 y hospitalización: el hecho causante es el accidente de tráfico, ramo principal Auto\"\n  ],\n  \"datos_extraidos\": {\n    \"nombre_cliente\": \"Carlos Ortega (comunica su esposa, Rosa Molina Serrano)\",\n    \"numero_poliza\": \"AU-662371\",\n    \"tipo_siniestro\": \"Accidente de moto con tercero y lesiones\",\n    \"fecha_hecho\": \"2026-09-14\",\n    \"importe_estimado_eur\": null,\n    \"lugar\": \"Rotonda en Alcorcón\",\n    \"terceros_implicados\": true,\n    \"lesionados\": true,\n    \"documentacion_mencionada\": [\n      \"atestado de la Guardia Civil\"\n    ],\n    \"observaciones\": \"Asegurado ingresado en el Hospital Fundación Alcorcón (fractura de clavícula y dos costillas); moto en el depósito; el otro conductor permaneció en el lugar.\"\n  },\n  \"criterios\": [\n    {\n      \"regla\": \"A1\",\n      \"descripcion\": \"Póliza vigente y al corriente de pago en la fecha del hecho\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Póliza AU-662371; sin mención de impago\"\n    },\n    {\n      \"regla\": \"A2\",\n      \"descripcion\": \"Comunicación en plazo (7 días, art. 16 LCS)\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Hecho y comunicado el 14/09\"\n    },\n    {\n      \"regla\": \"A3\",\n      \"descripcion\": \"Conductor declarado en la póliza\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Conducía el asegurado\"\n    },\n    {\n      \"regla\": \"A4\",\n      \"descripcion\": \"Sin alcohol, drogas, fuga ni uso no declarado\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Sin indicios; el tercero se quedó en el lugar\"\n    },\n    {\n      \"regla\": \"A5\",\n      \"descripcion\": \"Terceros documentados y sin lesionados\",\n      \"resultado\": \"incumple\",\n      \"evidencia\": \"Tercero implicado con atestado, pero hay lesionado ingresado: gestión de daños corporales\"\n    },\n    {\n      \"regla\": \"A6\",\n      \"descripcion\": \"Importe inferior a 6.000 € y proporcionado\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"Importe no indicado; moto \\\"bastante destrozada\\\", posible siniestro total\"\n    },\n    {\n      \"regla\": \"A7\",\n      \"descripcion\": \"Supuesto de despeje directo con documentación\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No es supuesto de despeje directo por existir lesiones\"\n    },\n    {\n      \"regla\": \"A8\",\n      \"descripcion\": \"Coherencia del relato y siniestralidad\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Relato coherente\"\n    }\n  ],\n  \"decision\": \"REVISION\",\n  \"motivo\": \"Accidente de moto con lesionado ingresado y tercero implicado: gestión especializada de daños corporales y coordinación con la póliza de salud SA-662371.\",\n  \"confianza\": 0.9\n}",
+    "usage": {
+      "input": 1412,
+      "output": 668,
+      "reasoning": 262
+    },
+    "duracion_ms": 5559,
+    "timestamp": "2026-09-17T07:02:59.236Z",
+    "esperado": {
+      "ramo": "Auto",
+      "revision": true,
+      "nota": "Lesionados y tercero implicado (regla A5); ambiguo Auto/Salud"
+    },
+    "mensaje": {
+      "id": "MSG-A-08",
+      "canal": "telefono",
+      "asunto": "Accidente de moto con ingreso hospitalario",
+      "texto": "Llamo en nombre de mi marido, Carlos Ortega, que tiene la moto asegurada con vosotros (Honda CB500, póliza AU-662371) y también el seguro de salud (SA-662371). Esta tarde a las 19h un coche se le ha cruzado en una rotonda en Alcorcón y se ha caído. Está ingresado en el Hospital Fundación Alcorcón con fractura de clavícula y dos costillas; la Guardia Civil ha hecho atestado y el coche es de otro conductor que sí se ha quedado. La moto está en el depósito, bastante destrozada. No sé si esto va por la moto o por el seguro de salud, necesito que me llaméis."
+    }
+  },
+  {
+    "id": "MSG-A-07",
+    "asunto": "Luna rota por gravilla",
+    "paquete": "A",
+    "ramo": "Auto",
+    "importe": 280,
+    "decision": "DESPEJADO",
+    "motivo": "Rotura de luna por gravilla, 280 € en taller concertado: despeje directo.",
+    "confianza": 0.97,
+    "origen": "IA",
+    "criterios": [
+      {
+        "regla": "A1",
+        "descripcion": "Póliza vigente y al corriente de pago en la fecha del hecho",
+        "resultado": "cumple",
+        "evidencia": "Póliza AU-905512; sin mención de impago"
+      },
+      {
+        "regla": "A2",
+        "descripcion": "Comunicación en plazo (7 días, art. 16 LCS)",
+        "resultado": "cumple",
+        "evidencia": "Hecho y comunicado el 14/09"
+      },
+      {
+        "regla": "A3",
+        "descripcion": "Conductor declarado en la póliza",
+        "resultado": "cumple",
+        "evidencia": "Conducía la tomadora"
+      },
+      {
+        "regla": "A4",
+        "descripcion": "Sin alcohol, drogas, fuga ni uso no declarado",
+        "resultado": "cumple",
+        "evidencia": "Sin indicios"
+      },
+      {
+        "regla": "A5",
+        "descripcion": "Terceros documentados y sin lesionados",
+        "resultado": "cumple",
+        "evidencia": "Sin terceros identificables ni lesionados"
+      },
+      {
+        "regla": "A6",
+        "descripcion": "Importe inferior a 6.000 € y proporcionado",
+        "resultado": "cumple",
+        "evidencia": "280 € < 6.000 €"
+      },
+      {
+        "regla": "A7",
+        "descripcion": "Supuesto de despeje directo con documentación",
+        "resultado": "cumple",
+        "evidencia": "Rotura de luna con presupuesto de taller concertado"
+      },
+      {
+        "regla": "A8",
+        "descripcion": "Coherencia del relato y siniestralidad",
+        "resultado": "cumple",
+        "evidencia": "Relato coherente"
+      }
+    ],
+    "criterios_ramo": [
+      "Daño en vehículo: parabrisas del Toyota Corolla 8834 LPT",
+      "Póliza AU-905512",
+      "Taller de lunas concertado"
+    ],
+    "pasos": null,
+    "datos_extraidos": {
+      "nombre_cliente": "Paula Jiménez Mora",
+      "numero_poliza": "AU-905512",
+      "tipo_siniestro": "Rotura de luna por impacto de gravilla",
+      "fecha_hecho": "2026-09-14",
+      "importe_estimado_eur": 280,
+      "lugar": "Autovía A-2",
+      "terceros_implicados": false,
+      "lesionados": false,
+      "documentacion_mencionada": [
+        "presupuesto del taller de lunas concertado"
+      ],
+      "observaciones": "Grieta en extensión; sustitución en taller concertado."
+    },
+    "raw": "{\n  \"ramo\": \"Auto\",\n  \"criterios_ramo\": [\n    \"Daño en vehículo: parabrisas del Toyota Corolla 8834 LPT\",\n    \"Póliza AU-905512\",\n    \"Taller de lunas concertado\"\n  ],\n  \"datos_extraidos\": {\n    \"nombre_cliente\": \"Paula Jiménez Mora\",\n    \"numero_poliza\": \"AU-905512\",\n    \"tipo_siniestro\": \"Rotura de luna por impacto de gravilla\",\n    \"fecha_hecho\": \"2026-09-14\",\n    \"importe_estimado_eur\": 280,\n    \"lugar\": \"Autovía A-2\",\n    \"terceros_implicados\": false,\n    \"lesionados\": false,\n    \"documentacion_mencionada\": [\n      \"presupuesto del taller de lunas concertado\"\n    ],\n    \"observaciones\": \"Grieta en extensión; sustitución en taller concertado.\"\n  },\n  \"criterios\": [\n    {\n      \"regla\": \"A1\",\n      \"descripcion\": \"Póliza vigente y al corriente de pago en la fecha del hecho\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Póliza AU-905512; sin mención de impago\"\n    },\n    {\n      \"regla\": \"A2\",\n      \"descripcion\": \"Comunicación en plazo (7 días, art. 16 LCS)\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Hecho y comunicado el 14/09\"\n    },\n    {\n      \"regla\": \"A3\",\n      \"descripcion\": \"Conductor declarado en la póliza\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Conducía la tomadora\"\n    },\n    {\n      \"regla\": \"A4\",\n      \"descripcion\": \"Sin alcohol, drogas, fuga ni uso no declarado\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Sin indicios\"\n    },\n    {\n      \"regla\": \"A5\",\n      \"descripcion\": \"Terceros documentados y sin lesionados\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Sin terceros identificables ni lesionados\"\n    },\n    {\n      \"regla\": \"A6\",\n      \"descripcion\": \"Importe inferior a 6.000 € y proporcionado\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"280 € < 6.000 €\"\n    },\n    {\n      \"regla\": \"A7\",\n      \"descripcion\": \"Supuesto de despeje directo con documentación\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Rotura de luna con presupuesto de taller concertado\"\n    },\n    {\n      \"regla\": \"A8\",\n      \"descripcion\": \"Coherencia del relato y siniestralidad\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Relato coherente\"\n    }\n  ],\n  \"decision\": \"DESPEJADO\",\n  \"motivo\": \"Rotura de luna por gravilla, 280 € en taller concertado: despeje directo.\",\n  \"confianza\": 0.97\n}",
+    "usage": {
+      "input": 1349,
+      "output": 548,
+      "reasoning": 160
+    },
+    "duracion_ms": 6622,
+    "timestamp": "2026-09-17T07:02:53.677Z",
+    "esperado": {
+      "ramo": "Auto",
+      "revision": false
+    },
+    "mensaje": {
+      "id": "MSG-A-07",
+      "canal": "chat",
+      "asunto": "Luna rota por gravilla",
+      "texto": "Esta mañana en la A-2 me ha saltado una piedra de un camión y me ha hecho una grieta grande en el parabrisas, se va extendiendo. Coche Toyota Corolla 8834 LPT, póliza AU-905512. He mirado en el taller de lunas concertado y me dicen que son 280 €. ¿Puedo ir directamente?"
+    }
+  },
+  {
+    "id": "MSG-A-06",
+    "asunto": "Radiografía y analítica prescritas",
+    "paquete": "A",
+    "ramo": "Salud",
+    "importe": null,
+    "decision": "DESPEJADO",
+    "motivo": "Radiografía y analítica prescritas por traumatólogo del cuadro: pruebas básicas sin autorización previa.",
+    "confianza": 0.92,
+    "origen": "IA",
+    "criterios": [
+      {
+        "regla": "S1",
+        "descripcion": "Asegurado activo en la póliza",
+        "resultado": "cumple",
+        "evidencia": "Póliza SA-770213 identificada"
+      },
+      {
+        "regla": "S2",
+        "descripcion": "Fuera de periodo de carencia",
+        "resultado": "cumple",
+        "evidencia": "Pruebas básicas sin carencia"
+      },
+      {
+        "regla": "S3",
+        "descripcion": "Sin preexistencias no declaradas",
+        "resultado": "cumple",
+        "evidencia": "Lesión aguda por caída"
+      },
+      {
+        "regla": "S4",
+        "descripcion": "Autorización previa cuando procede",
+        "resultado": "cumple",
+        "evidencia": "Radiografía y analítica no requieren autorización previa"
+      },
+      {
+        "regla": "S5",
+        "descripcion": "Centro del cuadro médico o modalidad de reembolso",
+        "resultado": "cumple",
+        "evidencia": "Prescripción de médico del cuadro"
+      },
+      {
+        "regla": "S6",
+        "descripcion": "Despeje directo: urgencias, consultas y pruebas básicas en cuadro",
+        "resultado": "cumple",
+        "evidencia": "Pruebas básicas en el cuadro médico"
+      },
+      {
+        "regla": "S7",
+        "descripcion": "Reembolso ≤ 2.000 € y prestación cubierta",
+        "resultado": "no_aplica",
+        "evidencia": "No hay reembolso"
+      },
+      {
+        "regla": "S8",
+        "descripcion": "No corresponde a seguro de auto ni a mutua laboral",
+        "resultado": "cumple",
+        "evidencia": "Caída doméstica, no laboral ni de tráfico"
+      }
+    ],
+    "criterios_ramo": [
+      "Solicitud de pruebas diagnósticas prescritas",
+      "Traumatólogo del cuadro médico (Dr. Ibáñez, Clínica Santa Elena)",
+      "Póliza SA-770213"
+    ],
+    "pasos": null,
+    "datos_extraidos": {
+      "nombre_cliente": "Sergio Vega Ramos",
+      "numero_poliza": "SA-770213",
+      "tipo_siniestro": "Radiografía lumbar y analítica prescritas",
+      "fecha_hecho": "2026-09-08",
+      "importe_estimado_eur": null,
+      "lugar": "Clínica Santa Elena",
+      "terceros_implicados": false,
+      "lesionados": true,
+      "documentacion_mencionada": [],
+      "observaciones": "Caída en casa el día 8; consulta si necesita trámite para las pruebas."
+    },
+    "raw": "{\n  \"ramo\": \"Salud\",\n  \"criterios_ramo\": [\n    \"Solicitud de pruebas diagnósticas prescritas\",\n    \"Traumatólogo del cuadro médico (Dr. Ibáñez, Clínica Santa Elena)\",\n    \"Póliza SA-770213\"\n  ],\n  \"datos_extraidos\": {\n    \"nombre_cliente\": \"Sergio Vega Ramos\",\n    \"numero_poliza\": \"SA-770213\",\n    \"tipo_siniestro\": \"Radiografía lumbar y analítica prescritas\",\n    \"fecha_hecho\": \"2026-09-08\",\n    \"importe_estimado_eur\": null,\n    \"lugar\": \"Clínica Santa Elena\",\n    \"terceros_implicados\": false,\n    \"lesionados\": true,\n    \"documentacion_mencionada\": [],\n    \"observaciones\": \"Caída en casa el día 8; consulta si necesita trámite para las pruebas.\"\n  },\n  \"criterios\": [\n    {\n      \"regla\": \"S1\",\n      \"descripcion\": \"Asegurado activo en la póliza\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Póliza SA-770213 identificada\"\n    },\n    {\n      \"regla\": \"S2\",\n      \"descripcion\": \"Fuera de periodo de carencia\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Pruebas básicas sin carencia\"\n    },\n    {\n      \"regla\": \"S3\",\n      \"descripcion\": \"Sin preexistencias no declaradas\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Lesión aguda por caída\"\n    },\n    {\n      \"regla\": \"S4\",\n      \"descripcion\": \"Autorización previa cuando procede\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Radiografía y analítica no requieren autorización previa\"\n    },\n    {\n      \"regla\": \"S5\",\n      \"descripcion\": \"Centro del cuadro médico o modalidad de reembolso\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Prescripción de médico del cuadro\"\n    },\n    {\n      \"regla\": \"S6\",\n      \"descripcion\": \"Despeje directo: urgencias, consultas y pruebas básicas en cuadro\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Pruebas básicas en el cuadro médico\"\n    },\n    {\n      \"regla\": \"S7\",\n      \"descripcion\": \"Reembolso ≤ 2.000 € y prestación cubierta\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No hay reembolso\"\n    },\n    {\n      \"regla\": \"S8\",\n      \"descripcion\": \"No corresponde a seguro de auto ni a mutua laboral\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Caída doméstica, no laboral ni de tráfico\"\n    }\n  ],\n  \"decision\": \"DESPEJADO\",\n  \"motivo\": \"Radiografía y analítica prescritas por traumatólogo del cuadro: pruebas básicas sin autorización previa.\",\n  \"confianza\": 0.92\n}",
+    "usage": {
+      "input": 1358,
+      "output": 566,
+      "reasoning": 182
+    },
+    "duracion_ms": 5685,
+    "timestamp": "2026-09-17T07:02:47.055Z",
+    "esperado": {
+      "ramo": "Salud",
+      "revision": false
+    },
+    "mensaje": {
+      "id": "MSG-A-06",
+      "canal": "email",
+      "asunto": "Radiografía y analítica prescritas",
+      "texto": "Buenos días, el traumatólogo del cuadro médico (Dr. Ibáñez, Clínica Santa Elena) me ha pedido una radiografía de columna lumbar y una analítica completa tras una caída en casa el pasado día 8. Me gustaría saber si puedo ir directamente al centro de diagnóstico o necesito algún trámite. Póliza SA-770213."
+    }
+  },
+  {
+    "id": "MSG-A-05",
+    "asunto": "Subida de tensión - electrodomésticos dañados",
+    "paquete": "A",
+    "ramo": "Hogar",
+    "importe": 640,
+    "decision": "DESPEJADO",
+    "motivo": "Daño eléctrico por sobretensión reconocida por la compañía, con informe y 640 €: supuesto de despeje directo.",
+    "confianza": 0.95,
+    "origen": "IA",
+    "criterios": [
+      {
+        "regla": "H1",
+        "descripcion": "Póliza vigente en la fecha del hecho",
+        "resultado": "cumple",
+        "evidencia": "Póliza HO-334902; sin mención de impago"
+      },
+      {
+        "regla": "H2",
+        "descripcion": "Comunicación en plazo (7 días desde que se conoce el daño)",
+        "resultado": "cumple",
+        "evidencia": "Hecho el 11/09, comunicado el 12/09"
+      },
+      {
+        "regla": "H3",
+        "descripcion": "Daño por agua súbito, no filtración ni falta de mantenimiento",
+        "resultado": "no_aplica",
+        "evidencia": "No es daño por agua"
+      },
+      {
+        "regla": "H4",
+        "descripcion": "Robo con fuerza, denuncia y dentro de límites",
+        "resultado": "no_aplica",
+        "evidencia": "No es robo"
+      },
+      {
+        "regla": "H5",
+        "descripcion": "Despeje directo: cristales, sanitarios, eléctrico < 1.500 €",
+        "resultado": "cumple",
+        "evidencia": "Daño eléctrico por sobretensión con informe técnico y 640 € < 1.500 €"
+      },
+      {
+        "regla": "H6",
+        "descripcion": "Vandalismo / atmosférico con denuncia o fecha verificable, < 10.000 €",
+        "resultado": "no_aplica",
+        "evidencia": "No es vandalismo ni fenómeno atmosférico"
+      },
+      {
+        "regla": "H7",
+        "descripcion": "Póliza reciente (< 30 días) con siniestro > 3.000 €",
+        "resultado": "no_aplica",
+        "evidencia": "Importe < 3.000 €"
+      },
+      {
+        "regla": "H8",
+        "descripcion": "Vivienda deshabitada más de 30 días",
+        "resultado": "no_aplica",
+        "evidencia": "Vivienda habitada"
+      },
+      {
+        "regla": "H9",
+        "descripcion": "Importe inferior a 10.000 €",
+        "resultado": "cumple",
+        "evidencia": "640 € < 10.000 €"
+      }
+    ],
+    "criterios_ramo": [
+      "Daño en contenido de la vivienda: televisor y router",
+      "Póliza HO-334902",
+      "Subida de tensión en la urbanización"
+    ],
+    "pasos": null,
+    "datos_extraidos": {
+      "nombre_cliente": "Elena Torres Vidal",
+      "numero_poliza": "HO-334902",
+      "tipo_siniestro": "Daños eléctricos por sobretensión",
+      "fecha_hecho": "2026-09-11",
+      "importe_estimado_eur": 640,
+      "lugar": null,
+      "terceros_implicados": false,
+      "lesionados": false,
+      "documentacion_mencionada": [
+        "informe de incidencia de la compañía eléctrica"
+      ],
+      "observaciones": "Servicio técnico indica que la placa del televisor no tiene reparación."
+    },
+    "raw": "{\n  \"ramo\": \"Hogar\",\n  \"criterios_ramo\": [\n    \"Daño en contenido de la vivienda: televisor y router\",\n    \"Póliza HO-334902\",\n    \"Subida de tensión en la urbanización\"\n  ],\n  \"datos_extraidos\": {\n    \"nombre_cliente\": \"Elena Torres Vidal\",\n    \"numero_poliza\": \"HO-334902\",\n    \"tipo_siniestro\": \"Daños eléctricos por sobretensión\",\n    \"fecha_hecho\": \"2026-09-11\",\n    \"importe_estimado_eur\": 640,\n    \"lugar\": null,\n    \"terceros_implicados\": false,\n    \"lesionados\": false,\n    \"documentacion_mencionada\": [\n      \"informe de incidencia de la compañía eléctrica\"\n    ],\n    \"observaciones\": \"Servicio técnico indica que la placa del televisor no tiene reparación.\"\n  },\n  \"criterios\": [\n    {\n      \"regla\": \"H1\",\n      \"descripcion\": \"Póliza vigente en la fecha del hecho\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Póliza HO-334902; sin mención de impago\"\n    },\n    {\n      \"regla\": \"H2\",\n      \"descripcion\": \"Comunicación en plazo (7 días desde que se conoce el daño)\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Hecho el 11/09, comunicado el 12/09\"\n    },\n    {\n      \"regla\": \"H3\",\n      \"descripcion\": \"Daño por agua súbito, no filtración ni falta de mantenimiento\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No es daño por agua\"\n    },\n    {\n      \"regla\": \"H4\",\n      \"descripcion\": \"Robo con fuerza, denuncia y dentro de límites\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No es robo\"\n    },\n    {\n      \"regla\": \"H5\",\n      \"descripcion\": \"Despeje directo: cristales, sanitarios, eléctrico < 1.500 €\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Daño eléctrico por sobretensión con informe técnico y 640 € < 1.500 €\"\n    },\n    {\n      \"regla\": \"H6\",\n      \"descripcion\": \"Vandalismo / atmosférico con denuncia o fecha verificable, < 10.000 €\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No es vandalismo ni fenómeno atmosférico\"\n    },\n    {\n      \"regla\": \"H7\",\n      \"descripcion\": \"Póliza reciente (< 30 días) con siniestro > 3.000 €\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"Importe < 3.000 €\"\n    },\n    {\n      \"regla\": \"H8\",\n      \"descripcion\": \"Vivienda deshabitada más de 30 días\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"Vivienda habitada\"\n    },\n    {\n      \"regla\": \"H9\",\n      \"descripcion\": \"Importe inferior a 10.000 €\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"640 € < 10.000 €\"\n    }\n  ],\n  \"decision\": \"DESPEJADO\",\n  \"motivo\": \"Daño eléctrico por sobretensión reconocida por la compañía, con informe y 640 €: supuesto de despeje directo.\",\n  \"confianza\": 0.95\n}",
+    "usage": {
+      "input": 1372,
+      "output": 580,
+      "reasoning": 175
+    },
+    "duracion_ms": 6748,
+    "timestamp": "2026-09-17T07:02:41.370Z",
+    "esperado": {
+      "ramo": "Hogar",
+      "revision": false
+    },
+    "mensaje": {
+      "id": "MSG-A-05",
+      "canal": "web",
+      "asunto": "Subida de tensión - electrodomésticos dañados",
+      "texto": "El 11 de septiembre por la noche hubo una subida de tensión en toda la urbanización (la compañía eléctrica lo ha reconocido, adjunto el informe de incidencia). Se me han estropeado el televisor y el router. El servicio técnico dice que la placa del televisor no tiene reparación. Presupuesto de reposición 640 € en total. Póliza HO-334902."
+    }
+  },
+  {
+    "id": "MSG-A-04",
+    "asunto": "Daños en el coche en un parking",
+    "paquete": "A",
+    "ramo": "Auto",
+    "importe": 2200,
+    "decision": "REVISION",
+    "motivo": "Conducía el hijo del tomador (22 años), no consta como conductor declarado: comprobar conductores habituales y condiciones de la póliza antes de tramitar.",
+    "confianza": 0.9,
+    "origen": "IA",
+    "criterios": [
+      {
+        "regla": "A1",
+        "descripcion": "Póliza vigente y al corriente de pago en la fecha del hecho",
+        "resultado": "cumple",
+        "evidencia": "Póliza AU-119045; sin mención de impago"
+      },
+      {
+        "regla": "A2",
+        "descripcion": "Comunicación en plazo (7 días, art. 16 LCS)",
+        "resultado": "cumple",
+        "evidencia": "Hecho el jueves 10/09, comunicado el 13/09"
+      },
+      {
+        "regla": "A3",
+        "descripcion": "Conductor declarado en la póliza",
+        "resultado": "incumple",
+        "evidencia": "\"mi hijo Pablo (tiene 22 años) cogió mi coche\": conductor no declarado en la póliza"
+      },
+      {
+        "regla": "A4",
+        "descripcion": "Sin alcohol, drogas, fuga ni uso no declarado",
+        "resultado": "cumple",
+        "evidencia": "Sin indicios de alcohol, drogas ni fuga"
+      },
+      {
+        "regla": "A5",
+        "descripcion": "Terceros documentados y sin lesionados",
+        "resultado": "cumple",
+        "evidencia": "Sin terceros ni lesionados"
+      },
+      {
+        "regla": "A6",
+        "descripcion": "Importe inferior a 6.000 € y proporcionado",
+        "resultado": "cumple",
+        "evidencia": "2.200 € < 6.000 €"
+      },
+      {
+        "regla": "A7",
+        "descripcion": "Supuesto de despeje directo con documentación",
+        "resultado": "no_aplica",
+        "evidencia": "Daños propios, pero el conductor no declarado impide el despeje directo"
+      },
+      {
+        "regla": "A8",
+        "descripcion": "Coherencia del relato y siniestralidad",
+        "resultado": "cumple",
+        "evidencia": "Relato coherente"
+      }
+    ],
+    "criterios_ramo": [
+      "Daño en vehículo: Peugeot 308",
+      "Póliza AU-119045",
+      "Roce contra columna al salir de un parking"
+    ],
+    "pasos": null,
+    "datos_extraidos": {
+      "nombre_cliente": "Antonio Navarro Blanco",
+      "numero_poliza": "AU-119045",
+      "tipo_siniestro": "Daños propios por roce contra columna",
+      "fecha_hecho": "2026-09-10",
+      "importe_estimado_eur": 2200,
+      "lugar": "Parking de la universidad",
+      "terceros_implicados": false,
+      "lesionados": false,
+      "documentacion_mencionada": [
+        "presupuesto de taller de confianza"
+      ],
+      "observaciones": "Conducía el hijo del tomador, Pablo, de 22 años."
+    },
+    "raw": "{\n  \"ramo\": \"Auto\",\n  \"criterios_ramo\": [\n    \"Daño en vehículo: Peugeot 308\",\n    \"Póliza AU-119045\",\n    \"Roce contra columna al salir de un parking\"\n  ],\n  \"datos_extraidos\": {\n    \"nombre_cliente\": \"Antonio Navarro Blanco\",\n    \"numero_poliza\": \"AU-119045\",\n    \"tipo_siniestro\": \"Daños propios por roce contra columna\",\n    \"fecha_hecho\": \"2026-09-10\",\n    \"importe_estimado_eur\": 2200,\n    \"lugar\": \"Parking de la universidad\",\n    \"terceros_implicados\": false,\n    \"lesionados\": false,\n    \"documentacion_mencionada\": [\n      \"presupuesto de taller de confianza\"\n    ],\n    \"observaciones\": \"Conducía el hijo del tomador, Pablo, de 22 años.\"\n  },\n  \"criterios\": [\n    {\n      \"regla\": \"A1\",\n      \"descripcion\": \"Póliza vigente y al corriente de pago en la fecha del hecho\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Póliza AU-119045; sin mención de impago\"\n    },\n    {\n      \"regla\": \"A2\",\n      \"descripcion\": \"Comunicación en plazo (7 días, art. 16 LCS)\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Hecho el jueves 10/09, comunicado el 13/09\"\n    },\n    {\n      \"regla\": \"A3\",\n      \"descripcion\": \"Conductor declarado en la póliza\",\n      \"resultado\": \"incumple\",\n      \"evidencia\": \"\\\"mi hijo Pablo (tiene 22 años) cogió mi coche\\\": conductor no declarado en la póliza\"\n    },\n    {\n      \"regla\": \"A4\",\n      \"descripcion\": \"Sin alcohol, drogas, fuga ni uso no declarado\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Sin indicios de alcohol, drogas ni fuga\"\n    },\n    {\n      \"regla\": \"A5\",\n      \"descripcion\": \"Terceros documentados y sin lesionados\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Sin terceros ni lesionados\"\n    },\n    {\n      \"regla\": \"A6\",\n      \"descripcion\": \"Importe inferior a 6.000 € y proporcionado\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"2.200 € < 6.000 €\"\n    },\n    {\n      \"regla\": \"A7\",\n      \"descripcion\": \"Supuesto de despeje directo con documentación\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"Daños propios, pero el conductor no declarado impide el despeje directo\"\n    },\n    {\n      \"regla\": \"A8\",\n      \"descripcion\": \"Coherencia del relato y siniestralidad\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Relato coherente\"\n    }\n  ],\n  \"decision\": \"REVISION\",\n  \"motivo\": \"Conducía el hijo del tomador (22 años), no consta como conductor declarado: comprobar conductores habituales y condiciones de la póliza antes de tramitar.\",\n  \"confianza\": 0.9\n}",
+    "usage": {
+      "input": 1388,
+      "output": 634,
+      "reasoning": 241
+    },
+    "duracion_ms": 5811,
+    "timestamp": "2026-09-17T07:02:34.622Z",
+    "esperado": {
+      "ramo": "Auto",
+      "revision": true,
+      "nota": "Conductor no declarado en la póliza (regla A3)"
+    },
+    "mensaje": {
+      "id": "MSG-A-04",
+      "canal": "email",
+      "asunto": "Daños en el coche en un parking",
+      "texto": "Hola, el jueves 10 mi hijo Pablo (tiene 22 años) cogió mi coche, el Peugeot 308 de la póliza AU-119045, para ir a la universidad y al salir del parking rozó una columna. Tiene la puerta trasera derecha y la aleta bastante hundidas. No hay otro vehículo implicado, así que no hicimos parte. El taller de confianza dice que son unos 2.200 €. Quiero que me digáis a qué taller lo llevo."
+    }
+  },
+  {
+    "id": "MSG-A-03",
+    "asunto": "Urgencias por esguince",
+    "paquete": "A",
+    "ramo": "Salud",
+    "importe": null,
+    "decision": "DESPEJADO",
+    "motivo": "Urgencias por esguince en hospital del cuadro médico: prestación directa sin carencia ni autorización.",
+    "confianza": 0.93,
+    "origen": "IA",
+    "criterios": [
+      {
+        "regla": "S1",
+        "descripcion": "Asegurado activo en la póliza",
+        "resultado": "cumple",
+        "evidencia": "Se identifica con tarjeta 7712 0034 8891"
+      },
+      {
+        "regla": "S2",
+        "descripcion": "Fuera de periodo de carencia",
+        "resultado": "cumple",
+        "evidencia": "Urgencia por traumatismo: sin carencia"
+      },
+      {
+        "regla": "S3",
+        "descripcion": "Sin preexistencias no declaradas",
+        "resultado": "cumple",
+        "evidencia": "Lesión aguda practicando deporte"
+      },
+      {
+        "regla": "S4",
+        "descripcion": "Autorización previa cuando procede",
+        "resultado": "cumple",
+        "evidencia": "Urgencias y radiografía no requieren autorización"
+      },
+      {
+        "regla": "S5",
+        "descripcion": "Centro del cuadro médico o modalidad de reembolso",
+        "resultado": "cumple",
+        "evidencia": "Centro del cuadro médico"
+      },
+      {
+        "regla": "S6",
+        "descripcion": "Despeje directo: urgencias, consultas y pruebas básicas en cuadro",
+        "resultado": "cumple",
+        "evidencia": "Urgencias en centro del cuadro"
+      },
+      {
+        "regla": "S7",
+        "descripcion": "Reembolso ≤ 2.000 € y prestación cubierta",
+        "resultado": "no_aplica",
+        "evidencia": "No hay reembolso"
+      },
+      {
+        "regla": "S8",
+        "descripcion": "No corresponde a seguro de auto ni a mutua laboral",
+        "resultado": "cumple",
+        "evidencia": "Lesión deportiva, no laboral ni de tráfico"
+      }
+    ],
+    "criterios_ramo": [
+      "Prestación sanitaria: urgencias por esguince",
+      "Hospital Quirón Pozuelo \"en el cuadro médico\"",
+      "Tarjeta sanitaria 7712 0034 8891"
+    ],
+    "pasos": null,
+    "datos_extraidos": {
+      "nombre_cliente": "Lucía Fernández Ruiz",
+      "numero_poliza": null,
+      "tipo_siniestro": "Urgencias por esguince de tobillo",
+      "fecha_hecho": "2026-09-14",
+      "importe_estimado_eur": null,
+      "lugar": "Hospital Quirón Pozuelo",
+      "terceros_implicados": false,
+      "lesionados": true,
+      "documentacion_mencionada": [
+        "tarjeta sanitaria"
+      ],
+      "observaciones": "Radiografía y férula en urgencias; no indica número de póliza, solo tarjeta."
+    },
+    "raw": "{\n  \"ramo\": \"Salud\",\n  \"criterios_ramo\": [\n    \"Prestación sanitaria: urgencias por esguince\",\n    \"Hospital Quirón Pozuelo \\\"en el cuadro médico\\\"\",\n    \"Tarjeta sanitaria 7712 0034 8891\"\n  ],\n  \"datos_extraidos\": {\n    \"nombre_cliente\": \"Lucía Fernández Ruiz\",\n    \"numero_poliza\": null,\n    \"tipo_siniestro\": \"Urgencias por esguince de tobillo\",\n    \"fecha_hecho\": \"2026-09-14\",\n    \"importe_estimado_eur\": null,\n    \"lugar\": \"Hospital Quirón Pozuelo\",\n    \"terceros_implicados\": false,\n    \"lesionados\": true,\n    \"documentacion_mencionada\": [\n      \"tarjeta sanitaria\"\n    ],\n    \"observaciones\": \"Radiografía y férula en urgencias; no indica número de póliza, solo tarjeta.\"\n  },\n  \"criterios\": [\n    {\n      \"regla\": \"S1\",\n      \"descripcion\": \"Asegurado activo en la póliza\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Se identifica con tarjeta 7712 0034 8891\"\n    },\n    {\n      \"regla\": \"S2\",\n      \"descripcion\": \"Fuera de periodo de carencia\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Urgencia por traumatismo: sin carencia\"\n    },\n    {\n      \"regla\": \"S3\",\n      \"descripcion\": \"Sin preexistencias no declaradas\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Lesión aguda practicando deporte\"\n    },\n    {\n      \"regla\": \"S4\",\n      \"descripcion\": \"Autorización previa cuando procede\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Urgencias y radiografía no requieren autorización\"\n    },\n    {\n      \"regla\": \"S5\",\n      \"descripcion\": \"Centro del cuadro médico o modalidad de reembolso\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Centro del cuadro médico\"\n    },\n    {\n      \"regla\": \"S6\",\n      \"descripcion\": \"Despeje directo: urgencias, consultas y pruebas básicas en cuadro\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Urgencias en centro del cuadro\"\n    },\n    {\n      \"regla\": \"S7\",\n      \"descripcion\": \"Reembolso ≤ 2.000 € y prestación cubierta\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No hay reembolso\"\n    },\n    {\n      \"regla\": \"S8\",\n      \"descripcion\": \"No corresponde a seguro de auto ni a mutua laboral\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Lesión deportiva, no laboral ni de tráfico\"\n    }\n  ],\n  \"decision\": \"DESPEJADO\",\n  \"motivo\": \"Urgencias por esguince en hospital del cuadro médico: prestación directa sin carencia ni autorización.\",\n  \"confianza\": 0.93\n}",
+    "usage": {
+      "input": 1360,
+      "output": 571,
+      "reasoning": 188
+    },
+    "duracion_ms": 6874,
+    "timestamp": "2026-09-17T07:02:28.811Z",
+    "esperado": {
+      "ramo": "Salud",
+      "revision": false
+    },
+    "mensaje": {
+      "id": "MSG-A-03",
+      "canal": "chat",
+      "asunto": "Urgencias por esguince",
+      "texto": "Hola, esta tarde jugando al fútbol me he torcido el tobillo y he ido a urgencias del Hospital Quirón Pozuelo, que está en el cuadro médico. Me han hecho una radiografía y me han puesto una férula. He enseñado la tarjeta 7712 0034 8891. ¿Tengo que enviar algo o ya queda registrado? Gracias."
+    }
+  },
+  {
+    "id": "MSG-A-02",
+    "asunto": "Rotura de tubería bajo el fregadero",
+    "paquete": "A",
+    "ramo": "Hogar",
+    "importe": 1080,
+    "decision": "DESPEJADO",
+    "motivo": "Daño por agua súbito por rotura de latiguillo, comunicado al día siguiente con facturas y fotos; importe 1.080 €.",
+    "confianza": 0.94,
+    "origen": "IA",
+    "criterios": [
+      {
+        "regla": "H1",
+        "descripcion": "Póliza vigente en la fecha del hecho",
+        "resultado": "cumple",
+        "evidencia": "Póliza HO-220114 identificada; sin mención de impago"
+      },
+      {
+        "regla": "H2",
+        "descripcion": "Comunicación en plazo (7 días desde que se conoce el daño)",
+        "resultado": "cumple",
+        "evidencia": "Hecho el 13/09, comunicado el 14/09"
+      },
+      {
+        "regla": "H3",
+        "descripcion": "Daño por agua súbito, no filtración ni falta de mantenimiento",
+        "resultado": "cumple",
+        "evidencia": "Rotura súbita del latiguillo de agua fría; no es filtración progresiva"
+      },
+      {
+        "regla": "H4",
+        "descripcion": "Robo con fuerza, denuncia y dentro de límites",
+        "resultado": "no_aplica",
+        "evidencia": "No es un robo"
+      },
+      {
+        "regla": "H5",
+        "descripcion": "Despeje directo: cristales, sanitarios, eléctrico < 1.500 €",
+        "resultado": "no_aplica",
+        "evidencia": "No es cristal, sanitario ni daño eléctrico"
+      },
+      {
+        "regla": "H6",
+        "descripcion": "Vandalismo / atmosférico con denuncia o fecha verificable, < 10.000 €",
+        "resultado": "no_aplica",
+        "evidencia": "No es vandalismo ni fenómeno atmosférico"
+      },
+      {
+        "regla": "H7",
+        "descripcion": "Póliza reciente (< 30 días) con siniestro > 3.000 €",
+        "resultado": "no_aplica",
+        "evidencia": "No consta la antigüedad de la póliza; importe < 3.000 €"
+      },
+      {
+        "regla": "H8",
+        "descripcion": "Vivienda deshabitada más de 30 días",
+        "resultado": "no_aplica",
+        "evidencia": "Vivienda habitada"
+      },
+      {
+        "regla": "H9",
+        "descripcion": "Importe inferior a 10.000 €",
+        "resultado": "cumple",
+        "evidencia": "1.080 € < 10.000 €"
+      }
+    ],
+    "criterios_ramo": [
+      "Daño en la vivienda: fregadero, salón, tarima",
+      "Póliza de hogar HO-220114",
+      "Rotura de latiguillo y daños por agua"
+    ],
+    "pasos": null,
+    "datos_extraidos": {
+      "nombre_cliente": "Jorge Herrera Pino",
+      "numero_poliza": "HO-220114",
+      "tipo_siniestro": "Daños por agua por rotura de latiguillo",
+      "fecha_hecho": "2026-09-13",
+      "importe_estimado_eur": 1080,
+      "lugar": "C/ Alcalá 210, Madrid",
+      "terceros_implicados": false,
+      "lesionados": false,
+      "documentacion_mencionada": [
+        "fotos",
+        "factura del fontanero (180 €)",
+        "presupuesto de parquetista (900 €)"
+      ],
+      "observaciones": "Importe = 180 € fontanería de urgencia + 900 € reposición de 6 m² de tarima."
+    },
+    "raw": "{\n  \"ramo\": \"Hogar\",\n  \"criterios_ramo\": [\n    \"Daño en la vivienda: fregadero, salón, tarima\",\n    \"Póliza de hogar HO-220114\",\n    \"Rotura de latiguillo y daños por agua\"\n  ],\n  \"datos_extraidos\": {\n    \"nombre_cliente\": \"Jorge Herrera Pino\",\n    \"numero_poliza\": \"HO-220114\",\n    \"tipo_siniestro\": \"Daños por agua por rotura de latiguillo\",\n    \"fecha_hecho\": \"2026-09-13\",\n    \"importe_estimado_eur\": 1080,\n    \"lugar\": \"C/ Alcalá 210, Madrid\",\n    \"terceros_implicados\": false,\n    \"lesionados\": false,\n    \"documentacion_mencionada\": [\n      \"fotos\",\n      \"factura del fontanero (180 €)\",\n      \"presupuesto de parquetista (900 €)\"\n    ],\n    \"observaciones\": \"Importe = 180 € fontanería de urgencia + 900 € reposición de 6 m² de tarima.\"\n  },\n  \"criterios\": [\n    {\n      \"regla\": \"H1\",\n      \"descripcion\": \"Póliza vigente en la fecha del hecho\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Póliza HO-220114 identificada; sin mención de impago\"\n    },\n    {\n      \"regla\": \"H2\",\n      \"descripcion\": \"Comunicación en plazo (7 días desde que se conoce el daño)\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Hecho el 13/09, comunicado el 14/09\"\n    },\n    {\n      \"regla\": \"H3\",\n      \"descripcion\": \"Daño por agua súbito, no filtración ni falta de mantenimiento\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Rotura súbita del latiguillo de agua fría; no es filtración progresiva\"\n    },\n    {\n      \"regla\": \"H4\",\n      \"descripcion\": \"Robo con fuerza, denuncia y dentro de límites\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No es un robo\"\n    },\n    {\n      \"regla\": \"H5\",\n      \"descripcion\": \"Despeje directo: cristales, sanitarios, eléctrico < 1.500 €\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No es cristal, sanitario ni daño eléctrico\"\n    },\n    {\n      \"regla\": \"H6\",\n      \"descripcion\": \"Vandalismo / atmosférico con denuncia o fecha verificable, < 10.000 €\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No es vandalismo ni fenómeno atmosférico\"\n    },\n    {\n      \"regla\": \"H7\",\n      \"descripcion\": \"Póliza reciente (< 30 días) con siniestro > 3.000 €\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"No consta la antigüedad de la póliza; importe < 3.000 €\"\n    },\n    {\n      \"regla\": \"H8\",\n      \"descripcion\": \"Vivienda deshabitada más de 30 días\",\n      \"resultado\": \"no_aplica\",\n      \"evidencia\": \"Vivienda habitada\"\n    },\n    {\n      \"regla\": \"H9\",\n      \"descripcion\": \"Importe inferior a 10.000 €\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"1.080 € < 10.000 €\"\n    }\n  ],\n  \"decision\": \"DESPEJADO\",\n  \"motivo\": \"Daño por agua súbito por rotura de latiguillo, comunicado al día siguiente con facturas y fotos; importe 1.080 €.\",\n  \"confianza\": 0.94\n}",
+    "usage": {
+      "input": 1391,
+      "output": 598,
+      "reasoning": 196
+    },
+    "duracion_ms": 5937,
+    "timestamp": "2026-09-17T07:02:21.937Z",
+    "esperado": {
+      "ramo": "Hogar",
+      "revision": false
+    },
+    "mensaje": {
+      "id": "MSG-A-02",
+      "canal": "web",
+      "asunto": "Rotura de tubería bajo el fregadero",
+      "texto": "Ayer 13/09 por la mañana se rompió el latiguillo del agua fría bajo el fregadero de la cocina y se inundó parte del salón antes de que cortáramos la llave. Llamé a un fontanero de urgencia (factura 180 €) y la tarima del salón se ha levantado en unos 6 m². Un parquetista me ha dado un presupuesto de 900 € para cambiarla. Póliza de hogar HO-220114, vivienda en C/ Alcalá 210, Madrid. Adjunto fotos y las dos facturas."
+    }
+  },
+  {
+    "id": "MSG-A-01",
+    "asunto": "Golpe leve en la M-30 - póliza AU-483920",
+    "paquete": "A",
+    "ramo": "Auto",
+    "importe": 1350,
+    "decision": "DESPEJADO",
+    "motivo": "Colisión leve con parte amistoso, sin heridos y presupuesto de 1.350 €: cumple todas las reglas del ramo Auto.",
+    "confianza": 0.95,
+    "origen": "IA",
+    "criterios": [
+      {
+        "regla": "A1",
+        "descripcion": "Póliza vigente y al corriente de pago en la fecha del hecho",
+        "resultado": "cumple",
+        "evidencia": "No hay mención de impago ni baja; póliza AU-483920 identificada"
+      },
+      {
+        "regla": "A2",
+        "descripcion": "Comunicación en plazo (7 días, art. 16 LCS)",
+        "resultado": "cumple",
+        "evidencia": "Hecho el 12/09, comunicado el 14/09 (2 días)"
+      },
+      {
+        "regla": "A3",
+        "descripcion": "Conductor declarado en la póliza",
+        "resultado": "cumple",
+        "evidencia": "Conducía la propia tomadora (\"iba por la M-30\")"
+      },
+      {
+        "regla": "A4",
+        "descripcion": "Sin alcohol, drogas, fuga ni uso no declarado",
+        "resultado": "cumple",
+        "evidencia": "Sin indicios de alcohol, drogas ni fuga"
+      },
+      {
+        "regla": "A5",
+        "descripcion": "Terceros documentados y sin lesionados",
+        "resultado": "cumple",
+        "evidencia": "Tercero implicado con parte amistoso firmado por ambos; \"No hubo heridos\""
+      },
+      {
+        "regla": "A6",
+        "descripcion": "Importe inferior a 6.000 € y proporcionado",
+        "resultado": "cumple",
+        "evidencia": "1.350 € < 6.000 €"
+      },
+      {
+        "regla": "A7",
+        "descripcion": "Supuesto de despeje directo con documentación",
+        "resultado": "cumple",
+        "evidencia": "Colisión simple sin heridos, parte amistoso y presupuesto adjuntos"
+      },
+      {
+        "regla": "A8",
+        "descripcion": "Coherencia del relato y siniestralidad",
+        "resultado": "cumple",
+        "evidencia": "Relato coherente con los daños (paragolpes y faro)"
+      }
+    ],
+    "criterios_ramo": [
+      "Daño en un vehículo: Seat León 4521 KLM",
+      "Póliza con prefijo AU-483920",
+      "Colisión por alcance en la M-30 con parte amistoso"
+    ],
+    "pasos": null,
+    "datos_extraidos": {
+      "nombre_cliente": "Marta Gil Sanz",
+      "numero_poliza": "AU-483920",
+      "tipo_siniestro": "Colisión por alcance en retención",
+      "fecha_hecho": "2026-09-12",
+      "importe_estimado_eur": 1350,
+      "lugar": "M-30, Madrid",
+      "terceros_implicados": true,
+      "lesionados": false,
+      "documentacion_mencionada": [
+        "parte amistoso escaneado",
+        "presupuesto de taller"
+      ],
+      "observaciones": "Daños en paragolpes y faro derecho; la asegurada reconoce haber golpeado por detrás."
+    },
+    "raw": "{\n  \"ramo\": \"Auto\",\n  \"criterios_ramo\": [\n    \"Daño en un vehículo: Seat León 4521 KLM\",\n    \"Póliza con prefijo AU-483920\",\n    \"Colisión por alcance en la M-30 con parte amistoso\"\n  ],\n  \"datos_extraidos\": {\n    \"nombre_cliente\": \"Marta Gil Sanz\",\n    \"numero_poliza\": \"AU-483920\",\n    \"tipo_siniestro\": \"Colisión por alcance en retención\",\n    \"fecha_hecho\": \"2026-09-12\",\n    \"importe_estimado_eur\": 1350,\n    \"lugar\": \"M-30, Madrid\",\n    \"terceros_implicados\": true,\n    \"lesionados\": false,\n    \"documentacion_mencionada\": [\n      \"parte amistoso escaneado\",\n      \"presupuesto de taller\"\n    ],\n    \"observaciones\": \"Daños en paragolpes y faro derecho; la asegurada reconoce haber golpeado por detrás.\"\n  },\n  \"criterios\": [\n    {\n      \"regla\": \"A1\",\n      \"descripcion\": \"Póliza vigente y al corriente de pago en la fecha del hecho\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"No hay mención de impago ni baja; póliza AU-483920 identificada\"\n    },\n    {\n      \"regla\": \"A2\",\n      \"descripcion\": \"Comunicación en plazo (7 días, art. 16 LCS)\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Hecho el 12/09, comunicado el 14/09 (2 días)\"\n    },\n    {\n      \"regla\": \"A3\",\n      \"descripcion\": \"Conductor declarado en la póliza\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Conducía la propia tomadora (\\\"iba por la M-30\\\")\"\n    },\n    {\n      \"regla\": \"A4\",\n      \"descripcion\": \"Sin alcohol, drogas, fuga ni uso no declarado\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Sin indicios de alcohol, drogas ni fuga\"\n    },\n    {\n      \"regla\": \"A5\",\n      \"descripcion\": \"Terceros documentados y sin lesionados\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Tercero implicado con parte amistoso firmado por ambos; \\\"No hubo heridos\\\"\"\n    },\n    {\n      \"regla\": \"A6\",\n      \"descripcion\": \"Importe inferior a 6.000 € y proporcionado\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"1.350 € < 6.000 €\"\n    },\n    {\n      \"regla\": \"A7\",\n      \"descripcion\": \"Supuesto de despeje directo con documentación\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Colisión simple sin heridos, parte amistoso y presupuesto adjuntos\"\n    },\n    {\n      \"regla\": \"A8\",\n      \"descripcion\": \"Coherencia del relato y siniestralidad\",\n      \"resultado\": \"cumple\",\n      \"evidencia\": \"Relato coherente con los daños (paragolpes y faro)\"\n    }\n  ],\n  \"decision\": \"DESPEJADO\",\n  \"motivo\": \"Colisión leve con parte amistoso, sin heridos y presupuesto de 1.350 €: cumple todas las reglas del ramo Auto.\",\n  \"confianza\": 0.95\n}",
+    "usage": {
+      "input": 1384,
+      "output": 612,
+      "reasoning": 214
+    },
+    "duracion_ms": 5000,
+    "timestamp": "2026-09-17T07:02:16.000Z",
+    "esperado": {
+      "ramo": "Auto",
+      "revision": false
+    },
+    "mensaje": {
+      "id": "MSG-A-01",
+      "canal": "email",
+      "asunto": "Golpe leve en la M-30 - póliza AU-483920",
+      "texto": "Buenos días. El sábado 12 de septiembre, sobre las 18:30, iba por la M-30 en una retención y el coche de delante frenó; le di un pequeño toque por detrás. No hubo heridos. Rellenamos el parte amistoso los dos en el momento (lo adjunto escaneado). Mi coche es el Seat León 4521 KLM de la póliza AU-483920. El taller me ha hecho un presupuesto de 1.350 € por el paragolpes y el faro derecho. ¿Qué tengo que hacer ahora? Gracias."
+    }
+  }
+]

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gobierno de Agentes — Triage de mensajes</title>
+  <meta name="description" content="Panel de control agéntico del triaje de seguros: trazabilidad y observabilidad de los agentes, Reasoning & Replay, Autonomy engine y FinOps con caps de consumo.">
+  <link rel="stylesheet" href="gobierno.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-ico" id="brand-ico"></div>
+    <div>
+      <h1>Gobierno de Agentes</h1>
+      <p class="sub"><span>Trazabilidad</span><span class="sep">·</span><span>Reasoning &amp; Replay</span><span class="sep">·</span><span>Autonomy engine</span><span class="sep">·</span><span>FinOps</span></p>
+    </div>
+  </div>
+  <div class="right">
+    <label class="f" style="color:rgba(255,255,255,.85)">Fuente
+      <select id="fuente" aria-label="Fuente de datos" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3)">
+        <option value="demo">Demo · Paquete A + 14 días</option>
+        <option value="sesion">Sesión actual (registro del triaje)</option>
+        <option value="archivo" disabled>Archivo JSON cargado</option>
+      </select>
+    </label>
+    <label class="f" style="color:rgba(255,255,255,.85)">Periodo
+      <select id="periodo" aria-label="Periodo" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3)">
+        <option value="14">Últimos 14 días</option><option value="7">Últimos 7 días</option><option value="1">Hoy</option>
+      </select>
+    </label>
+    <input id="file-json" type="file" accept="application/json,.json" hidden>
+    <button class="btn btn-white" type="button" id="btn-json"></button>
+    <a class="btn btn-white" id="btn-back" href="index.html"></a>
+  </div>
+</header>
+<p id="fuente-status" class="foot" role="status" aria-live="polite" style="padding:.5rem 1rem 0"></p>
+<nav class="tabs" id="tabs" aria-label="Secciones"></nav>
+<div class="tip" id="tip"></div>
+
+<!-- ───────────── RESUMEN ───────────── -->
+<section class="view is-active" data-view="resumen">
+  <div class="kpis" id="kpis"></div>
+  <div class="card">
+    <div class="card-head"><h2 id="h-agentes"></h2><span class="muted small">Estado en vivo · nivel de autonomía · consumo del día frente al cap · interruptor de pausa por agente</span></div>
+    <div class="agents" id="agents"></div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <div class="card-head"><h2 id="h-coste"></h2><span class="muted small" id="coste-sub">€/día · línea discontinua = cap diario</span></div>
+      <div id="chart-coste"></div>
+      <div class="legend" id="legend-coste"></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2 id="h-alertas"></h2><button class="btn btn-sm" type="button">Ver todas</button></div>
+      <div class="alerts" id="alerts"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2 id="h-ultimas"></h2><button class="btn btn-sm" type="button" data-goto="trazas">Abrir trazabilidad</button></div>
+    <div class="tw"><table><thead><tr><th>Traza</th><th>Hora</th><th>Mensaje</th><th>Canal</th><th>Ramo</th><th>Decisión</th><th>Autonomía</th><th>Ciclo</th><th>Coste</th></tr></thead><tbody id="ultimas"></tbody></table></div>
+  </div>
+</section>
+
+<!-- ───────────── TRAZABILIDAD ───────────── -->
+<section class="view" data-view="trazas">
+  <div class="card">
+    <div class="card-head">
+      <h2 id="h-trazas"></h2>
+      <div class="row">
+        <label class="f">Agente<select id="f-agente"><option value="">Todos</option><option value="multicanal">Multicanalidad</option><option value="clasificacion">Clasificación</option><option value="extraccion">Extracción</option><option value="reglas">Reglas</option></select></label>
+        <label class="f">Canal<select id="f-canal"><option value="">Todos</option><option value="email">Email</option><option value="web">Formulario web</option><option value="chat">Chat</option><option value="telefono">Teléfono</option><option value="whatsapp">WhatsApp</option></select></label>
+        <label class="f">Decisión<select id="f-dec"><option value="">Todas</option><option value="DESPEJADO">Aprobado</option><option value="REVISION">A revisar</option></select></label>
+        <label class="f">Resultado<select id="f-res"><option value="">Todos</option><option value="auto">Autónomo</option><option value="humano">Escalado a humano</option><option value="override">Con override</option><option value="incidencia">Con incidencia</option></select></label>
+        <button class="btn btn-sm" type="button" id="btn-export-trazas"></button>
+      </div>
+    </div>
+    <div class="tw"><table><thead><tr><th>Traza</th><th>Hora</th><th>Mensaje</th><th>Canal</th><th>Ramo</th><th>Decisión</th><th>Autonomía</th><th>Conf.</th><th>Ciclo</th><th>Tokens</th><th>Coste</th><th>Incidencias</th></tr></thead><tbody id="trazas"></tbody></table></div>
+  </div>
+  <div class="card" id="traza-detalle"></div>
+</section>
+
+<!-- ───────────── REASONING & REPLAY ───────────── -->
+<section class="view" data-view="replay">
+  <div class="two">
+    <div class="card">
+      <div class="card-head"><h2 id="h-reasoning"></h2><label class="f">Traza<select id="sel-traza"></select></label></div>
+      <p class="muted small" style="margin-bottom:.8rem">Razonamiento resumido por agente tal y como quedó registrado (entrada → razonamiento → salida → políticas evaluadas). No es la cadena de pensamiento cruda del modelo: es el registro estructurado que devuelve cada agente.</p>
+      <div class="steps" id="steps"></div>
+    </div>
+    <div class="detail">
+      <div class="card">
+        <div class="card-head"><h2 id="h-replay"></h2></div>
+        <div class="row" style="margin-bottom:.8rem">
+          <label class="f">Modo<select id="rp-modo"><option value="identico">Idéntico — mismos prompts y modelos (verificación determinista)</option><option value="whatif">What-if — cambiar modelo o versión de prompt</option></select></label>
+          <label class="f">Modelo de Reglas<select id="rp-modelo"><option>gpt-5 (actual)</option><option>gpt-5-mini</option><option>gpt-5-nano</option></select></label>
+          <label class="f">Prompt Reglas<select id="rp-prompt"><option>v2.3 (actual)</option><option>v2.4 (candidata)</option><option>v2.2</option></select></label>
+          <button class="btn btn-primary btn-sm" type="button" id="btn-replay"></button>
+        </div>
+        <div class="diff" id="rp-diff"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2 id="h-replays"></h2></div>
+        <div class="tw"><table><thead><tr><th>Replay</th><th>Fecha</th><th>Traza</th><th>Modo</th><th>Cambio</th><th>Ramo</th><th>Decisión</th><th>Δ coste</th><th>Δ latencia</th><th>Usuario</th></tr></thead><tbody id="replays"></tbody></table></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── AUTONOMÍA ───────────── -->
+<section class="view" data-view="autonomia">
+  <div class="kpis" id="kpis-aut"></div>
+  <div class="card">
+    <div class="card-head"><h2 id="h-niveles"></h2><span class="muted small">Cada agente opera en un nivel; el motor escala a humano cuando un guardrail no se cumple</span></div>
+    <div class="levels" id="levels"></div>
+    <div class="agents" id="agents-aut" style="margin-top:1rem"></div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <div class="card-head"><h2 id="h-guardrails"></h2><button class="btn btn-sm" type="button" id="btn-new-policy"></button></div>
+      <div class="tw"><table><thead><tr><th>Id</th><th>Agente</th><th>Condición</th><th>Acción</th><th>Disparos 14 d</th><th>Estado</th></tr></thead><tbody id="policies"></tbody></table></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2 id="h-cambios"></h2></div>
+      <div class="tw"><table><thead><tr><th>Fecha</th><th>Agente</th><th>Cambio</th><th>Motivo</th><th>Usuario</th></tr></thead><tbody id="cambios"></tbody></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── FINOPS ───────────── -->
+<section class="view" data-view="finops">
+  <div class="kpis" id="kpis-fin"></div>
+  <div class="card">
+    <div class="card-head"><h2 id="h-caps"></h2><button class="btn btn-sm" type="button" id="btn-new-cap"></button></div>
+    <div class="tw"><table><thead><tr><th>Cap</th><th>Ámbito</th><th>Tipo</th><th>Límite</th><th>Consumo</th><th style="min-width:180px">Uso</th><th>Acción al superar</th><th>Estado</th></tr></thead><tbody id="caps"></tbody></table></div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <div class="card-head"><h2 id="h-coste-ag"></h2><span class="muted small">€/día apilado por agente</span></div>
+      <div id="chart-stack"></div>
+      <div class="legend" id="legend-stack"></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2 id="h-tokens"></h2><span class="muted small">Lote actual · miles de tokens</span></div>
+      <div id="chart-tokens"></div>
+      <div class="legend" id="legend-tokens"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2 id="h-reco"></h2></div>
+    <div class="alerts" id="recos"></div>
+  </div>
+</section>
+
+<!-- ───────────── HISTÓRICO ───────────── -->
+<section class="view" data-view="historico">
+  <div class="card">
+    <div class="card-head"><h2 id="h-hist"></h2><div class="chips" id="hist-chips"></div></div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+</section>
+<p class="foot">Panel «Gobierno de Agentes» · demo estática · los datos de demostración son inventados y coherentes con el Paquete A del triaje · <a href="https://github.com/nachoenjuto/fnol-triage" target="_blank" rel="noopener">Código en GitHub</a></p>
+  <script src="icons.js"></script>
+  <script src="data/gobierno.js"></script>
+  <script src="gobierno.js"></script>
+</body>
+</html>

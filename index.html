@@ -10,27 +10,15 @@
 <body>
   <header class="topbar">
     <div class="brand">
-      <svg class="brand-icon" viewBox="0 0 48 48" width="60" height="60" aria-hidden="true" focusable="false">
-        <!-- documento con líneas de texto -->
-        <rect x="6" y="5" width="24" height="32" rx="3" fill="rgba(255,255,255,.16)" stroke="#fff" stroke-width="2"/>
-        <line x1="11" y1="13" x2="25" y2="13" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-        <line x1="11" y1="19" x2="25" y2="19" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-        <line x1="11" y1="25" x2="20" y2="25" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-        <!-- ramificación de clasificación -->
-        <path d="M30 21 H35 M35 21 V13 H41 M35 21 V29 H41" fill="none" stroke="#9fb6ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="42" cy="13" r="2.5" fill="#9fb6ff"/>
-        <circle cx="42" cy="29" r="2.5" fill="#9fb6ff"/>
-        <!-- destello de IA -->
-        <path d="M36 34 l1.6 3.4 3.4 1.6 -3.4 1.6 -1.6 3.4 -1.6 -3.4 -3.4 -1.6 3.4 -1.6 z" fill="#ffd166"/>
-      </svg>
+      <span class="brand-icon" data-lucide="scan-text" aria-hidden="true" focusable="false"></span>
       <div>
         <h1>Triage de mensajes</h1>
         <p class="subtitle" id="phases">
-          <button type="button" class="phase" data-phase="multicanal" aria-expanded="false">Multicanalidad</button><span class="arrow" aria-hidden="true">→</span>
-          <button type="button" class="phase" data-phase="ramo" aria-expanded="false">Clasificación por ramo</button><span class="arrow" aria-hidden="true">→</span>
-          <button type="button" class="phase" data-phase="datos" aria-expanded="false">Extracción de datos</button><span class="arrow" aria-hidden="true">→</span>
-          <button type="button" class="phase" data-phase="reglas" aria-expanded="false">Reglas de negocio</button><span class="arrow" aria-hidden="true">→</span>
-          <button type="button" class="phase" data-phase="registro" aria-expanded="false">Registro de decisiones</button><span class="arrow" aria-hidden="true">→</span>
+          <button type="button" class="phase" data-phase="multicanal" aria-expanded="false">Multicanalidad</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
+          <button type="button" class="phase" data-phase="ramo" aria-expanded="false">Clasificación por ramo</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
+          <button type="button" class="phase" data-phase="datos" aria-expanded="false">Extracción de datos</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
+          <button type="button" class="phase" data-phase="reglas" aria-expanded="false">Reglas de negocio</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
+          <button type="button" class="phase" data-phase="registro" aria-expanded="false">Trazabilidad</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
           <button type="button" class="phase" data-phase="automatizacion" aria-expanded="false">Automatización</button>
         </p>
       </div>
@@ -40,9 +28,12 @@
       <div class="phase-pop-caret" aria-hidden="true"></div>
       <div id="phase-pop-body" class="phase-pop-body"></div>
     </div>
-    <div class="row">
+    <div class="row topbar-actions">
       <span id="mode-badge" class="badge">Motor: reglas</span>
-      <button id="btn-toggle-config" class="btn btn-ghost btn-topbar" type="button" aria-expanded="false" aria-controls="config-panel"><span id="ai-dot" class="dot dot-off" aria-hidden="true"></span> ⚙ Configurar IA</button>
+      <div class="topbar-buttons">
+        <button id="btn-toggle-config" class="btn btn-topbar" type="button" aria-expanded="false" aria-controls="config-panel"><span id="ai-dot" class="dot dot-off" aria-hidden="true"></span> <span data-lucide="settings" aria-hidden="true"></span> Configurar IA</button>
+        <a href="gobierno.html" class="btn btn-topbar"><span data-lucide="shield-check" aria-hidden="true"></span> Gobierno de Agentes</a>
+      </div>
     </div>
   </header>
 
@@ -147,9 +138,9 @@
 
       <section class="card actions">
         <div class="row wrap">
-          <button id="btn-run" class="btn btn-primary" type="button">▶ Procesar paquete</button>
-          <button id="btn-pause" class="btn" type="button" disabled>⏸ Pausar</button>
-          <button id="btn-reset" class="btn btn-ghost" type="button">Reiniciar lote</button>
+          <button id="btn-run" class="btn btn-primary" type="button"><span data-lucide="play" aria-hidden="true"></span> Procesar paquete</button>
+          <button id="btn-pause" class="btn" type="button" disabled><span data-lucide="pause" aria-hidden="true"></span> Pausar</button>
+          <button id="btn-reset" class="btn btn-ghost" type="button"><span data-lucide="rotate-ccw" aria-hidden="true"></span> Reiniciar lote</button>
           <span id="run-status" class="status" role="status" aria-live="polite"></span>
         </div>
         <div class="progress" aria-hidden="true"><div id="progress-bar" class="progress-bar"></div></div>
@@ -169,8 +160,8 @@
               </select>
             </label>
             <label class="inline"><input id="filter-review" type="checkbox"> Solo a revisar</label>
-            <button id="btn-export-json" class="btn btn-ghost btn-sm" type="button">Exportar JSON</button>
-            <button id="btn-export-csv" class="btn btn-ghost btn-sm" type="button">Exportar CSV</button>
+            <button id="btn-export-json" class="btn btn-ghost btn-sm" type="button"><span data-lucide="download" aria-hidden="true"></span> Exportar JSON</button>
+            <button id="btn-export-csv" class="btn btn-ghost btn-sm" type="button"><span data-lucide="download" aria-hidden="true"></span> Exportar CSV</button>
           </div>
         </div>
         <div class="table-wrap">
@@ -203,7 +194,7 @@
         <h2 id="modal-title"></h2>
         <p id="modal-subtitle" class="muted"></p>
       </div>
-      <button id="modal-close" class="btn btn-ghost" type="button" aria-label="Cerrar">✕</button>
+      <button id="modal-close" class="btn btn-ghost" type="button" aria-label="Cerrar"><span data-lucide="x" aria-hidden="true"></span></button>
     </div>
     <div class="modal-body">
       <div class="modal-col">
@@ -234,6 +225,7 @@
     <a href="https://github.com/nachoenjuto/fnol-triage" target="_blank" rel="noopener">Código en GitHub</a>
   </footer>
 
+  <script src="icons.js"></script>
   <script src="data/mensajes.js"></script>
   <script src="data/resultados.js"></script>
   <script src="prompts.js"></script>

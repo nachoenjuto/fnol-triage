@@ -1,0 +1,1576 @@
+{
+  "version": 1,
+  "generado": "2026-09-17T09:30:00",
+  "periodo": {
+    "desde": "2026-09-04",
+    "hasta": "2026-09-17"
+  },
+  "precios": {
+    "gpt-5": {
+      "in": 1.25,
+      "out": 10
+    },
+    "gpt-5-mini": {
+      "in": 0.25,
+      "out": 2
+    },
+    "gpt-5-nano": {
+      "in": 0.05,
+      "out": 0.4
+    },
+    "stt-es": {
+      "in": 0,
+      "out": 0
+    }
+  },
+  "agentes": [
+    {
+      "id": "multicanal",
+      "nombre": "Multicanalidad",
+      "icono": "inbox",
+      "descripcion": "Recibe y normaliza mensajes de email, web, chat, teléfono y WhatsApp",
+      "modelo": "gpt-5-nano + stt-es",
+      "prompt": "v1.2",
+      "nivel": 3,
+      "estado": "activo",
+      "p95_ms": 640,
+      "coste_hoy": 0.31,
+      "cap_hoy": 1,
+      "umbral": "STT ≥ 0,7 (G-09, inactivo)",
+      "escalado_14d": "0,1 %",
+      "override_14d": "—"
+    },
+    {
+      "id": "clasificacion",
+      "nombre": "Clasificación por ramo",
+      "icono": "tags",
+      "descripcion": "Asigna Auto / Hogar / Salud citando los indicios del texto",
+      "modelo": "gpt-5-nano",
+      "prompt": "v3.1",
+      "nivel": 3,
+      "estado": "activo",
+      "p95_ms": 1120,
+      "coste_hoy": 0.42,
+      "cap_hoy": 2,
+      "umbral": "≥ 0,80 · Indeterminado → humano",
+      "escalado_14d": "0,5 %",
+      "override_14d": "0,3 %"
+    },
+    {
+      "id": "extraccion",
+      "nombre": "Extracción de datos",
+      "icono": "file-text",
+      "descripcion": "Convierte el texto libre en datos estructurados; nunca inventa",
+      "modelo": "gpt-5-mini",
+      "prompt": "v2.0",
+      "nivel": 2,
+      "estado": "activo",
+      "p95_ms": 2380,
+      "coste_hoy": 2.9,
+      "cap_hoy": 5,
+      "umbral": "sin umbral · G-05 datos nulos",
+      "escalado_14d": "2,0 %",
+      "override_14d": "0,9 %"
+    },
+    {
+      "id": "reglas",
+      "nombre": "Reglas de negocio",
+      "icono": "list-checks",
+      "descripcion": "Evalúa el bloque de reglas del ramo y decide Aprobado / A revisar",
+      "modelo": "gpt-5",
+      "prompt": "v2.3",
+      "nivel": 2,
+      "estado": "degradado",
+      "p95_ms": 5210,
+      "coste_hoy": 13.7,
+      "cap_hoy": 12,
+      "umbral": "≥ 0,85 (G-01)",
+      "escalado_14d": "16,4 %",
+      "override_14d": "2,1 %"
+    }
+  ],
+  "niveles": [
+    {
+      "n": 0,
+      "nombre": "Manual",
+      "desc": "El agente solo sugiere; una persona decide y ejecuta."
+    },
+    {
+      "n": 1,
+      "nombre": "Asistido",
+      "desc": "El agente propone; una persona confirma cada caso."
+    },
+    {
+      "n": 2,
+      "nombre": "Supervisado",
+      "desc": "El agente decide dentro de los guardrails; fuera de ellos escala a humano."
+    },
+    {
+      "n": 3,
+      "nombre": "Autónomo",
+      "desc": "El agente decide y ejecuta; solo se audita a posteriori."
+    }
+  ],
+  "politicas": [
+    {
+      "id": "G-01",
+      "agente": "reglas",
+      "condicion": "Confianza de la decisión < 0,85",
+      "accion": "Escalar a humano",
+      "disparos": 41,
+      "activa": true
+    },
+    {
+      "id": "G-02",
+      "agente": "reglas",
+      "condicion": "Importe > 6.000 € (Auto) · > 10.000 € (Hogar) · reembolso > 2.000 € (Salud)",
+      "accion": "Escalar a humano",
+      "disparos": 118,
+      "activa": true
+    },
+    {
+      "id": "G-03",
+      "agente": "reglas",
+      "condicion": "Ramo del paso Reglas ≠ ramo de Clasificación",
+      "accion": "Escalar a humano",
+      "disparos": 9,
+      "activa": true
+    },
+    {
+      "id": "G-04",
+      "agente": "reglas",
+      "condicion": "Lesionados = sí",
+      "accion": "Escalar a humano (daños corporales)",
+      "disparos": 63,
+      "activa": true
+    },
+    {
+      "id": "G-05",
+      "agente": "extraccion",
+      "condicion": "Nº de póliza y fecha del hecho nulos a la vez",
+      "accion": "Escalar a humano + pedir datos al cliente",
+      "disparos": 87,
+      "activa": true
+    },
+    {
+      "id": "G-06",
+      "agente": "clasificacion",
+      "condicion": "Ramo = Indeterminado",
+      "accion": "Escalar a humano",
+      "disparos": 22,
+      "activa": true
+    },
+    {
+      "id": "G-07",
+      "agente": "reglas",
+      "condicion": "Cap diario de coste ≥ 100 %",
+      "accion": "Degradar modelo a gpt-5-mini hasta las 00:00",
+      "disparos": 2,
+      "activa": true
+    },
+    {
+      "id": "G-08",
+      "agente": "reglas",
+      "condicion": "JSON inválido tras 2 reintentos",
+      "accion": "Fallback a motor local + marcar traza",
+      "disparos": 5,
+      "activa": true
+    },
+    {
+      "id": "G-09",
+      "agente": "multicanal",
+      "condicion": "Transcripción telefónica con confianza STT < 0,7",
+      "accion": "Escalar a humano (escuchar audio)",
+      "disparos": 14,
+      "activa": false
+    }
+  ],
+  "cambios_autonomia": [
+    {
+      "fecha": "2026-09-15T16:40:00",
+      "agente": "reglas",
+      "de": 3,
+      "a": 2,
+      "motivo": "Tasa de override humano 4,1 % en la semana (> 3 % objetivo)",
+      "usuario": "M. Ortega (Gobierno IA)"
+    },
+    {
+      "fecha": "2026-09-10T11:05:00",
+      "agente": "clasificacion",
+      "de": 2,
+      "a": 3,
+      "motivo": "Precisión 99,2 % sobre 4.800 mensajes en 7 días",
+      "usuario": "M. Ortega (Gobierno IA)"
+    },
+    {
+      "fecha": "2026-09-08T09:30:00",
+      "agente": "extraccion",
+      "de": 1,
+      "a": 2,
+      "motivo": "Fin del piloto: 0 datos inventados detectados en auditoría de 600 fichas",
+      "usuario": "Comité IA"
+    }
+  ],
+  "caps": [
+    {
+      "id": "CAP-01",
+      "ambito": "Global",
+      "tipo": "Coste diario",
+      "limite": 20,
+      "unidad": "€",
+      "consumo": 17.33,
+      "accion": "Alertar al 80 % · degradar Reglas al 100 %",
+      "estado": "aviso"
+    },
+    {
+      "id": "CAP-02",
+      "ambito": "Global",
+      "tipo": "Coste mensual",
+      "limite": 500,
+      "unidad": "€",
+      "consumo": 296.4,
+      "accion": "Alertar al 80 % · pausar lotes no urgentes al 100 %",
+      "estado": "ok"
+    },
+    {
+      "id": "CAP-03",
+      "ambito": "Reglas de negocio",
+      "tipo": "Coste diario",
+      "limite": 12,
+      "unidad": "€",
+      "consumo": 13.7,
+      "accion": "Degradar a gpt-5-mini hasta las 00:00",
+      "estado": "superado"
+    },
+    {
+      "id": "CAP-04",
+      "ambito": "Por mensaje",
+      "tipo": "Coste por traza",
+      "limite": 0.05,
+      "unidad": "€",
+      "consumo": 0.062,
+      "accion": "Alertar y marcar la traza",
+      "estado": "superado"
+    },
+    {
+      "id": "CAP-05",
+      "ambito": "Reglas de negocio",
+      "tipo": "Tokens de razonamiento por traza",
+      "limite": 2000,
+      "unidad": "tok",
+      "consumo": 2610,
+      "accion": "Alertar; 3 seguidas → bajar reasoning effort",
+      "estado": "superado"
+    },
+    {
+      "id": "CAP-06",
+      "ambito": "Extracción de datos",
+      "tipo": "Coste diario",
+      "limite": 5,
+      "unidad": "€",
+      "consumo": 2.9,
+      "accion": "Alertar al 80 %",
+      "estado": "ok"
+    },
+    {
+      "id": "CAP-07",
+      "ambito": "Global",
+      "tipo": "Llamadas / minuto",
+      "limite": 120,
+      "unidad": "req",
+      "consumo": 74,
+      "accion": "Encolar (rate limit interno)",
+      "estado": "ok"
+    }
+  ],
+  "kpis": {
+    "resumen": [
+      {
+        "cls": "ok",
+        "icono": "zap",
+        "etiqueta": "Autonomía efectiva",
+        "valor": "81 %",
+        "sub": "13.540 decisiones sin intervención humana"
+      },
+      {
+        "cls": "review",
+        "icono": "user-check",
+        "etiqueta": "Escalados a humano",
+        "valor": "19 %",
+        "sub": "3.180 · 62 % por importe (G-02), 20 % por lesionados (G-04)"
+      },
+      {
+        "cls": "time",
+        "icono": "repeat",
+        "etiqueta": "Overrides humanos",
+        "valor": "2,1 %",
+        "sub": "67 decisiones cambiadas por un tramitador · objetivo ≤ 3 %"
+      },
+      {
+        "cls": "crit",
+        "icono": "bell",
+        "etiqueta": "Alertas activas",
+        "valor": "3",
+        "sub": "1 crítica (cap de Reglas) · 2 avisos"
+      }
+    ],
+    "cap_mensual": 500,
+    "autonomia": [
+      {
+        "cls": "ok",
+        "icono": "zap",
+        "etiqueta": "Decisiones autónomas",
+        "valor": "81 %",
+        "sub": "13.540 de 16.720 · objetivo ≥ 80 %",
+        "medidor": 81
+      },
+      {
+        "cls": "review",
+        "icono": "user-check",
+        "etiqueta": "Escaladas por guardrail",
+        "valor": "19 %",
+        "sub": "G-02 importe 62 % · G-04 lesionados 20 % · G-05 datos 11 % · resto 7 %"
+      },
+      {
+        "cls": "time",
+        "icono": "repeat",
+        "etiqueta": "Tasa de override",
+        "valor": "2,1 %",
+        "sub": "Humano cambia la decisión del agente · umbral de bajada de nivel: 3 %"
+      },
+      {
+        "cls": "primary",
+        "icono": "gauge",
+        "etiqueta": "Precisión vs. esperado",
+        "valor": "99,1 %",
+        "sub": "Ramo correcto en 12.400 mensajes con referencia · lote actual 13/13"
+      }
+    ],
+    "finops": [
+      {
+        "cls": "primary",
+        "icono": "euro",
+        "etiqueta": "Coste mensual",
+        "valor": "296,40 €",
+        "sub": "59 % del cap mensual (500 €) · proyección 428 €",
+        "medidor": 59
+      },
+      {
+        "cls": "crit",
+        "icono": "triangle-alert",
+        "etiqueta": "Caps superados",
+        "valor": "3",
+        "sub": "CAP-03 Reglas diario · CAP-04 y CAP-05 en una traza"
+      }
+    ]
+  },
+  "alertas": [
+    {
+      "sev": "crit",
+      "titulo": "CAP-03 superado · Reglas de negocio 13,7 € / 12 € hoy",
+      "detalle": "G-07 aplicado: modelo degradado a gpt-5-mini hasta las 00:00. Ver FinOps → R-01.",
+      "cuando": "17:40 ayer · sigue activa"
+    },
+    {
+      "sev": "warn",
+      "titulo": "CAP-04 / CAP-05 en la traza TRZ-4F31 (MSG-A-08)",
+      "detalle": "Coste 0,062 € y 2.610 tokens de razonamiento. Traza marcada para revisión de coste.",
+      "cuando": "09:03 hoy"
+    },
+    {
+      "sev": "warn",
+      "titulo": "CAP-01 al 87 % · coste diario global 17,3 € / 20 €",
+      "detalle": "Aviso al 80 %. Si se supera se degrada Reglas (ya degradado por CAP-03).",
+      "cuando": "09:10 hoy"
+    }
+  ],
+  "trazas": [
+    {
+      "id": "TRZ-4F2A",
+      "mensaje": "MSG-A-01",
+      "asunto": "Golpe leve en la M-30 - póliza AU-483920",
+      "canal": "email",
+      "inicio": "2026-09-17T09:02:11",
+      "ramo": "Auto",
+      "decision": "DESPEJADO",
+      "confianza": 0.95,
+      "resultado": "auto",
+      "spans": [
+        [
+          "multicanal",
+          0,
+          90,
+          "gpt-5-nano",
+          210,
+          40,
+          0
+        ],
+        [
+          "clasificacion",
+          90,
+          720,
+          "gpt-5-nano",
+          430,
+          58,
+          0
+        ],
+        [
+          "extraccion",
+          810,
+          1640,
+          "gpt-5-mini",
+          910,
+          250,
+          0
+        ],
+        [
+          "reglas",
+          2450,
+          3900,
+          "gpt-5",
+          1384,
+          612,
+          214
+        ]
+      ]
+    },
+    {
+      "id": "TRZ-4F2B",
+      "mensaje": "MSG-A-02",
+      "asunto": "Rotura de tubería bajo el fregadero",
+      "canal": "web",
+      "inicio": "2026-09-17T09:02:18",
+      "ramo": "Hogar",
+      "decision": "DESPEJADO",
+      "confianza": 0.94,
+      "resultado": "auto",
+      "spans": [
+        [
+          "multicanal",
+          0,
+          60,
+          "gpt-5-nano",
+          180,
+          32,
+          0
+        ],
+        [
+          "clasificacion",
+          60,
+          690,
+          "gpt-5-nano",
+          440,
+          61,
+          0
+        ],
+        [
+          "extraccion",
+          750,
+          1710,
+          "gpt-5-mini",
+          930,
+          262,
+          0
+        ],
+        [
+          "reglas",
+          2460,
+          3720,
+          "gpt-5",
+          1391,
+          598,
+          196
+        ]
+      ]
+    },
+    {
+      "id": "TRZ-4F2C",
+      "mensaje": "MSG-A-03",
+      "asunto": "Urgencias por esguince",
+      "canal": "chat",
+      "inicio": "2026-09-17T09:02:25",
+      "ramo": "Salud",
+      "decision": "DESPEJADO",
+      "confianza": 0.93,
+      "resultado": "auto",
+      "spans": [
+        [
+          "multicanal",
+          0,
+          70,
+          "gpt-5-nano",
+          160,
+          30,
+          0
+        ],
+        [
+          "clasificacion",
+          70,
+          640,
+          "gpt-5-nano",
+          400,
+          55,
+          0
+        ],
+        [
+          "extraccion",
+          710,
+          1520,
+          "gpt-5-mini",
+          860,
+          231,
+          0
+        ],
+        [
+          "reglas",
+          2230,
+          3480,
+          "gpt-5",
+          1360,
+          571,
+          188
+        ]
+      ]
+    },
+    {
+      "id": "TRZ-4F2D",
+      "mensaje": "MSG-A-04",
+      "asunto": "Daños en el coche en un parking",
+      "canal": "email",
+      "inicio": "2026-09-17T09:02:32",
+      "ramo": "Auto",
+      "decision": "REVISION",
+      "confianza": 0.9,
+      "resultado": "override",
+      "guardrail": "A3 incumple → escalado",
+      "override": {
+        "usuario": "L. Prieto (tramitador)",
+        "fecha": "2026-09-17T09:41:00",
+        "de": "REVISION",
+        "a": "DESPEJADO",
+        "motivo": "Pablo Navarro consta como segundo conductor declarado desde 03/2026 (consulta en el sistema de pólizas); el modelo no tenía acceso a ese dato."
+      },
+      "spans": [
+        [
+          "multicanal",
+          0,
+          80,
+          "gpt-5-nano",
+          220,
+          41,
+          0
+        ],
+        [
+          "clasificacion",
+          80,
+          700,
+          "gpt-5-nano",
+          450,
+          62,
+          0
+        ],
+        [
+          "extraccion",
+          780,
+          1810,
+          "gpt-5-mini",
+          960,
+          271,
+          0
+        ],
+        [
+          "reglas",
+          2590,
+          4260,
+          "gpt-5",
+          1388,
+          634,
+          241
+        ]
+      ]
+    },
+    {
+      "id": "TRZ-4F2E",
+      "mensaje": "MSG-A-05",
+      "asunto": "Subida de tensión - electrodomésticos dañados",
+      "canal": "web",
+      "inicio": "2026-09-17T09:02:40",
+      "ramo": "Hogar",
+      "decision": "DESPEJADO",
+      "confianza": 0.95,
+      "resultado": "auto",
+      "spans": [
+        [
+          "multicanal",
+          0,
+          60,
+          "gpt-5-nano",
+          190,
+          33,
+          0
+        ],
+        [
+          "clasificacion",
+          60,
+          650,
+          "gpt-5-nano",
+          420,
+          57,
+          0
+        ],
+        [
+          "extraccion",
+          710,
+          1590,
+          "gpt-5-mini",
+          890,
+          244,
+          0
+        ],
+        [
+          "reglas",
+          2300,
+          3510,
+          "gpt-5",
+          1372,
+          580,
+          175
+        ]
+      ]
+    },
+    {
+      "id": "TRZ-4F2F",
+      "mensaje": "MSG-A-06",
+      "asunto": "Radiografía y analítica prescritas",
+      "canal": "email",
+      "inicio": "2026-09-17T09:02:47",
+      "ramo": "Salud",
+      "decision": "DESPEJADO",
+      "confianza": 0.92,
+      "resultado": "auto",
+      "spans": [
+        [
+          "multicanal",
+          0,
+          80,
+          "gpt-5-nano",
+          200,
+          36,
+          0
+        ],
+        [
+          "clasificacion",
+          80,
+          680,
+          "gpt-5-nano",
+          410,
+          54,
+          0
+        ],
+        [
+          "extraccion",
+          760,
+          1560,
+          "gpt-5-mini",
+          870,
+          236,
+          0
+        ],
+        [
+          "reglas",
+          2320,
+          3470,
+          "gpt-5",
+          1358,
+          566,
+          182
+        ]
+      ]
+    },
+    {
+      "id": "TRZ-4F30",
+      "mensaje": "MSG-A-07",
+      "asunto": "Luna rota por gravilla",
+      "canal": "chat",
+      "inicio": "2026-09-17T09:02:54",
+      "ramo": "Auto",
+      "decision": "DESPEJADO",
+      "confianza": 0.97,
+      "resultado": "auto",
+      "spans": [
+        [
+          "multicanal",
+          0,
+          60,
+          "gpt-5-nano",
+          150,
+          28,
+          0
+        ],
+        [
+          "clasificacion",
+          60,
+          610,
+          "gpt-5-nano",
+          380,
+          50,
+          0
+        ],
+        [
+          "extraccion",
+          670,
+          1420,
+          "gpt-5-mini",
+          820,
+          218,
+          0
+        ],
+        [
+          "reglas",
+          2090,
+          3210,
+          "gpt-5",
+          1349,
+          548,
+          160
+        ]
+      ]
+    },
+    {
+      "id": "TRZ-4F31",
+      "mensaje": "MSG-A-08",
+      "asunto": "Accidente de moto con ingreso hospitalario",
+      "canal": "telefono",
+      "inicio": "2026-09-17T09:03:01",
+      "ramo": "Auto",
+      "decision": "REVISION",
+      "confianza": 0.9,
+      "resultado": "humano",
+      "guardrail": "G-04 lesionados · A5 incumple",
+      "incidencias": [
+        "CAP-04 coste por traza 0,062 € > 0,05 €",
+        "CAP-05 razonamiento 2.610 tok > 2.000"
+      ],
+      "spans": [
+        [
+          "multicanal",
+          0,
+          1840,
+          "stt-es",
+          0,
+          0,
+          0
+        ],
+        [
+          "clasificacion",
+          1840,
+          890,
+          "gpt-5-nano",
+          520,
+          74,
+          0
+        ],
+        [
+          "extraccion",
+          2730,
+          2210,
+          "gpt-5-mini",
+          1080,
+          312,
+          0
+        ],
+        [
+          "reglas",
+          4940,
+          7420,
+          "gpt-5",
+          1412,
+          668,
+          2610
+        ]
+      ]
+    },
+    {
+      "id": "TRZ-4F32",
+      "mensaje": "MSG-A-09",
+      "asunto": "Cristal de ventana roto",
+      "canal": "web",
+      "inicio": "2026-09-17T09:03:14",
+      "ramo": "Hogar",
+      "decision": "DESPEJADO",
+      "confianza": 0.93,
+      "resultado": "auto",
+      "spans": [
+        [
+          "multicanal",
+          0,
+          60,
+          "gpt-5-nano",
+          170,
+          31,
+          0
+        ],
+        [
+          "clasificacion",
+          60,
+          640,
+          "gpt-5-nano",
+          400,
+          53,
+          0
+        ],
+        [
+          "extraccion",
+          700,
+          1500,
+          "gpt-5-mini",
+          850,
+          229,
+          0
+        ],
+        [
+          "reglas",
+          2200,
+          3380,
+          "gpt-5",
+          1355,
+          584,
+          190
+        ]
+      ]
+    },
+    {
+      "id": "TRZ-4F33",
+      "mensaje": "MSG-A-10",
+      "asunto": "Urgencias por crisis de asma",
+      "canal": "email",
+      "inicio": "2026-09-17T09:03:21",
+      "ramo": "Salud",
+      "decision": "DESPEJADO",
+      "confianza": 0.94,
+      "resultado": "auto",
+      "incidencias": [
+        "429 Azure · reintento 1 (2 s)"
+      ],
+      "spans": [
+        [
+          "multicanal",
+          0,
+          80,
+          "gpt-5-nano",
+          200,
+          35,
+          0
+        ],
+        [
+          "clasificacion",
+          80,
+          660,
+          "gpt-5-nano",
+          400,
+          52,
+          0
+        ],
+        [
+          "extraccion",
+          740,
+          3620,
+          "gpt-5-mini",
+          860,
+          233,
+          0
+        ],
+        [
+          "reglas",
+          4360,
+          3400,
+          "gpt-5",
+          1352,
+          562,
+          178
+        ]
+      ]
+    },
+    {
+      "id": "TRZ-4F34",
+      "mensaje": "MSG-A-11",
+      "asunto": "Rayón en la puerta en un parking (WhatsApp)",
+      "canal": "whatsapp",
+      "inicio": "2026-09-17T09:03:31",
+      "ramo": "Auto",
+      "decision": "DESPEJADO",
+      "confianza": 0.94,
+      "resultado": "auto",
+      "spans": [
+        [
+          "multicanal",
+          0,
+          70,
+          "gpt-5-nano",
+          160,
+          30,
+          0
+        ],
+        [
+          "clasificacion",
+          70,
+          620,
+          "gpt-5-nano",
+          390,
+          51,
+          0
+        ],
+        [
+          "extraccion",
+          690,
+          1480,
+          "gpt-5-mini",
+          840,
+          226,
+          0
+        ],
+        [
+          "reglas",
+          2170,
+          3420,
+          "gpt-5",
+          1366,
+          590,
+          186
+        ]
+      ]
+    },
+    {
+      "id": "TRZ-4F35",
+      "mensaje": "MSG-A-12",
+      "asunto": "Hijo en urgencias tras caída con patinete (WhatsApp)",
+      "canal": "whatsapp",
+      "inicio": "2026-09-17T09:03:38",
+      "ramo": "Salud",
+      "decision": "DESPEJADO",
+      "confianza": 0.94,
+      "resultado": "auto",
+      "spans": [
+        [
+          "multicanal",
+          0,
+          70,
+          "gpt-5-nano",
+          150,
+          29,
+          0
+        ],
+        [
+          "clasificacion",
+          70,
+          630,
+          "gpt-5-nano",
+          380,
+          50,
+          0
+        ],
+        [
+          "extraccion",
+          700,
+          1450,
+          "gpt-5-mini",
+          830,
+          224,
+          0
+        ],
+        [
+          "reglas",
+          2150,
+          3360,
+          "gpt-5",
+          1352,
+          566,
+          176
+        ]
+      ]
+    },
+    {
+      "id": "TRZ-4F36",
+      "mensaje": "MSG-A-13",
+      "asunto": "Nos han entrado en casa (WhatsApp)",
+      "canal": "whatsapp",
+      "inicio": "2026-09-17T09:03:45",
+      "ramo": "Hogar",
+      "decision": "REVISION",
+      "confianza": 0.9,
+      "resultado": "humano",
+      "guardrail": "G-05 datos esenciales nulos · H4 incumple",
+      "spans": [
+        [
+          "multicanal",
+          0,
+          70,
+          "gpt-5-nano",
+          140,
+          27,
+          0
+        ],
+        [
+          "clasificacion",
+          70,
+          700,
+          "gpt-5-nano",
+          360,
+          48,
+          0
+        ],
+        [
+          "extraccion",
+          770,
+          1520,
+          "gpt-5-mini",
+          780,
+          206,
+          0
+        ],
+        [
+          "reglas",
+          2290,
+          3980,
+          "gpt-5",
+          1330,
+          610,
+          232
+        ]
+      ]
+    }
+  ],
+  "razonamiento": {
+    "TRZ-4F2D": [
+      {
+        "agente": "multicanal",
+        "entrada": "Email de anavarro71@mail.com · 612 caracteres · sin adjuntos",
+        "pasos": [
+          "Canal email → sin transcripción; se conserva el asunto original",
+          "Fecha de recepción 13/09 17:22 · idioma es-ES"
+        ],
+        "salida": "Mensaje normalizado MSG-A-04",
+        "politicas": [
+          [
+            "G-09",
+            "na"
+          ]
+        ]
+      },
+      {
+        "agente": "clasificacion",
+        "entrada": "Texto normalizado",
+        "pasos": [
+          "Indicios Auto: \"Peugeot 308\", \"póliza AU-119045\", \"parking\", \"columna\"",
+          "Sin indicios de Hogar ni Salud",
+          "Confianza de ramo 0,98"
+        ],
+        "salida": "Ramo = Auto",
+        "politicas": [
+          [
+            "G-06",
+            "pass"
+          ]
+        ]
+      },
+      {
+        "agente": "extraccion",
+        "entrada": "Texto + ramo Auto",
+        "pasos": [
+          "Póliza AU-119045 · fecha \"el jueves 10\" → 2026-09-10 (relativa a la recepción)",
+          "Importe 2.200 € (taller de confianza) · sin terceros · sin lesionados",
+          "Conductor: \"mi hijo Pablo (22 años)\" → observaciones"
+        ],
+        "salida": "10 campos · 0 inventados · 1 nulo (lugar exacto)",
+        "politicas": [
+          [
+            "G-05",
+            "pass"
+          ]
+        ]
+      },
+      {
+        "agente": "reglas",
+        "entrada": "Datos extraídos + bloque de reglas Auto v2.3",
+        "pasos": [
+          "A1 cumple · A2 cumple (3 días) · A4 cumple · A5 cumple · A6 cumple (2.200 € < 6.000 €)",
+          "A3 INCUMPLE: el conductor no consta como declarado en el texto",
+          "A7 no aplica al haber una regla incumplida · A8 cumple",
+          "Decisión REVISION con confianza 0,90: comprobar conductores habituales"
+        ],
+        "salida": "REVISION · motivo: conductor no declarado",
+        "politicas": [
+          [
+            "G-01",
+            "pass"
+          ],
+          [
+            "G-02",
+            "pass"
+          ],
+          [
+            "G-03",
+            "pass"
+          ],
+          [
+            "G-04",
+            "pass"
+          ],
+          [
+            "A3",
+            "fail"
+          ]
+        ]
+      }
+    ],
+    "TRZ-4F31": [
+      {
+        "agente": "multicanal",
+        "entrada": "Llamada telefónica · 2 min 40 s · transcripción STT",
+        "pasos": [
+          "Transcripción con confianza STT 0,88 (≥ 0,7)",
+          "Se elimina el ruido de la centralita y se conserva la marca temporal"
+        ],
+        "salida": "Mensaje normalizado MSG-A-08",
+        "politicas": [
+          [
+            "G-09",
+            "pass"
+          ]
+        ]
+      },
+      {
+        "agente": "clasificacion",
+        "entrada": "Transcripción",
+        "pasos": [
+          "Indicios Auto: \"moto Honda CB500\", \"AU-662371\", \"accidente\"",
+          "Indicios Salud: \"ingreso hospitalario\", \"SA-662371\"",
+          "El hecho causante es el accidente de tráfico → ramo principal Auto; se anota la póliza de salud"
+        ],
+        "salida": "Ramo = Auto (ambiguo con Salud)",
+        "politicas": [
+          [
+            "G-06",
+            "pass"
+          ]
+        ]
+      },
+      {
+        "agente": "extraccion",
+        "entrada": "Transcripción + ramo Auto",
+        "pasos": [
+          "Póliza AU-662371 · fecha 14/09 · lesionados = sí (ingreso) · tercero = sí",
+          "Importe no mencionado → nulo (no se estima)"
+        ],
+        "salida": "10 campos · 2 nulos",
+        "politicas": [
+          [
+            "G-05",
+            "pass"
+          ]
+        ]
+      },
+      {
+        "agente": "reglas",
+        "entrada": "Datos + reglas Auto v2.3",
+        "pasos": [
+          "El modelo razona extensamente sobre la coordinación Auto / Salud y la responsabilidad del tercero (2.610 tokens de razonamiento — pico)",
+          "A5 INCUMPLE: lesionado ingresado y tercero implicado",
+          "Decisión REVISION 0,90: daños corporales → gestión especializada"
+        ],
+        "salida": "REVISION · daños corporales",
+        "politicas": [
+          [
+            "G-01",
+            "pass"
+          ],
+          [
+            "G-04",
+            "fail"
+          ],
+          [
+            "CAP-04",
+            "fail"
+          ],
+          [
+            "CAP-05",
+            "fail"
+          ]
+        ]
+      }
+    ]
+  },
+  "replays": [
+    {
+      "id": "RP-0008",
+      "fecha": "2026-09-16T18:20:00",
+      "traza": "TRZ-3C91 (MSG-A-13)",
+      "modo": "What-if",
+      "cambio": "Prompt Reglas v2.3 → v2.4",
+      "ramo": "igual",
+      "decision": "igual (REVISION)",
+      "dcoste": -0.18,
+      "dlat": -0.12,
+      "usuario": "M. Ortega"
+    },
+    {
+      "id": "RP-0007",
+      "fecha": "2026-09-16T18:05:00",
+      "traza": "TRZ-3C8E (MSG-A-08)",
+      "modo": "Idéntico",
+      "cambio": "—",
+      "ramo": "igual",
+      "decision": "igual (REVISION)",
+      "dcoste": 0.004,
+      "dlat": 0.06,
+      "usuario": "M. Ortega"
+    },
+    {
+      "id": "RP-0006",
+      "fecha": "2026-09-15T12:45:00",
+      "traza": "TRZ-3A17 (MSG-A-04)",
+      "modo": "What-if",
+      "cambio": "Reglas gpt-5 → gpt-5-mini",
+      "ramo": "igual",
+      "decision": "igual (REVISION)",
+      "dcoste": -0.82,
+      "dlat": -0.41,
+      "usuario": "J. Rey"
+    },
+    {
+      "id": "RP-0005",
+      "fecha": "2026-09-12T10:10:00",
+      "traza": "TRZ-2F03 (MSG-B-06)",
+      "modo": "What-if",
+      "cambio": "Reglas gpt-5 → gpt-5-nano",
+      "ramo": "igual",
+      "decision": "DISTINTA (DESPEJADO → REVISION)",
+      "dcoste": -0.96,
+      "dlat": -0.55,
+      "usuario": "J. Rey"
+    }
+  ],
+  "diario": [
+    [
+      "2026-09-04",
+      1180,
+      [
+        0.24,
+        0.36,
+        2.31,
+        11.8
+      ]
+    ],
+    [
+      "2026-09-05",
+      1260,
+      [
+        0.26,
+        0.38,
+        2.47,
+        12.5
+      ]
+    ],
+    [
+      "2026-09-06",
+      610,
+      [
+        0.13,
+        0.19,
+        1.2,
+        6.1
+      ]
+    ],
+    [
+      "2026-09-07",
+      540,
+      [
+        0.11,
+        0.17,
+        1.06,
+        5.3
+      ]
+    ],
+    [
+      "2026-09-08",
+      1390,
+      [
+        0.28,
+        0.42,
+        2.73,
+        13.9
+      ]
+    ],
+    [
+      "2026-09-09",
+      1450,
+      [
+        0.3,
+        0.44,
+        2.85,
+        14.6
+      ]
+    ],
+    [
+      "2026-09-10",
+      1420,
+      [
+        0.29,
+        0.43,
+        2.79,
+        14.1
+      ]
+    ],
+    [
+      "2026-09-11",
+      1510,
+      [
+        0.31,
+        0.46,
+        2.96,
+        15.4
+      ]
+    ],
+    [
+      "2026-09-12",
+      1480,
+      [
+        0.3,
+        0.45,
+        2.9,
+        15
+      ]
+    ],
+    [
+      "2026-09-13",
+      690,
+      [
+        0.14,
+        0.21,
+        1.35,
+        6.9
+      ]
+    ],
+    [
+      "2026-09-14",
+      720,
+      [
+        0.15,
+        0.22,
+        1.41,
+        7.3
+      ]
+    ],
+    [
+      "2026-09-15",
+      1610,
+      [
+        0.33,
+        0.49,
+        3.16,
+        16.9
+      ]
+    ],
+    [
+      "2026-09-16",
+      1720,
+      [
+        0.35,
+        0.52,
+        3.38,
+        19.15
+      ]
+    ],
+    [
+      "2026-09-17",
+      1140,
+      [
+        0.31,
+        0.42,
+        2.9,
+        13.7
+      ]
+    ]
+  ],
+  "eventos": [
+    {
+      "fecha": "2026-09-17T09:41:00",
+      "tipo": "override",
+      "sev": "info",
+      "agente": "reglas",
+      "titulo": "Override humano en TRZ-4F2D (MSG-A-04): A revisar → Aprobado",
+      "detalle": "L. Prieto verificó que el conductor consta declarado desde 03/2026. Se registra como dato no accesible al modelo.",
+      "usuario": "L. Prieto"
+    },
+    {
+      "fecha": "2026-09-17T09:03:09",
+      "tipo": "alerta",
+      "sev": "warn",
+      "agente": "reglas",
+      "titulo": "CAP-04 y CAP-05 superados en TRZ-4F31 (MSG-A-08)",
+      "detalle": "Coste 0,062 € (> 0,05 €) y 2.610 tokens de razonamiento (> 2.000). La traza queda marcada.",
+      "usuario": "Sistema"
+    },
+    {
+      "fecha": "2026-09-17T09:03:23",
+      "tipo": "incidente",
+      "sev": "info",
+      "agente": "extraccion",
+      "titulo": "429 en Azure AI Foundry · reintento con backoff (2 s)",
+      "detalle": "TRZ-4F33: la llamada de extracción se reintentó una vez y completó correctamente.",
+      "usuario": "Sistema"
+    },
+    {
+      "fecha": "2026-09-16T17:40:00",
+      "tipo": "alerta",
+      "sev": "crit",
+      "agente": "reglas",
+      "titulo": "CAP-03 superado: Reglas de negocio 12,4 € / 12 € diarios",
+      "detalle": "Guardrail G-07 aplicado: modelo degradado a gpt-5-mini hasta las 00:00. 312 mensajes procesados en modo degradado.",
+      "usuario": "Sistema"
+    },
+    {
+      "fecha": "2026-09-16T18:20:00",
+      "tipo": "replay",
+      "sev": "info",
+      "agente": "reglas",
+      "titulo": "Replay RP-0008 · what-if prompt v2.4 sobre MSG-A-13",
+      "detalle": "Misma decisión; motivo más específico; −18 % de tokens de razonamiento.",
+      "usuario": "M. Ortega"
+    },
+    {
+      "fecha": "2026-09-16T18:05:00",
+      "tipo": "replay",
+      "sev": "info",
+      "agente": "reglas",
+      "titulo": "Replay RP-0007 · verificación determinista de MSG-A-08",
+      "detalle": "Reproducción idéntica: misma decisión y motivo; desviación de coste +0,4 %.",
+      "usuario": "M. Ortega"
+    },
+    {
+      "fecha": "2026-09-16T16:02:00",
+      "tipo": "alerta",
+      "sev": "warn",
+      "agente": null,
+      "titulo": "CAP-01 al 82 %: coste diario global 16,4 € / 20 €",
+      "detalle": "Aviso al 80 %. Sin acción automática.",
+      "usuario": "Sistema"
+    },
+    {
+      "fecha": "2026-09-15T16:40:00",
+      "tipo": "politica",
+      "sev": "info",
+      "agente": "reglas",
+      "titulo": "Nivel de autonomía de Reglas: L3 → L2 (Supervisado)",
+      "detalle": "Tasa de override humano 4,1 % en la semana, por encima del objetivo del 3 %.",
+      "usuario": "M. Ortega"
+    },
+    {
+      "fecha": "2026-09-15T12:45:00",
+      "tipo": "replay",
+      "sev": "info",
+      "agente": "reglas",
+      "titulo": "Replay RP-0006 · Reglas con gpt-5-mini sobre MSG-A-04",
+      "detalle": "Misma decisión con −82 % de coste y −41 % de latencia. Origen de la recomendación FinOps R-02.",
+      "usuario": "J. Rey"
+    },
+    {
+      "fecha": "2026-09-15T10:12:00",
+      "tipo": "incidente",
+      "sev": "warn",
+      "agente": null,
+      "titulo": "Ráfaga de 429 en Azure (10:12–10:19)",
+      "detalle": "38 llamadas reintentadas con backoff; 1 mensaje cayó al motor local (G-08) y se marcó para revisión.",
+      "usuario": "Sistema"
+    },
+    {
+      "fecha": "2026-09-12T10:10:00",
+      "tipo": "replay",
+      "sev": "warn",
+      "agente": "reglas",
+      "titulo": "Replay RP-0005 · Reglas con gpt-5-nano cambia la decisión",
+      "detalle": "MSG-B-06 pasó de Aprobado a A revisar: gpt-5-nano descartado para Reglas.",
+      "usuario": "J. Rey"
+    },
+    {
+      "fecha": "2026-09-11T09:00:00",
+      "tipo": "despliegue",
+      "sev": "info",
+      "agente": "reglas",
+      "titulo": "Prompt de Reglas v2.3 desplegado",
+      "detalle": "Añade H7 (póliza reciente con siniestro > 3.000 €) y aclara S8 (mutua laboral). Evaluación previa: 200 mensajes, 0 regresiones.",
+      "usuario": "Comité IA"
+    },
+    {
+      "fecha": "2026-09-10T11:05:00",
+      "tipo": "politica",
+      "sev": "info",
+      "agente": "clasificacion",
+      "titulo": "Nivel de autonomía de Clasificación: L2 → L3 (Autónomo)",
+      "detalle": "Precisión 99,2 % sobre 4.800 mensajes en 7 días.",
+      "usuario": "M. Ortega"
+    },
+    {
+      "fecha": "2026-09-09T15:30:00",
+      "tipo": "politica",
+      "sev": "info",
+      "agente": "reglas",
+      "titulo": "Nuevo guardrail G-07 (degradación por cap diario)",
+      "detalle": "Al llegar al 100 % del cap diario del agente se cambia a gpt-5-mini en lugar de detener el lote.",
+      "usuario": "Comité IA"
+    },
+    {
+      "fecha": "2026-09-08T09:30:00",
+      "tipo": "politica",
+      "sev": "info",
+      "agente": "extraccion",
+      "titulo": "Nivel de autonomía de Extracción: L1 → L2 (Supervisado)",
+      "detalle": "Fin del piloto: 0 datos inventados en auditoría de 600 fichas.",
+      "usuario": "Comité IA"
+    },
+    {
+      "fecha": "2026-09-05T08:15:00",
+      "tipo": "despliegue",
+      "sev": "info",
+      "agente": "multicanal",
+      "titulo": "Canal WhatsApp activado en producción",
+      "detalle": "Prompt Multicanalidad v1.2: normaliza abreviaturas y emojis del canal.",
+      "usuario": "Equipo Canales"
+    },
+    {
+      "fecha": "2026-09-04T13:00:00",
+      "tipo": "alerta",
+      "sev": "ok",
+      "agente": "clasificacion",
+      "titulo": "Alerta de deriva cerrada: distribución de ramos estable",
+      "detalle": "La proporción Hogar subió al 41 % por las tormentas del 1–3/09; vuelve al 33 %.",
+      "usuario": "Sistema"
+    }
+  ],
+  "recomendaciones": [
+    {
+      "id": "R-01",
+      "sev": "crit",
+      "titulo": "Reglas de negocio supera su cap diario (13,7 € / 12 €)",
+      "detalle": "Gasta el 79 % del coste total. Opciones: bajar reasoning effort de «medium» a «low» (−35 % estimado) o aplicar R-02."
+    },
+    {
+      "id": "R-02",
+      "sev": "warn",
+      "titulo": "Usar gpt-5-mini en Reglas para mensajes de despeje directo (A7 / H5 / S6)",
+      "detalle": "El replay RP-0006 mantuvo la decisión con −82 % de coste. Estrategia por complejidad: gpt-5 solo cuando hay lesionados, terceros o importe > 3.000 €. Ahorro estimado: 7,9 €/día."
+    },
+    {
+      "id": "R-03",
+      "sev": "info",
+      "titulo": "Estrategia en 2 pasos para Clasificación + Reglas",
+      "detalle": "Enviar solo el bloque de reglas del ramo reduce ~40 % los tokens de entrada de Reglas (1.380 → ~830). Ahorro estimado: 1,1 €/día."
+    },
+    {
+      "id": "R-04",
+      "sev": "info",
+      "titulo": "Cachear el prompt base y los bloques de reglas",
+      "detalle": "Los 1.100 primeros tokens son idénticos en todas las llamadas: con prompt caching el coste de entrada baja un 90 % en ese tramo."
+    }
+  ]
+}
