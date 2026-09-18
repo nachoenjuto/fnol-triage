@@ -554,7 +554,6 @@
     });
     document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.matches && e.target.matches('.agent[data-agente]')) abrirModalAgente(e.target.dataset.agente); });
     document.querySelectorAll('dialog.modal').forEach((d) => d.addEventListener('click', (e) => { if (e.target === d) d.close(); }));
-    $('brand-ico').innerHTML = ic('shield-check');
     $('btn-back').innerHTML = `${ic('arrow-left')} Volver al triaje`;
     $('btn-json').innerHTML = `${ic('upload')} Cargar JSON`;
     $('btn-json').addEventListener('click', () => $('file-json').click());

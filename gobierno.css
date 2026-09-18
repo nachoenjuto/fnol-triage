@@ -35,20 +35,12 @@ svg.i, svg.lucide-svg { width: 1em; height: 1em; flex: none; vertical-align: -.1
 .muted { color: var(--muted); }
 .small { font-size: .8rem; }
 
-/* Cabecera igual que la app */
-.topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem 1.25rem; background: var(--header); color: #fff; position: sticky; top: 0; z-index: 5; box-shadow: 0 2px 12px rgba(27,75,255,.25); }
-.brand { display: flex; align-items: center; gap: .8rem; }
-.brand-ico { width: 46px; height: 46px; border-radius: 12px; background: rgba(255,255,255,.16); display: grid; place-items: center; }
-.brand-ico svg { width: 26px; height: 26px; }
-.brand .sub { color: rgba(255,255,255,.85); font-size: .9rem; display: flex; gap: .4rem; flex-wrap: wrap; align-items: center; margin-top: .15rem; }
-.brand .sub .sep { color: #ffd166; }
-.topbar .right { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+/* .topbar, .brand, .brand-ico y .btn-white están en header.css (compartido con index.html) */
 .btn { font: inherit; font-weight: 600; padding: .5rem .9rem; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text); display: inline-flex; align-items: center; gap: .45rem; transition: background .15s, transform .06s; }
 .btn:hover { background: var(--bg); } .btn:active { transform: translateY(1px); }
 .btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); } .btn-primary:hover { background: #1849c9; }
 .btn-sm { padding: .32rem .6rem; font-size: .8rem; }
-.btn-white { background: #fff; color: var(--header); border-color: #fff; } .btn-white:hover { background: #eef2ff; }
 .pill { font-size: .72rem; font-weight: 700; padding: .18rem .55rem; border-radius: 999px; white-space: nowrap; display: inline-flex; align-items: center; gap: .3rem; }
 .pill-ok { background: var(--ok-bg); color: var(--ok); } .pill-review { background: var(--review-bg); color: var(--review); }
 .pill-warn { background: var(--warn-bg); color: var(--warn); } .pill-crit { background: var(--crit-bg); color: var(--crit); }
@@ -59,8 +51,7 @@ svg.i, svg.lucide-svg { width: 1em; height: 1em; flex: none; vertical-align: -.1
 .ag-ico { --c: var(--primary); width: 1.9rem; height: 1.9rem; border-radius: 8px; display: inline-grid; place-items: center; color: var(--c); background: color-mix(in srgb, var(--c) 13%, transparent); flex: none; }
 .ag-ico svg { width: 1.1rem; height: 1.1rem; }
 
-/* Pestañas */
-.tabs { display: flex; gap: .25rem; padding: .6rem 1.25rem 0; background: var(--surface); border-bottom: 1px solid var(--border); overflow-x: auto; position: sticky; top: var(--top-h, 63px); z-index: 4; }
+/* Pestañas (el contenedor .tabs está en header.css, compartido con .submenu de index.html) */
 .tab { font: inherit; font-weight: 600; color: var(--muted); background: none; border: 0; border-bottom: 3px solid transparent; padding: .6rem .8rem; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: .45rem; }
 .tab:hover { color: var(--text); } .tab.is-active { color: var(--primary); border-bottom-color: var(--primary); }
 .tab .n { font-size: .68rem; background: var(--crit); color: #fff; border-radius: 999px; padding: 0 .4rem; }
@@ -174,7 +165,7 @@ label.f { display: grid; gap: .2rem; font-size: .72rem; font-weight: 700; text-t
 .foot { text-align: center; color: var(--muted); font-size: .78rem; padding: 0 1rem 2rem; }
 .foot:empty { display: none; }
 .topbar label.f { color: rgba(255,255,255,.85); }
-@media (max-width: 600px) { .topbar { flex-direction: column; align-items: flex-start; } .tabs { top: 0; position: static; } .span { grid-template-columns: 1fr; gap: .2rem; } .span .r { text-align: left; } .alert { grid-template-columns: auto 1fr; } .kpi .v { font-size: 1.6rem; } }
+@media (max-width: 600px) { .span { grid-template-columns: 1fr; gap: .2rem; } .span .r { text-align: left; } .alert { grid-template-columns: auto 1fr; } .kpi .v { font-size: 1.6rem; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 
 /* ─── v2: panel de detalle fijo, listas colapsables, modales, guardrails, kill switch, leyendas interactivas ─── */

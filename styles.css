@@ -39,7 +39,6 @@ svg.lucide-svg { width: 1em; height: 1em; flex: none; vertical-align: -.15em; }
 button svg.lucide-svg, a.btn svg.lucide-svg { vertical-align: -.15em; }
 html, body { margin: 0; }
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.45; }
-h1 { font-size: 2.2rem; margin: 0; letter-spacing: -.01em; line-height: 1.1; }
 h2 { font-size: 1.05rem; margin: 0 0 .5rem; }
 h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 1rem 0 .4rem; }
 .modal h3 { font-size: .95rem; letter-spacing: .04em; color: var(--text); margin: 1.25rem 0 .6rem; padding: 0 0 .35rem .6rem; border-bottom: 2px solid var(--border); border-left: 4px solid var(--primary); line-height: 1.2; }
@@ -49,18 +48,13 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .
 a { color: var(--primary); }
 .small { font-size: .8rem; }
 
-.topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .9rem 1.25rem; background: var(--header); color: #fff; border-bottom: 1px solid rgba(255,255,255,.12); position: sticky; top: 0; z-index: 5; box-shadow: 0 2px 12px rgba(27, 75, 255, .25); }
-.brand { display: flex; align-items: center; gap: .9rem; }
-/* svg.brand-icon (no solo .brand-icon): iguala la especificidad de svg.lucide-svg para que el
-   tamaño de 44px del logo no quede pisado por la regla global de iconos de 1em. */
-svg.brand-icon, .brand-icon { flex: none; width: 44px; height: 44px; padding: 10px; box-sizing: border-box; border-radius: 12px; background: rgba(255,255,255,.16); color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,.25)); }
-.subtitle { margin: .3rem 0 0; color: rgba(255,255,255,.88); font-size: 1.15rem; display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .5rem; }
-.subtitle .arrow { color: #ffd166; width: 1em; height: 1em; }
-/* Fases de la cabecera: botones con aspecto de texto que abren el panel de descripción */
-.phase { font: inherit; color: inherit; background: transparent; border: 0; padding: .1rem .45rem; margin: 0 -.2rem; border-radius: 6px; cursor: pointer; line-height: inherit; transition: background .12s, color .12s; }
-.phase:hover, .phase:focus-visible, .phase.is-active { background: rgba(255,255,255,.18); color: #ffd166; outline: none; }
-.phase:focus-visible { box-shadow: 0 0 0 2px #ffd166; }
-.phase-pop { position: absolute; top: calc(100% + 10px); left: 0; width: min(440px, calc(100vw - 2rem)); background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 12px 32px rgba(10, 20, 50, .28); z-index: 6; }
+/* .topbar, .brand, .brand-icon y los botones de cabecera están en header.css (compartido con gobierno.html) */
+/* Barra de submenú (fases del proceso): botones tipo breadcrumb sobre la barra clara .submenu */
+.submenu .arrow { color: var(--muted); width: 1em; height: 1em; flex: none; }
+.phase { font: inherit; font-weight: 600; color: var(--muted); background: transparent; border: 0; padding: .6rem .6rem; margin: 0; border-radius: 6px; cursor: pointer; line-height: inherit; white-space: nowrap; display: inline-flex; align-items: center; gap: .4rem; transition: background .12s, color .12s; }
+.phase:hover, .phase:focus-visible, .phase.is-active { background: var(--bg); color: var(--primary); outline: none; }
+.phase:focus-visible { box-shadow: 0 0 0 2px var(--primary); }
+.phase-pop { position: fixed; left: 0; width: min(440px, calc(100vw - 2rem)); background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 12px 32px rgba(10, 20, 50, .28); z-index: 6; }
 .phase-pop-body { padding: 1rem 1.1rem 1.1rem; max-height: 70vh; overflow-y: auto; }
 .phase-pop-caret { position: absolute; top: -7px; left: 24px; width: 12px; height: 12px; background: var(--surface); border-left: 1px solid var(--border); border-top: 1px solid var(--border); transform: rotate(45deg); }
 .phase-pop h3 { margin: 0 0 .35rem; font-size: 1rem; text-transform: none; letter-spacing: 0; color: var(--primary); }
@@ -86,12 +80,8 @@ svg.brand-icon, .brand-icon { flex: none; width: 44px; height: 44px; padding: 10
 .phase-badge-logica { color: #0f4c5c; background: #e0f2f7; border-color: #7cc4d6; } .phase-badge-logica svg { color: #0e7490; }
 @media (prefers-color-scheme: dark) { .phase-badge-ia { color: #ffd166; background: #3a2c07; } .phase-badge-logica { color: #9fe1f2; background: #0b2f36; border-color: #17677c; } }
 @media (max-width: 600px) { .phase-pop { left: 1rem !important; right: 1rem; width: auto; } .phase-pop-caret { display: none; } .phase-list.cols { grid-template-columns: 1fr; } }
-.topbar-actions { align-items: flex-start; }
 .topbar .badge { background: rgba(255,255,255,.14); color: #fff; }
-.topbar-buttons { display: grid; gap: .4rem; }
-.btn-topbar { background: #fff; color: var(--header); border-color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: .45rem; white-space: nowrap; text-decoration: none; }
-.btn-topbar:hover { background: #e4eaff; color: #1440d6; }
-.btn-topbar:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffd166; }
+.topbar-buttons { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
 .dot { width: .7rem; height: .7rem; border-radius: 50%; display: inline-block; }
 .dot-on { background: #3a9d5d; }
 .dot-off { background: #c94f4f; }
@@ -102,7 +92,6 @@ svg.brand-icon, .brand-icon { flex: none; width: 44px; height: 44px; padding: 10
 /* Layout dos columnas */
 .layout { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 1.25rem; padding: 1.25rem 1rem 2rem; align-items: start; }
 .sidebar { display: grid; gap: .75rem; position: sticky; top: 4.5rem; max-height: calc(100vh - 5.5rem); overflow-y: auto; }
-#prompt-sections { display: grid; gap: .75rem; }
 .content { display: grid; gap: 1.25rem; min-width: 0; }
 .content > * { min-width: 0; }
 @media (max-width: 960px) {
@@ -116,6 +105,8 @@ svg.brand-icon, .brand-icon { flex: none; width: 44px; height: 44px; padding: 10
 .section > summary::before { content: ''; display: inline-block; width: 1em; height: 1em; background: var(--muted); -webkit-mask: var(--icon-chevron-right) center / contain no-repeat; mask: var(--icon-chevron-right) center / contain no-repeat; transition: transform .15s; }
 .section[open] > summary::before { transform: rotate(90deg); }
 .section > summary::-webkit-details-marker { display: none; }
+.section-ico { flex: none; width: 1.1em; height: 1.1em; color: var(--primary); vertical-align: -.15em; }
+.prompt-base h3 { display: flex; align-items: center; gap: .4rem; margin: 0; }
 .section-body { padding: 0 1rem 1rem; display: grid; gap: .6rem; }
 .edited-flag { font-size: .7rem; font-weight: 600; color: var(--review); background: var(--review-bg); padding: .1rem .45rem; border-radius: 999px; }
 .msg-list { margin: 0; padding-left: 1.2rem; font-size: .8rem; display: grid; gap: .35rem; max-height: 260px; overflow-y: auto; }
@@ -233,6 +224,6 @@ tbody tr:focus { outline: 2px solid var(--primary); outline-offset: -2px; }
 .raw { font-size: .75rem; white-space: pre-wrap; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: .6rem; max-height: 260px; overflow: auto; }
 
 .footer { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 0 1rem 2rem; font-size: .8rem; color: var(--muted); }
-@media (max-width: 600px) { .counter-value { font-size: 2.4rem; } .topbar { flex-direction: column; align-items: flex-start; } }
+@media (max-width: 600px) { .counter-value { font-size: 2.4rem; } }
 
 .ramo-criterios { margin: .25rem 0 0; padding-left: 1.2rem; font-size: .85rem; display: grid; gap: .2rem; }

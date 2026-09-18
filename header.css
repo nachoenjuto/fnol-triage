@@ -1,0 +1,24 @@
+/* Cabecera compartida por index.html y gobierno.html: cabecera azul (.topbar) + barra
+   clara de submenú (.submenu en index, .tabs en gobierno). Usa los mismos nombres de
+   clase que ya existen en cada página (selectores combinados) para no tocar su JS. */
+
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 76px; padding: .8rem 1.25rem; background: var(--header); color: #fff; position: sticky; top: 0; z-index: 5; box-shadow: 0 2px 12px rgba(27, 75, 255, .25); }
+.brand { display: flex; align-items: center; gap: .8rem; flex: none; }
+.brand-icon, .brand-ico { flex: none; width: 44px; height: 44px; padding: 10px; box-sizing: border-box; border-radius: 12px; background: rgba(255,255,255,.16); color: #fff; display: grid; place-items: center; filter: drop-shadow(0 2px 4px rgba(0,0,0,.25)); }
+.brand-icon svg, .brand-ico svg { width: 24px; height: 24px; }
+.brand h1 { font-size: 1.6rem; margin: 0; letter-spacing: -.01em; line-height: 1.1; white-space: nowrap; }
+
+.topbar-actions, .topbar .right { display: flex; align-items: center; justify-content: flex-end; gap: .6rem; flex-wrap: wrap; flex: 1 1 auto; min-width: 0; margin-top: 0; }
+
+.btn-topbar, .btn-white { background: #fff; color: var(--header); border-color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: .45rem; white-space: nowrap; text-decoration: none; }
+.btn-topbar:hover, .btn-white:hover { background: #e4eaff; color: #1440d6; }
+.btn-topbar:focus-visible, .btn-white:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffd166; }
+
+/* font-size fijo: index.html (body 16px) y gobierno.html (body 14px) parten de bases distintas;
+   se fija aquí para que el texto y los iconos del menú horizontal midan igual en las dos páginas. */
+.submenu, .tabs { display: flex; align-items: center; gap: .25rem; padding: .6rem 1.25rem 0; background: var(--surface); border-bottom: 1px solid var(--border); box-shadow: 0 2px 4px rgba(15, 23, 42, .06); overflow-x: auto; position: sticky; top: var(--top-h, 63px); z-index: 4; font-size: 14px; }
+
+@media (max-width: 600px) {
+  .topbar { flex-direction: column; align-items: flex-start; }
+  .submenu, .tabs { position: static; top: 0; }
+}

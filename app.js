@@ -478,38 +478,60 @@
     if (sec) sec.hidden = state.estrategia !== '2pasos';
   }
 
+  // Icono Lucide por bloque de prompt: clasificación de ramo y una regla por ramo (mismos iconos que en la ficha de fases)
+  const BLOQUE_ICON = { ramo: 'tags', base: 'scan-text', auto: 'car', hogar: 'house', salud: 'heart-pulse' };
+
+  // Conecta un <textarea> de bloque de prompt con su contador de caracteres, la marca de «editado» y el botón de restaurar
+  function bindPromptField(root, key, def) {
+    const ta = root.querySelector('textarea');
+    ta.value = state.prompts[key];
+    const count = root.querySelector(`[data-count="${key}"]`);
+    const flag = root.querySelector('.edited-flag');
+    const sync = () => { count.textContent = ta.value.length; flag.hidden = ta.value === def.texto; };
+    sync();
+    ta.addEventListener('input', () => {
+      state.prompts[key] = ta.value;
+      // Persistir solo los bloques que difieren del original
+      const edited = Object.fromEntries(Object.entries(state.prompts).filter(([k, v]) => v !== PROMPT_BLOQUES[k].texto));
+      ssSet(SS.prompts, edited);
+      sync();
+    });
+    root.querySelector(`[data-restore="${key}"]`).addEventListener('click', () => { ta.value = def.texto; ta.dispatchEvent(new Event('input')); });
+  }
+
   function renderPromptSections() {
     const wrap = $('prompt-sections');
-    wrap.replaceChildren(...Object.entries(PROMPT_BLOQUES).map(([key, def]) => {
+    const campos = (key) => `
+      <textarea data-prompt="${key}" rows="14" spellcheck="false"></textarea>
+      <div class="row between">
+        <small class="muted"><span data-count="${key}"></span> caracteres</small>
+        <button class="btn btn-ghost btn-sm" type="button" data-restore="${key}">Restaurar original</button>
+      </div>`;
+
+    // «Prompt base» va directo, sin colapsable propio: es el bloque principal del prompt
+    const base = document.createElement('div');
+    base.className = 'prompt-base';
+    const baseDef = PROMPT_BLOQUES.base;
+    const baseEdited = state.prompts.base !== baseDef.texto;
+    base.innerHTML = `
+      <h3>${lucide('scan-text', 'lucide-svg section-ico')} ${escapeHtml(baseDef.titulo)} <span class="edited-flag" ${baseEdited ? '' : 'hidden'}>editado</span></h3>
+      ${campos('base')}`;
+    bindPromptField(base, 'base', baseDef);
+
+    // El resto (clasificación de ramo y una regla por ramo), cada uno colapsable, con la misma jerarquía entre sí
+    const resto = Object.entries(PROMPT_BLOQUES).filter(([key]) => key !== 'base').map(([key, def]) => {
       const details = document.createElement('details');
       details.className = 'card section';
       details.dataset.bloque = key;
       const edited = state.prompts[key] !== def.texto;
       details.innerHTML = `
-        <summary>${escapeHtml(def.titulo)} <span class="edited-flag" ${edited ? '' : 'hidden'}>editado</span></summary>
-        <div class="section-body">
-          <textarea data-prompt="${key}" rows="14" spellcheck="false"></textarea>
-          <div class="row between">
-            <small class="muted"><span data-count="${key}"></span> caracteres</small>
-            <button class="btn btn-ghost btn-sm" type="button" data-restore="${key}">Restaurar original</button>
-          </div>
-        </div>`;
-      const ta = details.querySelector('textarea');
-      ta.value = state.prompts[key];
-      const count = details.querySelector(`[data-count="${key}"]`);
-      const flag = details.querySelector('.edited-flag');
-      const sync = () => { count.textContent = ta.value.length; flag.hidden = ta.value === def.texto; };
-      sync();
-      ta.addEventListener('input', () => {
-        state.prompts[key] = ta.value;
-        // Persistir solo los bloques que difieren del original
-        const edited = Object.fromEntries(Object.entries(state.prompts).filter(([k, v]) => v !== PROMPT_BLOQUES[k].texto));
-        ssSet(SS.prompts, edited);
-        sync();
-      });
-      details.querySelector(`[data-restore="${key}"]`).addEventListener('click', () => { ta.value = def.texto; ta.dispatchEvent(new Event('input')); });
+        <summary>${lucide(BLOQUE_ICON[key], 'lucide-svg section-ico')} ${escapeHtml(def.titulo)} <span class="edited-flag" ${edited ? '' : 'hidden'}>editado</span></summary>
+        <div class="section-body">${campos(key)}</div>`;
+      bindPromptField(details, key, def);
       return details;
-    }));
+    });
+
+    wrap.replaceChildren(base, ...resto);
   }
 
   // ---------------------------------------------------------------------------
@@ -1038,11 +1060,23 @@
   function bindPhases() {
     const pop = $('phase-pop');
     const caret = pop.querySelector('.phase-pop-caret');
-    const topbar = pop.closest('.topbar');
+    const topbar = pop.closest('.submenu');
     const buttons = [...document.querySelectorAll('.phase')];
     let active = null; // botón cuya descripción se muestra
     let pinned = false; // fijado con clic (móvil / teclado)
     let hideTimer = null;
+
+    // Coordenadas de viewport (position: fixed): el popover cuelga de .submenu, que hace scroll
+    // horizontal (overflow-x: auto), así que no puede vivir dentro de ese contenedor recortado.
+    const position = (btn) => {
+      const tb = topbar.getBoundingClientRect();
+      const bb = btn.getBoundingClientRect();
+      const maxLeft = Math.max(16, tb.right - pop.offsetWidth - 16);
+      const left = Math.min(bb.left, maxLeft);
+      pop.style.left = `${left}px`;
+      pop.style.top = `${tb.bottom + 10}px`;
+      caret.style.left = `${Math.max(12, Math.min(bb.left - left + 18, pop.offsetWidth - 24))}px`;
+    };
 
     const show = (btn) => {
       clearTimeout(hideTimer);
@@ -1051,14 +1085,8 @@
       buttons.forEach((b) => { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-expanded', String(b === btn)); });
       $('phase-pop-body').innerHTML = renderPhase(info);
       pop.hidden = false;
-      // Alineado bajo la fase, sin salirse del ancho de la cabecera
-      const tb = topbar.getBoundingClientRect();
-      const bb = btn.getBoundingClientRect();
-      const maxLeft = Math.max(16, tb.width - pop.offsetWidth - 16);
-      const left = Math.min(bb.left - tb.left, maxLeft);
-      pop.style.left = `${left}px`;
-      caret.style.left = `${Math.max(12, Math.min(bb.left - tb.left - left + 18, pop.offsetWidth - 24))}px`;
       active = btn;
+      position(btn); // alineado bajo la fase, sin salirse del ancho de la barra
     };
     const hide = () => {
       pop.hidden = true;
@@ -1081,7 +1109,14 @@
     pop.addEventListener('mouseleave', scheduleHide);
     document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && !pop.hidden) hide(); });
     document.addEventListener('click', (ev) => { if (!pop.hidden && !ev.target.closest('.phase, #phase-pop')) hide(); });
-    window.addEventListener('resize', () => { if (active) show(active); });
+    window.addEventListener('resize', () => { if (active) position(active); });
+    window.addEventListener('scroll', () => { if (active) position(active); }, { passive: true });
+  }
+
+  // Altura real de la cabecera para que la barra de submenú (.submenu) quede pegada justo debajo
+  function medirTopH() {
+    const topbar = document.querySelector('.topbar');
+    if (topbar) document.documentElement.style.setProperty('--top-h', `${topbar.offsetHeight}px`);
   }
 
   // ---------------------------------------------------------------------------
@@ -1096,4 +1131,6 @@
   setRunButtons();
   renderCounters();
   renderLog();
+  medirTopH();
+  window.addEventListener('resize', medirTopH);
 })();

@@ -6,6 +6,7 @@
   <title>Triage de mensajes — seguros</title>
   <meta name="description" content="Demo de triaje multicanal de mensajes de clientes de una aseguradora: clasificación por ramo, extracción de datos y aplicación de reglas con Azure AI Foundry.">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="header.css">
 </head>
 <body>
   <header class="topbar">
@@ -13,20 +14,7 @@
       <span class="brand-icon" data-lucide="scan-text" aria-hidden="true" focusable="false"></span>
       <div>
         <h1>Triage de mensajes</h1>
-        <p class="subtitle" id="phases">
-          <button type="button" class="phase" data-phase="multicanal" aria-expanded="false">Multicanalidad</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
-          <button type="button" class="phase" data-phase="ramo" aria-expanded="false">Clasificación por ramo</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
-          <button type="button" class="phase" data-phase="datos" aria-expanded="false">Extracción de datos</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
-          <button type="button" class="phase" data-phase="reglas" aria-expanded="false">Reglas de negocio</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
-          <button type="button" class="phase" data-phase="registro" aria-expanded="false">Trazabilidad</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
-          <button type="button" class="phase" data-phase="automatizacion" aria-expanded="false">Automatización</button>
-        </p>
       </div>
-    </div>
-    <!-- Panel emergente con la descripción de la fase (se rellena en app.js) -->
-    <div id="phase-pop" class="phase-pop" role="tooltip" hidden>
-      <div class="phase-pop-caret" aria-hidden="true"></div>
-      <div id="phase-pop-body" class="phase-pop-body"></div>
     </div>
     <div class="row topbar-actions">
       <span id="mode-badge" class="badge">Motor: reglas</span>
@@ -36,6 +24,21 @@
       </div>
     </div>
   </header>
+
+  <!-- Fases del proceso: breadcrumb con ficha explicativa al pasar el ratón / clic -->
+  <nav class="submenu" id="phases" aria-label="Fases del proceso">
+    <button type="button" class="phase" data-phase="multicanal" aria-expanded="false"><span data-lucide="messages-square" aria-hidden="true"></span> Multicanalidad</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
+    <button type="button" class="phase" data-phase="ramo" aria-expanded="false"><span data-lucide="tags" aria-hidden="true"></span> Clasificación por ramo</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
+    <button type="button" class="phase" data-phase="datos" aria-expanded="false"><span data-lucide="file-search" aria-hidden="true"></span> Extracción de datos</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
+    <button type="button" class="phase" data-phase="reglas" aria-expanded="false"><span data-lucide="list-checks" aria-hidden="true"></span> Reglas de negocio</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
+    <button type="button" class="phase" data-phase="registro" aria-expanded="false"><span data-lucide="route" aria-hidden="true"></span> Trazabilidad</button><span class="arrow" data-lucide="chevron-right" aria-hidden="true"></span>
+    <button type="button" class="phase" data-phase="automatizacion" aria-expanded="false"><span data-lucide="workflow" aria-hidden="true"></span> Automatización</button>
+    <!-- Panel emergente con la descripción de la fase (se rellena en app.js) -->
+    <div id="phase-pop" class="phase-pop" role="tooltip" hidden>
+      <div class="phase-pop-caret" aria-hidden="true"></div>
+      <div id="phase-pop-body" class="phase-pop-body"></div>
+    </div>
+  </nav>
 
   <!-- Conexión Azure AI Foundry (arriba, plegable) -->
   <section id="config-panel" class="card config" hidden>
@@ -82,12 +85,17 @@
   <div class="layout">
     <!-- Barra lateral de ajustes -->
     <aside class="sidebar" aria-label="Ajustes">
-      <details class="card section" open>
-        <summary>Paquete de mensajes</summary>
+      <details class="card section">
+        <summary><span class="section-ico" data-lucide="inbox" aria-hidden="true"></span> Paquete de mensajes</summary>
         <div class="section-body">
           <select id="sel-paquete" aria-label="Paquete de mensajes"></select>
           <p id="paquete-desc" class="hint"></p>
           <ol id="paquete-lista" class="msg-list"></ol>
+        </div>
+      </details>
+      <details class="card section">
+        <summary><span class="section-ico" data-lucide="settings" aria-hidden="true"></span> Configuración</summary>
+        <div class="section-body">
           <label>
             <span>Motor de triaje</span>
             <select id="sel-motor">
@@ -112,7 +120,10 @@
           </label>
         </div>
       </details>
-      <div id="prompt-sections"></div>
+      <details class="card section">
+        <summary><span class="section-ico" data-lucide="file-text" aria-hidden="true"></span> Prompt</summary>
+        <div class="section-body" id="prompt-sections"></div>
+      </details>
     </aside>
 
     <!-- Panel principal -->
